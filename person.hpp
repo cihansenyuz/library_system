@@ -24,7 +24,10 @@ public:
         else
             return false;
     }
-    void takeBook(string bookTitle){
-
+    void setTakenBook(Book& b){
+        takenBook = &b;
+    }
+    Book* getTakenBook(void){
+        return takenBook;
     }
 }Person;

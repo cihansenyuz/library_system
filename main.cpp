@@ -8,18 +8,18 @@ int main()
     Book b3("1984", "George Orwell", 9789750718533);
     Book b4("Kirmizi Pazartesi", "Gabriel Garcia Marquez", 9789750721571);
 
-    set<Book>* newBookList = new set<Book>;
-    newBookList->insert(b1);
-    newBookList->insert(b2);
-    newBookList->insert(b3);
-    newBookList->insert(b4);
+    vector<Book>* newBookList = new vector<Book>;
+    newBookList->push_back(b1);
+    newBookList->push_back(b2);
+    newBookList->push_back(b3);
+    newBookList->push_back(b4);
 
     Person p1("Cihan Senyuz", 26007567);
     Person p2("Can Gorkem Gunes", 26100010);
-    set<Person>* newPersonList = new set<Person>;
+    vector<Person>* newPersonList = new vector<Person>;
 
-    newPersonList->insert(p1);
-    newPersonList->insert(p2);
+    newPersonList->push_back(p1);
+    newPersonList->push_back(p2);
 
     //auto it = newPersonList->find(p2);
     //it->displayInfo();
@@ -27,7 +27,14 @@ int main()
     Library MustafaInanKutuphanesi(newBookList);
     MustafaInanKutuphanesi.setPersonList(newPersonList);
 
-    MustafaInanKutuphanesi.displayAvailables();
+    MustafaInanKutuphanesi.checkOut("Cihan Senyuz", "1984");
+    
+    // to check functionality of checkOut()
+    newPersonList->at(0).getTakenBook()->displayInfo();
+    cout << static_cast<int> (newBookList->at(2).isAvailable()) << endl;
+    cout << static_cast<int> (newBookList->at(1).isAvailable());
 
+    delete newBookList;
+    delete newPersonList;
     return EXIT_SUCCESS;
 }
