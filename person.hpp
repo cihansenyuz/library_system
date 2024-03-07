@@ -15,7 +15,7 @@ public:
         else
             cout << "Book: not taken" << endl;
     }
-    string getName(void){
+    string getName(void) const{
         return name;
     }
     bool operator<(const Person& other)const{
@@ -23,5 +23,8 @@ public:
             return true;
         else
             return false;
+    }
+    void takeBook(string bookTitle){
+
     }
 }Person;

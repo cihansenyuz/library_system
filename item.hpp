@@ -17,7 +17,7 @@ public:
     string getAuthor(void){
         return author;
     }
-    long long int getISBN(void){
+    long long int getISBN(void) const{
         return ISBN;
     }
 }Item;

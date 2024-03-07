@@ -8,11 +8,11 @@ int main()
     Book b3("1984", "George Orwell", 9789750718533);
     Book b4("Kirmizi Pazartesi", "Gabriel Garcia Marquez", 9789750721571);
 
-    vector<Book>* newBookList = new vector<Book>;
-    newBookList->push_back(b1);
-    newBookList->push_back(b2);
-    newBookList->push_back(b3);
-    newBookList->push_back(b4);
+    set<Book>* newBookList = new set<Book>;
+    newBookList->insert(b1);
+    newBookList->insert(b2);
+    newBookList->insert(b3);
+    newBookList->insert(b4);
 
     Person p1("Cihan Senyuz", 26007567);
     Person p2("Can Gorkem Gunes", 26100010);
@@ -21,14 +21,13 @@ int main()
     newPersonList->insert(p1);
     newPersonList->insert(p2);
 
-    auto it = newPersonList->find(p2);
-    it->displayInfo();
+    //auto it = newPersonList->find(p2);
+    //it->displayInfo();
 
     Library MustafaInanKutuphanesi(newBookList);
     MustafaInanKutuphanesi.setPersonList(newPersonList);
 
-    //newBookList->at(1).displayInfo();
-
+    MustafaInanKutuphanesi.displayAvailables();
 
     return EXIT_SUCCESS;
 }
