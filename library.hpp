@@ -26,15 +26,9 @@ public:
         {
             cout << "Available books in the library:\n";
             for(auto &book : *bookList)
-            {
-                cout << "debug"<< endl;
                 if(book.isAvailable())
-                {
                     cout << book.getTitle() << endl;
-                }
-            }
         }
-
     }
     void checkOut(string personName, string bookTitle){
 

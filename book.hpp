@@ -26,6 +26,6 @@ public:
         cout << "ISBN: " << getISBN() << endl;
     }
     string getTitle(void) const{
-        return this->getTitle();
+        return title;
     }
 }Book;
