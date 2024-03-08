@@ -13,10 +13,10 @@ public:
         if(bookList)
             available = true;
     }
-    void addBook(Book& newBook){
+    void addBook(const Book& newBook){
         bookList->push_back(newBook);
     }
-    void registerPerson(Person& newPerson){
+    void registerPerson(const Person& newPerson){
         personList->push_back(newPerson);
     }
     void displayAvailables(void){
@@ -30,7 +30,7 @@ public:
                     cout << "- " << book.getTitle() << endl;
         }
     }
-    void checkOut(string personName, string bookTitle){
+    void checkOut(const string personName, const string bookTitle){
         bool bookAvailable = false;
         bool personAvailable = false;
         for(auto &book : *bookList)
@@ -78,13 +78,13 @@ public:
     void setPersonList(vector<Person>* list){
         personList = list;
     }
-    bool checkPerson(string name){
+    bool checkPerson(const string name){
         for(auto &person : *personList)
             if(person.getName() == name)
                 return true;
         return false;
     }
-    bool checkBook(string title){
+    bool checkBook(const string title){
         for(auto &book : *bookList)
             if(book.getTitle() == title)
                 return true;

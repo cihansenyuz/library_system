@@ -17,7 +17,7 @@ public:
     void setAvailable(bool opt){
         available = opt;
     }
-    bool isAvailable(void) const{
+    bool isAvailable(void) {
         return available;
     }
     void displayInfo(void) override{
@@ -25,7 +25,7 @@ public:
         cout << "Author: " << getAuthor() << endl;
         cout << "ISBN: " << getISBN() << endl;
     }
-    string getTitle(void) const{
+    string getTitle(void) {
         return title;
     }
 }Book;

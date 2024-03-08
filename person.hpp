@@ -7,7 +7,7 @@ private:
     Book* takenBook;
 public:
     Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
-    void displayInfo(void) const{
+    void displayInfo(void) {
         cout << "Name: " << name << endl;
         cout << "ID: " << id << endl;
         if(takenBook)
@@ -15,7 +15,7 @@ public:
         else
             cout << "Book: not taken" << endl;
     }
-    string getName(void) const{
+    string getName(void) {
         return name;
     }
     bool operator<(const Person& other)const{
