@@ -1,3 +1,8 @@
+#ifndef PERSON_HPP
+#define PERSON_HPP
+
+#include "book.hpp"
+#include <iostream>
 
 typedef class Person
 {
@@ -7,30 +12,12 @@ private:
     Book* takenBook;
 public:
     Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
-    void displayInfo(void) {
-        cout << "Name: " << name << endl;
-        cout << "ID: " << id << endl;
-        if(takenBook)
-            cout << "Book: " << takenBook->getTitle() << endl;
-        else
-            cout << "Book: not taken" << endl;
-    }
-    string getName(void) {
-        return name;
-    }
-    bool operator<(const Person& other)const{
-        if(id < other.id)
-            return true;
-        else
-            return false;
-    }
-    void setTakenBook(Book& b){
-        takenBook = &b;
-    }
-    void resetTakenBook(void){
-        takenBook = nullptr;
-    }
-    Book* getTakenBook(void){
-        return takenBook;
-    }
+    void displayInfo(void);
+    string getName(void);
+    bool operator<(const Person& other)const;
+    void setTakenBook(Book& b);
+    void resetTakenBook(void);
+    Book* getTakenBook(void);
 }Person;
+
+#endif

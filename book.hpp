@@ -1,4 +1,8 @@
+#ifndef BOOK_HPP
+#define BOOK_HPP
+
 #include "item.hpp"
+#include <iostream>
 
 typedef class Book : public Item
 {
@@ -8,24 +12,11 @@ public:
     Book(string t, string a, long long int i):Item(t, a, i){
         available = true;
     }
-    bool operator<(const Book& other) const{
-        if(this->getISBN() < other.getISBN())
-            return true;
-        else
-            return false;
-    }
-    void setAvailable(bool opt){
-        available = opt;
-    }
-    bool isAvailable(void) {
-        return available;
-    }
-    void displayInfo(void) override{
-        cout << "Title: " << getTitle() << endl;
-        cout << "Author: " << getAuthor() << endl;
-        cout << "ISBN: " << getISBN() << endl;
-    }
-    string getTitle(void) {
-        return title;
-    }
+    bool operator<(const Book& other) const;
+    void setAvailable(bool opt);
+    bool isAvailable(void);
+    void displayInfo(void) override;
+    string getTitle(void);
 }Book;
+
+#endif
