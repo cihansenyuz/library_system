@@ -27,6 +27,9 @@ public:
     void setTakenBook(Book& b){
         takenBook = &b;
     }
+    void resetTakenBook(void){
+        takenBook = nullptr;
+    }
     Book* getTakenBook(void){
         return takenBook;
     }

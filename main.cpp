@@ -35,13 +35,16 @@ int main()
 
     // check out a book for a user
     MustafaInanKutuphanesi.checkOut("Cihan Senyuz", "1984");
+    MustafaInanKutuphanesi.displayInfo();
+
+    MustafaInanKutuphanesi.returnBook("1984");
+    MustafaInanKutuphanesi.displayInfo();
     
     // below is debug purporsed
     //newPersonList->at(0).getTakenBook()->displayInfo();
     //cout << static_cast<int> (newBookList->at(2).isAvailable()) << endl;
     //cout << static_cast<int> (newBookList->at(1).isAvailable());
-
-    MustafaInanKutuphanesi.displayInfo();
+    
 
     cout << "all is well" << endl;
 

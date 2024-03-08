@@ -69,8 +69,24 @@ public:
         else if(!personAvailable)
             cout << personName << " has already taken a book. Needs to return it to take a new one." << endl;
     }
-    void returnBook(Book*, Person*){
+    void returnBook(const string bookTitle){
+        for(auto &book : *bookList)
+            if(book.getTitle() == bookTitle)
+                book.setAvailable(true);
 
+        for(auto &person : *personList)
+        {
+            
+            if(person.getTakenBook()->getTitle() == bookTitle)
+            {
+
+                person.resetTakenBook();                
+                return;
+            }
+
+        }
+
+        
     }
     void displayInfo(void) {
         // counters to keep status of books
