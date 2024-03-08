@@ -73,7 +73,31 @@ public:
 
     }
     void displayInfo(void) {
+        // counters to keep status of books
+        short availableCount = 0;
+        short nonAvailableCount = 0;
 
+        // printing starts here
+        cout << "Library Information: " << endl;
+        cout << " - " << bookList->size() << " books in the library" << endl;
+        for(auto &book : *bookList) // print all books in the library
+        {
+            cout << "Title: " << book.getTitle() << ", Author: " << book.getAuthor() << endl;
+            if(book.isAvailable())
+                availableCount++;
+            else
+                nonAvailableCount++;
+        }
+        cout << "Available: " << availableCount << " Checked Out: " << nonAvailableCount << endl;
+        cout << "- " << personList->size() << " users registered in the library" << endl;
+        for(auto &person : *personList) // print all users in the library
+        {
+            cout << "Name: " << person.getName() << " Book: ";
+            if(person.getTakenBook())
+                cout << person.getTakenBook()->getTitle() << endl;
+            else
+                cout << "-" << endl;
+        }
     }
     void setPersonList(vector<Person>* list){
         personList = list;
