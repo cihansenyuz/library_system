@@ -1,13 +1,30 @@
 #include "library.hpp"
 
+/**
+ * @brief Adds a Book to the bookList.
+ *
+ * Takes an Book object as argumant, and pushes it to the vector pointed by bookList
+ * @param newBook Book object to be added
+ */
 void Library::addBook(const Book& newBook){
     bookList->push_back(newBook);
 }
 
+/**
+ * @brief Adds a Person to the personList.
+ *
+ * Takes an Person object as argumant, and pushes it to the vector pointed by personList
+ * @param newPerson Person object to be added
+ */
 void Library::registerPerson(const Person& newPerson){
     personList->push_back(newPerson);
 }
 
+/**
+ * @brief Prints all available books
+ *
+ * Prints titles of books that are not taken by anyone
+ */
 void Library::displayAvailables(void){
     if(!available)
         cout << "All books are taken!\n";
@@ -20,6 +37,13 @@ void Library::displayAvailables(void){
     }
 }
 
+/**
+ * @brief Check out a book from library
+ *
+ * Takes person name and book title, sets the book not available, sets persons takenBook pointer
+ * @param personName name of the person
+ * @param bookTitle title of the book
+ */
 void Library::checkOut(const string personName, const string bookTitle){
     bool bookAvailable = false;
     bool personAvailable = false;
@@ -60,6 +84,12 @@ void Library::checkOut(const string personName, const string bookTitle){
         cout << personName << " has already taken a book. Needs to return it to take a new one." << endl;
 }
 
+/**
+ * @brief Returns a book to library
+ *
+ * Takes book title, sets the book available, sets persons takenBook pointer to nullptr
+ * @param bookTitle title of the book
+ */
 void Library::returnBook(const string bookTitle){
     for(auto &book : *bookList)
         if(book.getTitle() == bookTitle)
@@ -80,6 +110,12 @@ void Library::returnBook(const string bookTitle){
     
 }
 
+/**
+ * @brief Prints properties of the library.
+ *
+ * Prints book information in the library and how many available/not available.
+ * Also, prints registered persons and which book is taken by whom.
+ */
 void Library::displayInfo(void) {
     // counters to keep status of books
     short availableCount = 0;
@@ -108,10 +144,22 @@ void Library::displayInfo(void) {
     }
 }
 
+/**
+ * @brief Setter function for personList pointer.
+ *
+ * @param list pointer of a vector of Persons
+ */
 void Library::setPersonList(vector<Person>* list){
     personList = list;
 }
 
+/**
+ * @brief Checks if a person is registered in the library
+ *
+ * Takes name of the person, and searches for it in the vector pointed by personList
+ * @param name name of the person
+ * @return true: name exists, false: does not
+ */
 bool Library::checkPerson(const string name){
     for(auto &person : *personList)
         if(person.getName() == name)
@@ -119,6 +167,13 @@ bool Library::checkPerson(const string name){
     return false;
 }
 
+/**
+ * @brief Checks if a book is registered in the library
+ *
+ * Takes title of the book, and searches for it in the vector pointed by bookList
+ * @param title title of the book
+ * @return true: title exists, false: does not
+ */
 bool Library::checkBook(const string title){
     for(auto &book : *bookList)
         if(book.getTitle() == title)
