@@ -24,6 +24,15 @@ string Person::getName(void) {
 }
 
 /**
+ * @brief Getter function for name variable.
+ *
+ * @return name of the person
+ */
+int Person::getId(void){
+    return id;
+}
+
+/**
  * @brief Setter function for takenBook pointer.
  * 
  * @param b the book object which is taken by the person

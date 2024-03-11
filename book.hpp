@@ -25,6 +25,9 @@ public:
     Book(string t, string a, long long int i):Item(t, a, i){
         available = true;
     }
+    Book(string t, string a, long long int i, bool av):Item(t, a, i){
+        available = av;
+    }
     /**
      * @brief Setter function for available varilable.
      *

@@ -4,6 +4,7 @@
 #include "book.hpp"
 #include "person.hpp"
 #include <vector>
+#include <fstream>
 
 /**
  * @brief This class is to handle behaviours in the library.
@@ -13,9 +14,11 @@
 typedef class Library
 {
 private:
-    vector<Book>* bookList;
-    vector<Person>* personList;
-    bool available;
+    vector<Book>* bookList;         /** vector pointer for all books */
+    vector<Person>* personList;     /** vector pointer for all persons */
+    bool available;                 /** availability of the library */
+    string fileNameBook;
+    string fileNamePerson;
 public:
     /**
      * @brief Parameterized constructor.
@@ -27,6 +30,13 @@ public:
         if(bookList)
             available = true;
     }
+    /**
+     * @brief Constructor from previously saved data.
+     *
+     * Creates input file from saved data, gets book informations, and sets bookList pointer
+     * @param bdf book data file name to be read
+     */
+    Library(string bdf, string pdf);
     /**
      * @brief Adds a Book to the bookList.
      *
@@ -91,6 +101,16 @@ public:
      * @return true: title exists, false: does not
      */
     bool checkBook(const string title);
+    /**
+     * @brief Saves latest status of library
+     *
+     * Creates output file, and saves all related information inside.
+     */
+    void saveLatestData(void);
+    ~Library(){
+        delete bookList;
+        delete personList;
+    }
 }Library;
 
 #endif

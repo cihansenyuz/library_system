@@ -1,6 +1,84 @@
 #include "library.hpp"
 
 /**
+ * @brief Constructor from previously saved data.
+ *
+ * Creates input file from saved data, gets book informations, and sets bookList pointer
+ * @param bdf book data file name to be read
+ */
+Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf){
+    // create input file and open it
+    ifstream bookData(bdf);
+    if(!(bookData.is_open()))
+        cout << "couldnot open the data file" << endl;
+    
+    string temp;    // string to store input file reads
+    vector<Book>* savedBookList = new vector<Book>;
+    vector<Person>* savedPersonList = new vector<Person>;
+
+    // read until end of file
+    while(!bookData.eof())
+    {
+        getline(bookData, temp, '\t');
+        string t = temp;    // title
+        getline(bookData, temp, '\t');
+        string a = temp;    // author
+        getline(bookData, temp, '\t');
+        long long int n;    // ISBN
+        try{
+            n = stoll(temp);
+        }
+        catch (const std::invalid_argument& e) {
+            // no problem
+        }
+        getline(bookData, temp, '\t');
+        char b = temp[0];   // availability
+        // create book instances with proper availability
+        if(b == '0'){
+            Book book(t,a,n,false);
+            savedBookList->push_back(book);
+        }
+        else if(b == '1'){
+            Book book(t,a,n);
+            savedBookList->push_back(book);
+        }
+    }
+    bookList = savedBookList;   // set bookList pointer
+    available = true;           // set library availability
+    bookData.close();
+    
+    ifstream personData(pdf);
+    if(!(personData.is_open()))
+        cout << "couldnot open the person file" << endl;
+    while(!personData.eof()){
+        getline(personData, temp, '\t');
+        string n = temp;    // name
+        getline(personData, temp, '\t');
+        int i; // id
+        try{
+            i = stoll(temp);
+        }
+        catch (const std::invalid_argument& e) {
+            // no problem
+        }
+        getline(personData, temp, '\t');
+        string t = temp;    // title
+
+        if(n == "") // workaround of a bug
+            break;
+            
+        // create person and set takenBook
+        Person person(n,i);
+        for(auto &book : *bookList)
+            if(book.getTitle() == t)    // if not taken any book, then it is already nullptr
+                person.setTakenBook(book);
+        savedPersonList->push_back(person);
+    }
+    personList = savedPersonList;   // set personList pointer
+    personData.close();
+}
+
+/**
  * @brief Adds a Book to the bookList.
  *
  * Takes an Book object as argumant, and pushes it to the vector pointed by bookList
@@ -96,18 +174,11 @@ void Library::returnBook(const string bookTitle){
             book.setAvailable(true);
 
     for(auto &person : *personList)
-    {
-        
         if(person.getTakenBook()->getTitle() == bookTitle)
         {
-
             person.resetTakenBook();                
             return;
         }
-
-    }
-
-    
 }
 
 /**
@@ -180,3 +251,40 @@ bool Library::checkBook(const string title){
             return true;
     return false;
 }
+
+/**
+ * @brief Saves latest status of library
+ *
+ * Creates output file, and saves all related information inside.
+ */
+void Library::saveLatestData(void){
+        // create output file
+        ofstream bookData(fileNameBook);
+        if(!(bookData.is_open()))
+            cout << "couldnot open the data file" << endl;
+        
+        // keep record of every book, \t is terminator for reading operation
+        for(auto &book : *bookList)
+        {
+            bookData << book.getTitle() << '\t' 
+                    << book.getAuthor() << "\t" 
+                    << book.getISBN() << '\t' 
+                    << book.isAvailable() << '\t';
+        }
+        bookData.close();
+        
+        ofstream personData(fileNamePerson);
+        if(!(personData.is_open()))
+            cout << "couldnot open the person file" << endl;
+
+        // keep record of every person, \t is terminator for reading operation
+        for(auto &person : *personList)
+        {
+            personData << person.getName() << '\t' << person.getId() << "\t";
+            if((person.getTakenBook()))
+                personData << person.getTakenBook()->getTitle() << '\t';
+            else
+                personData << '-' << '\t';
+        }
+        personData.close();
+    }
