@@ -5,6 +5,7 @@
  *
  * Creates input file from saved data, gets book informations, and sets bookList pointer
  * @param bdf book data file name to be read
+ * @param pdf person data file name to be read
  */
 Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf){
     // create input file and open it
@@ -66,7 +67,7 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
 
         if(n == "") // workaround of a bug
             break;
-            
+
         // create person and set takenBook
         Person person(n,i);
         for(auto &book : *bookList)
@@ -89,6 +90,19 @@ void Library::addBook(const Book& newBook){
 }
 
 /**
+ * @brief Creates a Book, and adds it to library.
+ *
+ * Takes Book constructor argumants, and creates an instance. Then adds it to the library.
+ * @param bookTitle title of the book
+ * @param bookAuthor author of the book
+ * @param bookISBN ISBN of the book
+ */
+void Library::addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN){
+    Book b(bookTitle, bookAuthor, bookISBN);
+    this->addBook(b);
+}
+
+/**
  * @brief Adds a Person to the personList.
  *
  * Takes an Person object as argumant, and pushes it to the vector pointed by personList
@@ -96,6 +110,18 @@ void Library::addBook(const Book& newBook){
  */
 void Library::registerPerson(const Person& newPerson){
     personList->push_back(newPerson);
+}
+
+/**
+ * @brief Creates a Person, and adds it to library.
+ *
+ * Takes Person constructor argumants, and creates an instance. Then registers it to the library.
+ * @param personName name of the person
+ * @param personId ID of the person
+ */
+void Library::registerPerson(const string& personName, const int& personId){
+    Person p(personName, personId);
+    this->registerPerson(p);
 }
 
 /**

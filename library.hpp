@@ -44,6 +44,7 @@ public:
      * @param newBook Book object to be added
      */
     void addBook(const Book& newBook);
+    void addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN);
     /**
      * @brief Adds a Person to the personList.
      *
@@ -51,6 +52,7 @@ public:
      * @param newPerson Person object to be added
      */
     void registerPerson(const Person& newPerson);
+    void registerPerson(const string& personName, const int& personId);
     /**
      * @brief Prints all available books
      *

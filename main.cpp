@@ -7,6 +7,9 @@
 
 int main()
 {
+    // creation of a library
+    Library MustafaInanKutuphanesi(bookDataFile, personDataFile);
+
     /*
     1- add book to lib
     2- register person
@@ -18,9 +21,6 @@ int main()
         3- library
     0- exit
     */
-
-    // creation of a library
-    Library MustafaInanKutuphanesi(bookDataFile, personDataFile);
 
     // check out a book for a user
     //MustafaInanKutuphanesi.checkOut("Cihan Senyuz", "1984");
