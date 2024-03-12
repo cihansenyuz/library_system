@@ -195,14 +195,17 @@ void Library::checkOut(const string personName, const string bookTitle){
  * @param bookTitle title of the book
  */
 void Library::returnBook(const string bookTitle){
+    // find book in the library and set availability true
     for(auto &book : *bookList)
         if(book.getTitle() == bookTitle)
             book.setAvailable(true);
 
+    // find person and reset takenBook pointer
     for(auto &person : *personList)
         if(person.getTakenBook()->getTitle() == bookTitle)
         {
-            person.resetTakenBook();                
+            person.resetTakenBook();
+            cout << bookTitle << " is taken back from " << person.getName() << endl;              
             return;
         }
 }
