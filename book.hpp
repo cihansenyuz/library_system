@@ -28,29 +28,9 @@ public:
     Book(string t, string a, long long int i, bool av):Item(t, a, i){
         available = av;
     }
-    /**
-     * @brief Setter function for available varilable.
-     *
-     * @param opt true: book is available, false: book is taken by someone
-     */
     void setAvailable(bool opt);
-    /**
-     * @brief Getter function for available varilable.
-     *
-     * @return true if the book is available, false if the book is taken by someone
-     */
     bool isAvailable(void);
-    /**
-     * @brief Prints properties of the object.
-     *
-     * Overriden function
-     */
     void displayInfo(void) override;
-    /**
-     * @brief Getter function for title variable.
-     *
-     * @return Current value of the variable
-     */
     string getTitle(void);
 }Book;
 

@@ -46,5 +46,6 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "fstream": "cpp"
-    }
+    },
+    "editor.fontSize": 14
 }

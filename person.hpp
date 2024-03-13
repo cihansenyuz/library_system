@@ -19,41 +19,11 @@ public:
      * @param i ID
      */
     Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
-    /**
-     * @brief Prints properties of the object.
-     *
-     * Prints Name, ID and the title of the taken book
-     */
     void displayInfo(void);
-    /**
-     * @brief Getter function for name variable.
-     *
-     * @return name of the person
-     */
     string getName(void);
-    /**
-     * @brief Getter function for name variable.
-     *
-     * @return name of the person
-     */
     int getId(void);
-    /**
-     * @brief Setter function for takenBook pointer.
-     * 
-     * @param b the book object which is taken by the person
-     */
     void setTakenBook(Book& b);
-    /**
-     * @brief Reset function for takenBook pointer.
-     * 
-     * Resets the takenBook pointer to nullptr
-     */
     void resetTakenBook(void);
-    /**
-     * @brief Getter function for takenBook pointer.
-     *
-     * @return adress of the pointed object
-     */
     Book* getTakenBook(void);
 }Person;
 
