@@ -2,8 +2,8 @@
 #include <iostream>
 #include <fstream>
 
-#define BOOK_DATA_FILE "book_data.txt"
-#define PERSON_DATA_FILE "person_data.txt"
+#define BOOK_DATA_FILE "..\\book_data.txt"
+#define PERSON_DATA_FILE "..\\person_data.txt"
 
 typedef enum Action{
     Exit, AddBook, RegisterPerson, CheckOut, Return
