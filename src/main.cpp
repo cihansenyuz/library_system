@@ -6,6 +6,7 @@ int main()
     Library MustafaInanKutuphanesi(BOOK_DATA_FILE, PERSON_DATA_FILE);   // creation of a library
     bool exitFlag = true;   // flag to determine quitting program
 
+    cout << "\n## Welcome to Library System ##" << endl;
     while(exitFlag){
         Action userSelection = getUserAction();
         switch (userSelection){
@@ -20,6 +21,9 @@ int main()
                 break;
             case Return:
                 returnBookAction(MustafaInanKutuphanesi);
+                break;
+            case Display:
+                MustafaInanKutuphanesi.displayInfo();
                 break;
             case Exit:
                 exitFlag = false;
@@ -43,10 +47,10 @@ int main()
  */
 Action getUserAction(void){
     short selection;
-    cout << "## Welcome to Library System ##\n1-Add a book to library\n2-Register a person\n3-Check out a book\n4-Return a book\n0-Save & exit" << endl;
+    cout << "\n1-Add a book to library\n2-Register a person\n3-Check out a book\n4-Return a book\n5-Display library information\n0-Save & exit" << endl;
     cout << "Select an Action: ";
     cin >> selection;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     return static_cast<Action> (selection);
 }
 
