@@ -1,80 +1,27 @@
-#include <iostream>
-#include "library.hpp"
-#include <fstream>
+#include "main.hpp"
 #include <limits>
-#define bookDataFile "book_data.txt"
-#define personDataFile "person_data.txt"
 
 int main()
 {
-    // creation of a library
-    Library MustafaInanKutuphanesi(bookDataFile, personDataFile);
-
-    /*
-    1- add book to lib
-    2- register person
-    3- check out a book
-    4- return a book
-    5- display info
-        1- book
-        2- person
-        3- library
-    0- exit
-    */
-    bool exitFlag = true;
+    Library MustafaInanKutuphanesi(BOOK_DATA_FILE, PERSON_DATA_FILE);   // creation of a library
+    bool exitFlag = true;   // flag to determine quitting program
 
     while(exitFlag){
-        short selection = 0;
-        cout << "## Welcome to Library System ##\n1-Add a book to library\n2-Register a person\n3-Check out a book\n4-Return a book\n\n0-Save & exit" << endl;
-        cout << "Select an Action: ";
-        cin >> selection;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        switch (selection){
-            case 1:
-            {
-                cout << "Enter book title: ";
-                string title;
-                getline(cin, title);
-                cout << "Enter book author: ";
-                string author;
-                getline(cin, author);
-                cout << "Enter book ISBN: ";
-                long long int ISBN;
-                cin >> ISBN;
-                MustafaInanKutuphanesi.addBook(title, author, ISBN);
+        Action userSelection = getUserAction();
+        switch (userSelection){
+            case AddBook:
+                addBookAction(MustafaInanKutuphanesi);
                 break;
-            }
-            case 2:
-            {
-                cout << "Enter user name: ";
-                string name;
-                getline(cin, name);
-                cout << "Enter user ID: ";
-                int id;
-                cin >> id;
-                MustafaInanKutuphanesi.registerPerson(name, id);
+            case RegisterPerson:
+                registerPersonAction(MustafaInanKutuphanesi);
                 break;
-            }
-            case 3:
-            {
-                cout << "Enter book title: ";
-                string title;
-                getline(cin, title);
-                cout << "Enter person name: ";
-                string name;
-                getline(cin, name);
-                MustafaInanKutuphanesi.checkOut(name, title);
+            case CheckOut:
+                checkOutBookAction(MustafaInanKutuphanesi);
                 break;
-            }
-            case 4:
-            {
-                cout << "Enter book title: ";
-                string title;
-                getline(cin, title);
-                MustafaInanKutuphanesi.returnBook(title);
+            case Return:
+                returnBookAction(MustafaInanKutuphanesi);
                 break;
-            }
-            case 0:
+            case Exit:
                 exitFlag = false;
                 break;
         }
@@ -86,4 +33,83 @@ int main()
     //MustafaInanKutuphanesi.displayAvailables();
 
     return EXIT_SUCCESS;
+}
+
+/**
+ * @brief Gets action type from the user.
+ *
+ * Prints relevant messages, and inputs selected action.
+ * @return Action enum of selection
+ */
+Action getUserAction(void){
+    short selection;
+    cout << "## Welcome to Library System ##\n1-Add a book to library\n2-Register a person\n3-Check out a book\n4-Return a book\n0-Save & exit" << endl;
+    cout << "Select an Action: ";
+    cin >> selection;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    return static_cast<Action> (selection);
+}
+
+/**
+ * @brief Takes action for user selection: add a book.
+ *
+ * Prints relevant messages, and inputs user data. Calls addBook method of the Library object
+ * @param lib Library object to be configurated
+ */
+void addBookAction(Library& lib){
+    cout << "Enter book title: ";
+    string title;
+    getline(cin, title);
+    cout << "Enter book author: ";
+    string author;
+    getline(cin, author);
+    cout << "Enter book ISBN: ";
+    long long int ISBN;
+    cin >> ISBN;
+    lib.addBook(title, author, ISBN);
+}
+
+/**
+ * @brief Takes action for user selection: register a person.
+ *
+ * Prints relevant messages, and inputs user data. Calls registerPerson method of the Library object
+ * @param lib Library object to be configurated
+ */
+void registerPersonAction(Library& lib){
+    cout << "Enter user name: ";
+    string name;
+    getline(cin, name);
+    cout << "Enter user ID: ";
+    int id;
+    cin >> id;
+    lib.registerPerson(name, id);
+}
+
+/**
+ * @brief Takes action for user selection: check out a book.
+ *
+ * Prints relevant messages, and inputs user data. Calls checkOut method of the Library object
+ * @param lib Library object to be configurated
+ */
+void checkOutBookAction(Library& lib){
+    cout << "Enter book title: ";
+    string title;
+    getline(cin, title);
+    cout << "Enter person name: ";
+    string name;
+    getline(cin, name);
+    lib.checkOut(name, title);
+}
+
+/**
+ * @brief Takes action for user selection: return a book.
+ *
+ * Prints relevant messages, and inputs user data. Calls returnBook method of the Library object
+ * @param lib Library object to be configurated
+ */
+void returnBookAction(Library& lib){
+    cout << "Enter book title: ";
+    string title;
+    getline(cin, title);
+    lib.returnBook(title);
 }
