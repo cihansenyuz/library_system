@@ -47,7 +47,7 @@ int main()
  */
 Action getUserAction(void){
     short selection;
-    cout << "\n1-Add a book to library\n2-Register a person\n3-Check out a book\n4-Return a book\n5-Display library information\n0-Save & exit" << endl;
+    cout << "\n1-Add a book to library | 2-Register a person | 3-Check out a book | 4-Return a book | 5-Display library information | 0-Save & exit" << endl;
     cout << "Select an Action: ";
     cin >> selection;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');

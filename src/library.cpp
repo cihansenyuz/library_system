@@ -226,11 +226,18 @@ void Library::displayInfo(void) {
     cout << " - " << bookList->size() << " books in the library" << endl;
     for(auto &book : *bookList) // print all books in the library
     {
-        cout << "Title: " << book.getTitle() << ", Author: " << book.getAuthor() << endl;
+        cout << "Title: " << book.getTitle() << ", Author: " << book.getAuthor() << ", ";
         if(book.isAvailable())
+        {
             availableCount++;
+            cout << " available" << endl;
+        }
         else
+        {
             nonAvailableCount++;
+            cout << " taken" << endl;
+        }
+
     }
     cout << "Available: " << availableCount << " Checked Out: " << nonAvailableCount << endl;
     cout << "- " << personList->size() << " users registered in the library" << endl;
