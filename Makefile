@@ -1,22 +1,22 @@
+CC = g++
+CFLAGS = -I ./inc -std=c++17
+
+.PHONY: all
+all: librarySystem
 
 # create executable
-librarySystem: allObjs
-	g++ *.o -o librarySystem
+librarySystem: item.o book.o library.o person.o main.o
+	@$(CC) $^ -o $@
+	@echo "building is done"
 
 # object creation recipes
-item.o: ./src/item.cpp ./inc/item.hpp
-	g++ -c ./src/item.cpp -I ./inc
-book.o: ./src/book.cpp ./inc/book.hpp
-	g++ -c ./src/book.cpp -I ./inc
-library.o: ./src/library.cpp ./inc/library.hpp
-	g++ -c ./src/library.cpp -I ./inc
-person.o: ./src/person.cpp ./inc/person.hpp
-	g++ -c ./src/person.cpp -I ./inc
-main.o: ./src/main.cpp ./inc/main.hpp
-	g++ -c ./src/main.cpp -I ./inc
+%.o: ./src/%.cpp ./inc/%.hpp
+	@$(CC) -c $< $(CFLAGS)
 
-# creates all objects
-allObjs: item.o book.o library.o person.o main.o
-
+.PHONY: clean
 clean:
 	rm *.o librarySystem
+
+# $@ is for output file
+# $< is for the very first dependency
+# $^ is for all dependencies
