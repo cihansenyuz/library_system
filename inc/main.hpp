@@ -11,8 +11,13 @@
 #include <iostream>
 #include <fstream>
 
-#define BOOK_DATA_FILE "..\\book_data.txt"
-#define PERSON_DATA_FILE "..\\person_data.txt"
+#if defined(__linux__)
+    #define BOOK_DATA_FILE "./book_data.txt"
+    #define PERSON_DATA_FILE "./person_data.txt"
+#else
+    #define BOOK_DATA_FILE ".\\book_data.txt"
+    #define PERSON_DATA_FILE ".\\person_data.txt"
+#endif
 
 using namespace std;
 

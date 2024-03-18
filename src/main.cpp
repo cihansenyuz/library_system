@@ -5,6 +5,7 @@
 
 int main(int argc, char *argv[])
 {
+    cout << "debug" << BOOK_DATA_FILE;
     Library MustafaInanKutuphanesi(BOOK_DATA_FILE, PERSON_DATA_FILE);   // creation of a library
 
     QApplication a(argc, argv);
