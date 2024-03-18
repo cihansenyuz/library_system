@@ -1,35 +1,16 @@
 #include "main.hpp"
 #include <limits>
+#include <QApplication>
+#include "mainwindow.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     Library MustafaInanKutuphanesi(BOOK_DATA_FILE, PERSON_DATA_FILE);   // creation of a library
-    bool exitFlag = true;   // flag to determine quitting program
 
-    cout << "\n## Welcome to Library System ##" << endl;
-    while(exitFlag){
-        Action userSelection = getUserAction();
-        switch (userSelection){
-            case AddBook:
-                addBookAction(MustafaInanKutuphanesi);
-                break;
-            case RegisterPerson:
-                registerPersonAction(MustafaInanKutuphanesi);
-                break;
-            case CheckOut:
-                checkOutBookAction(MustafaInanKutuphanesi);
-                break;
-            case Return:
-                returnBookAction(MustafaInanKutuphanesi);
-                break;
-            case Display:
-                MustafaInanKutuphanesi.displayInfo();
-                break;
-            case Exit:
-                exitFlag = false;
-                break;
-        }
-    }
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
     
     MustafaInanKutuphanesi.saveLatestData();
     cout << "all is well" << endl;
