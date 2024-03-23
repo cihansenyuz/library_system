@@ -3,7 +3,6 @@
 
 int main()
 {
-    cout << "debug" << BOOK_DATA_FILE;
     Library MustafaInanKutuphanesi(BOOK_DATA_FILE, PERSON_DATA_FILE);   // creation of a library
     bool exitFlag = true;   // flag to determine quitting program
 
