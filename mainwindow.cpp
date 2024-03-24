@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     // signal-slot connections
     connect(ui->summaryButton, &QPushButton::clicked, this, &MainWindow::summaryButtonClicked);
     connect(ui->checkOutButton, &QPushButton::clicked, this, &MainWindow::checkOutButtonClicked);
-    connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::bookTableCellClicked);
+    connect(ui->returnButton, &QPushButton::clicked, this, &MainWindow::returnButtonClicked);
+
     // creation of book table
     createBookTable();
 }
@@ -74,7 +75,7 @@ void MainWindow::summaryButtonClicked()
 /**
 * @brief Slot method to handle click action on checkOutButton
 *
-* summary here.
+* Gets texts on editLines, and passes it to Library::checkOut function.
 *
 * @param none
 * @return none
@@ -89,16 +90,16 @@ void MainWindow::checkOutButtonClicked(){
 }
 
 /**
-* @brief Slot method to handle click action on bookTableWidget
+* @brief Slot method to handle click action on returnButton
 *
-* summary here.
+* Gets the text on editLine, and passes it to Library::returnBook function.
 *
 * @param none
 * @return none
 */
-void MainWindow::bookTableCellClicked(int row, int column){
-    // implement later
-    /*String bookTitle = ui->bookTableWidget->item(row, 0)->text();
-
-    this->library->checkOut(bookTitle);*/
+void MainWindow::returnButtonClicked(){
+    QString result;
+    result = this->library->returnBook(ui->returnBookTitleLineEdit->text().toStdString());
+    ui->returnBookTitleLineEdit->clear();
+    ui->infoTextBrowser->append(result);
 }

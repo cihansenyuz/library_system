@@ -154,9 +154,9 @@ void Library::displayAvailables(void){
  * Takes person name and book title, sets the book not available, sets persons takenBook pointer
  * @param personName name of the person
  * @param bookTitle title of the book
+ * @return informative messages about operation as QString
  */
 QString Library::checkOut(const string personName, const string bookTitle){
-    QString result;
     bool bookAvailable = false;
     bool personAvailable = false;
     for(auto &book : *bookList)
@@ -199,8 +199,9 @@ QString Library::checkOut(const string personName, const string bookTitle){
  *
  * Takes book title, sets the book available, sets persons takenBook pointer to nullptr
  * @param bookTitle title of the book
+ * @return informative messages about operation as QString
  */
-void Library::returnBook(const string bookTitle){
+QString Library::returnBook(const string bookTitle){
     // find book in the library and set availability true
     for(auto &book : *bookList)
         if(book.getTitle() == bookTitle)
@@ -211,8 +212,7 @@ void Library::returnBook(const string bookTitle){
         if(person.getTakenBook()->getTitle() == bookTitle)
         {
             person.resetTakenBook();
-            cout << bookTitle << " is taken back from " << person.getName() << endl;              
-            return;
+            return QString::fromStdString(bookTitle) + " is taken back from " + QString::fromStdString(person.getName());
         }
 }
 

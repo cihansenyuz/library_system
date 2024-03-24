@@ -31,17 +31,17 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="3,2">
+     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
       <item>
        <widget class="QTableWidget" name="bookTableWidget">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustIgnored</enum>
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
         </property>
        </widget>
       </item>
@@ -103,7 +103,14 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="checkOutBookTitleLineEdit"/>
+                <widget class="QLineEdit" name="checkOutBookTitleLineEdit">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -177,7 +184,14 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="returnBookTitleLineEdit"/>
+                <widget class="QLineEdit" name="returnBookTitleLineEdit">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
