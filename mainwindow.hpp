@@ -18,11 +18,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr, Library *l = nullptr);
     ~MainWindow();
-    void createBookTable(Library&);
+    void createBookTable();
+
+private slots:
+    void summaryButtonClicked();
 
 private:
     Ui::MainWindow *ui;
+    Library *lib;
 };
 #endif // MAINWINDOW_HPP
