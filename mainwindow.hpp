@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr, Library *lib = nullptr);
     ~MainWindow();
-    void createBookTable();
+    void updateBookTable();
 
 private slots:
     void summaryButtonClicked();

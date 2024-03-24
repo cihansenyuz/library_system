@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->returnButton, &QPushButton::clicked, this, &MainWindow::returnButtonClicked);
 
     // creation of book table
-    createBookTable();
+    updateBookTable();
 }
 
 MainWindow::~MainWindow()
@@ -26,7 +26,7 @@ MainWindow::~MainWindow()
  *
  * @param lib Library object whose bookList will be listed in the bookTableWidget
  * */
-void MainWindow::createBookTable(){
+void MainWindow::updateBookTable(){
     // create the table
     ui->bookTableWidget->setRowCount(library->getBookList()->size());
     ui->bookTableWidget->setColumnCount(4);
@@ -87,6 +87,7 @@ void MainWindow::checkOutButtonClicked(){
     ui->checkOutBookTitleLineEdit->clear();
     ui->checkOutPersonNameLineEdit->clear();
     ui->infoTextBrowser->append(result);
+    updateBookTable();
 }
 
 /**
@@ -102,4 +103,5 @@ void MainWindow::returnButtonClicked(){
     result = this->library->returnBook(ui->returnBookTitleLineEdit->text().toStdString());
     ui->returnBookTitleLineEdit->clear();
     ui->infoTextBrowser->append(result);
+    updateBookTable();
 }
