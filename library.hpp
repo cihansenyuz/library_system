@@ -5,6 +5,7 @@
 #include "person.hpp"
 #include <vector>
 #include <fstream>
+#include <QString>
 
 /**
  * @brief This class is to handle behaviours in the library.
@@ -38,7 +39,7 @@ public:
     void displayAvailables(void);
     void checkOut(const string personName, const string bookTitle);
     void returnBook(const string bookTitle);
-    void displayInfo(void);
+    QString getSummary(void);
     void setPersonList(vector<Person>* list);
     bool checkPerson(const string name);
     bool checkBook(const string title);

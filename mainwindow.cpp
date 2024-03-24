@@ -1,9 +1,9 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent, Library *l)
+MainWindow::MainWindow(QWidget *parent, Library *lib)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), lib(l)
+    , ui(new Ui::MainWindow), library(lib)
 {
     ui->setupUi(this);
 
@@ -26,7 +26,7 @@ MainWindow::~MainWindow()
 void MainWindow::createBookTable(){
 
     // create the table
-    ui->bookTableWidget->setRowCount(lib->getBookList()->size());
+    ui->bookTableWidget->setRowCount(library->getBookList()->size());
     ui->bookTableWidget->setColumnCount(4);
 
     // set labels
@@ -38,16 +38,16 @@ void MainWindow::createBookTable(){
     QTableWidgetItem *item;
     for (int row = 0; row < 4; row++)
     {
-        item = new QTableWidgetItem(QString::fromStdString(lib->getBookList()->at(row).getTitle()));
+        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getTitle()));
         ui->bookTableWidget->setItem(row, 0, item);
 
-        item = new QTableWidgetItem(QString::fromStdString(lib->getBookList()->at(row).getAuthor()));
+        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getAuthor()));
         ui->bookTableWidget->setItem(row, 1, item);
 
-        item = new QTableWidgetItem(QString::number(lib->getBookList()->at(row).getISBN()));
+        item = new QTableWidgetItem(QString::number(library->getBookList()->at(row).getISBN()));
         ui->bookTableWidget->setItem(row, 2, item);
 
-        if(lib->getBookList()->at(row).isAvailable())
+        if(library->getBookList()->at(row).isAvailable())
             item = new QTableWidgetItem("Free");
         else
             item = new QTableWidgetItem("Already Booked");
@@ -59,6 +59,5 @@ void MainWindow::createBookTable(){
 
 void MainWindow::summaryButtonClicked()
 {
-    ui->infoTextBrowser->append("deneme");
-
+    ui->infoTextBrowser->append(this->library->getSummary());
 }

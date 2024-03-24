@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr, Library *l = nullptr);
+    MainWindow(QWidget *parent = nullptr, Library *lib = nullptr);
     ~MainWindow();
     void createBookTable();
 
@@ -27,6 +27,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Library *lib;
+    Library *library;
 };
 #endif // MAINWINDOW_HPP

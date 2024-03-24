@@ -218,44 +218,33 @@ void Library::returnBook(const string bookTitle){
 }
 
 /**
- * @brief Prints properties of the library.
+ * @brief Gets summary of the library.
  *
- * Prints book information in the library and how many available/not available.
- * Also, prints registered persons and which book is taken by whom.
+ * Prints how many available/not available books there are.
+ * Also, prints registered how many users registered
+ * @return QString type of all the summary text
  */
-void Library::displayInfo(void) {
+QString Library::getSummary(void) {
+    QString result = "Library Summary:\n";
+
     // counters to keep status of books
     short availableCount = 0;
     short nonAvailableCount = 0;
 
     // printing starts here
-    cout << "Library Information: " << endl;
-    cout << " - " << bookList->size() << " books in the library" << endl;
+    result += " - " + std::to_string(bookList->size()) + " books in the library" + '\n';
     for(auto &book : *bookList) // print all books in the library
     {
-        cout << "Title: " << book.getTitle() << ", Author: " << book.getAuthor() << ", ";
-        if(book.isAvailable())
-        {
+        if(book.isAvailable()){
             availableCount++;
-            cout << " available" << endl;
         }
-        else
-        {
+        else{
             nonAvailableCount++;
-            cout << " taken" << endl;
         }
-
     }
-    cout << "Available: " << availableCount << " Checked Out: " << nonAvailableCount << endl;
-    cout << "- " << personList->size() << " users registered in the library" << endl;
-    for(auto &person : *personList) // print all users in the library
-    {
-        cout << "Name: " << person.getName() << " Book: ";
-        if(person.getTakenBook())
-            cout << person.getTakenBook()->getTitle() << endl;
-        else
-            cout << "-" << endl;
-    }
+    result += "Available: " + std::to_string(availableCount) + " Checked Out: " + std::to_string(nonAvailableCount) + '\n';
+    result += " - " + std::to_string(personList->size()) + " users registered in the library" + '\n';
+    return result;
 }
 
 /**
@@ -332,6 +321,11 @@ void Library::saveLatestData(void){
         personData.close();
     }
 
+/**
+ * @brief Getter function for bookList pointer.
+ *
+ * @return addres of the bookList
+ */
 vector<Book>* Library::getBookList(void){
     return bookList;
 }
