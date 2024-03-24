@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
 
     // signal-slot connections
     connect(ui->summaryButton, &QPushButton::clicked, this, &MainWindow::summaryButtonClicked);
-
+    connect(ui->checkOutButton, &QPushButton::clicked, this, &MainWindow::checkOutButtonClicked);
+    connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::bookTableCellClicked);
     // creation of book table
     createBookTable();
 }
@@ -18,13 +19,13 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 /**
  * @brief Initializes bookTableWidget
  *
  * @param lib Library object whose bookList will be listed in the bookTableWidget
  * */
 void MainWindow::createBookTable(){
-
     // create the table
     ui->bookTableWidget->setRowCount(library->getBookList()->size());
     ui->bookTableWidget->setColumnCount(4);
@@ -57,7 +58,42 @@ void MainWindow::createBookTable(){
     ui->bookTableWidget->resizeColumnsToContents();
 }
 
+/**
+* @brief Slot method to handle click action on summaryButton
+*
+* Gets summary from the library and appends it to infoTextBrowser.
+*
+* @param none
+* @return none
+*/
 void MainWindow::summaryButtonClicked()
 {
     ui->infoTextBrowser->append(this->library->getSummary());
+}
+
+/**
+* @brief Slot method to handle click action on checkOutButton
+*
+* summary here.
+*
+* @param none
+* @return none
+*/
+void MainWindow::checkOutButtonClicked(){
+
+}
+
+/**
+* @brief Slot method to handle click action on bookTableWidget
+*
+* summary here.
+*
+* @param none
+* @return none
+*/
+void MainWindow::bookTableCellClicked(int row, int column){
+    /*String bookTitle = ui->bookTableWidget->item(row, 0)->text();
+
+
+    this->library->checkOut(bookTitle);*/
 }

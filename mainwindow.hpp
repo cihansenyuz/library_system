@@ -24,7 +24,8 @@ public:
 
 private slots:
     void summaryButtonClicked();
-
+    void checkOutButtonClicked();
+    void bookTableCellClicked(int, int);
 private:
     Ui::MainWindow *ui;
     Library *library;
