@@ -11,8 +11,9 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->summaryButton, &QPushButton::clicked, this, &MainWindow::summaryButtonClicked);
     connect(ui->checkOutButton, &QPushButton::clicked, this, &MainWindow::checkOutButtonClicked);
     connect(ui->returnButton, &QPushButton::clicked, this, &MainWindow::returnButtonClicked);
+    connect(ui->switchButton, &QPushButton::clicked, this, &MainWindow::switchButtonClicked);
 
-    // creation of book table
+    // init the table
     updateBookTable();
 }
 
@@ -57,6 +58,40 @@ void MainWindow::updateBookTable(){
         ui->bookTableWidget->setItem(row, 3, item);
     }
     ui->bookTableWidget->resizeColumnsToContents();
+    this->currentTable = 0;
+}
+
+void MainWindow::updatePersonTable(){
+    // create the table
+    ui->bookTableWidget->setRowCount(library->getPersonList()->size());
+
+    ui->bookTableWidget->setColumnCount(3);
+        std::cout << "debug";
+    // set labels
+    QStringList labels;
+    labels << "Name" << "ID" << "Taken Book";
+    ui->bookTableWidget->setHorizontalHeaderLabels(labels);
+
+    // create items and add them into the table
+    QTableWidgetItem *item;
+    for (int row = 0; row < 2; row++)
+    {
+        item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getName()));
+        ui->bookTableWidget->setItem(row, 0, item);
+
+        item = new QTableWidgetItem(QString::fromStdString(std::to_string(library->getPersonList()->at(row).getId())));
+        ui->bookTableWidget->setItem(row, 1, item);
+
+
+        if(library->getPersonList()->at(row).getTakenBook())
+            item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getTakenBook()->getTitle()));
+        else
+            item = new QTableWidgetItem(" - ");
+        item->setTextAlignment(Qt::AlignHCenter);
+        ui->bookTableWidget->setItem(row, 2, item);
+    }
+    ui->bookTableWidget->resizeColumnsToContents();
+    this->currentTable = 1;
 }
 
 /**
@@ -104,4 +139,19 @@ void MainWindow::returnButtonClicked(){
     ui->returnBookTitleLineEdit->clear();
     ui->infoTextBrowser->append(result);
     updateBookTable();
+}
+
+/**
+* @brief Slot method to handle click action on switchButton
+*
+* Calls updatePersonTable function to recreate the table.
+*
+* @param none
+* @return none
+*/
+void MainWindow::switchButtonClicked(){
+    if(this->currentTable)
+        this->updateBookTable();
+    else
+        this->updatePersonTable();
 }

@@ -328,3 +328,12 @@ void Library::saveLatestData(void){
 vector<Book>* Library::getBookList(void){
     return bookList;
 }
+
+/**
+ * @brief Getter function for personList pointer.
+ *
+ * @return addres of the personList
+ */
+vector<Person>* Library::getPersonList(void){
+    return personList;
+}

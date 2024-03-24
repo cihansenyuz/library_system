@@ -45,6 +45,7 @@ public:
     bool checkBook(const string title);
     void saveLatestData(void);
     vector<Book>* getBookList(void);
+    vector<Person>* getPersonList(void);
     ~Library(){
         delete bookList;
         delete personList;

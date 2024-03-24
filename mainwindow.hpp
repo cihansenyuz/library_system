@@ -21,11 +21,13 @@ public:
     MainWindow(QWidget *parent = nullptr, Library *lib = nullptr);
     ~MainWindow();
     void updateBookTable();
-
+    void updatePersonTable();
+    int currentTable; // 0: Book, 1: Person
 private slots:
     void summaryButtonClicked();
     void checkOutButtonClicked();
     void returnButtonClicked();
+    void switchButtonClicked();
 private:
     Ui::MainWindow *ui;
     Library *library;
