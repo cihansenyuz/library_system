@@ -2,6 +2,10 @@
 #define MAINWINDOW_HPP
 
 #include <QMainWindow>
+#include "library.hpp"
+#include "item.hpp"
+#include "book.hpp"
+#include "person.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -16,6 +20,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void createBookTable(Library&);
 
 private:
     Ui::MainWindow *ui;

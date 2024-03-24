@@ -43,6 +43,7 @@ public:
     bool checkPerson(const string name);
     bool checkBook(const string title);
     void saveLatestData(void);
+    vector<Book>* getBookList(void);
     ~Library(){
         delete bookList;
         delete personList;

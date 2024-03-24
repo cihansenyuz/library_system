@@ -21,7 +21,7 @@
 
 using namespace std;
 
-typedef enum Action{
+/*typedef enum Action{
     Exit, AddBook, RegisterPerson, CheckOut, Return, Display
 }Action;
 
@@ -29,7 +29,7 @@ Action getUserAction(void);
 void addBookAction(Library&);
 void registerPersonAction(Library&);
 void checkOutBookAction(Library&);
-void returnBookAction(Library&);
+void returnBookAction(Library&);*/
 
 /*
 1- add book to lib

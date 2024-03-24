@@ -20,6 +20,7 @@ HEADERS += \
     book.hpp \
     item.hpp \
     library.hpp \
+    main.hpp \
     mainwindow.hpp \
     person.hpp
 
@@ -30,3 +31,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    book_data.txt
