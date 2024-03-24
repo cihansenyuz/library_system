@@ -155,7 +155,8 @@ void Library::displayAvailables(void){
  * @param personName name of the person
  * @param bookTitle title of the book
  */
-void Library::checkOut(const string personName, const string bookTitle){
+QString Library::checkOut(const string personName, const string bookTitle){
+    QString result;
     bool bookAvailable = false;
     bool personAvailable = false;
     for(auto &book : *bookList)
@@ -168,10 +169,8 @@ void Library::checkOut(const string personName, const string bookTitle){
     // check if given argumants are valid
     bool bookExists = checkBook(bookTitle);
     bool personExists = checkPerson(personName);
-    if(!bookExists || !personExists)
-    {
-        cout << "No such book or registered person" << endl;
-        return;
+    if(!bookExists || !personExists){
+        return "No such book or registered person";
     }
 
     // check availability of person and book
@@ -185,14 +184,14 @@ void Library::checkOut(const string personName, const string bookTitle){
                     if(person.getName() == personName)
                     {   
                         person.setTakenBook(book); // give the book to the person setting takenBook
-                        cout << "Book '" << bookTitle << "' is given to " << personName << endl;
+                        return "Book '" + QString::fromStdString(bookTitle) + "' is given to " + QString::fromStdString(personName);
                     }
             }
     }
     else if(!bookAvailable)
-        cout << "This book is already taken by someone" << endl;
+        return "This book is already taken by someone";
     else if(!personAvailable)
-        cout << personName << " has already taken a book. Needs to return it to take a new one." << endl;
+        return QString::fromStdString(personName) + " has already taken a book. Needs to return it to take a new one.";
 }
 
 /**

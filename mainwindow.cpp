@@ -80,7 +80,12 @@ void MainWindow::summaryButtonClicked()
 * @return none
 */
 void MainWindow::checkOutButtonClicked(){
-
+    QString result;
+    result = this->library->checkOut(ui->checkOutPersonNameLineEdit->text().toStdString(),
+                            ui->checkOutBookTitleLineEdit->text().toStdString());
+    ui->checkOutBookTitleLineEdit->clear();
+    ui->checkOutPersonNameLineEdit->clear();
+    ui->infoTextBrowser->append(result);
 }
 
 /**
@@ -92,8 +97,8 @@ void MainWindow::checkOutButtonClicked(){
 * @return none
 */
 void MainWindow::bookTableCellClicked(int row, int column){
+    // implement later
     /*String bookTitle = ui->bookTableWidget->item(row, 0)->text();
-
 
     this->library->checkOut(bookTitle);*/
 }

@@ -37,7 +37,7 @@ public:
     void registerPerson(const Person& newPerson);
     void registerPerson(const string& personName, const int& personId);
     void displayAvailables(void);
-    void checkOut(const string personName, const string bookTitle);
+    QString checkOut(const string personName, const string bookTitle);
     void returnBook(const string bookTitle);
     QString getSummary(void);
     void setPersonList(vector<Person>* list);

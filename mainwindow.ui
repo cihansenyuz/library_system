@@ -31,7 +31,7 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="3,2">
       <item>
        <widget class="QTableWidget" name="bookTableWidget">
         <property name="sizePolicy">
@@ -40,10 +40,13 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
+        </property>
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="2,3">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
@@ -95,12 +98,12 @@
                <item>
                 <widget class="QLabel" name="label_2">
                  <property name="text">
-                  <string>Book Title</string>
+                  <string>Book Title  </string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit_2"/>
+                <widget class="QLineEdit" name="checkOutBookTitleLineEdit"/>
                </item>
               </layout>
              </item>
@@ -114,7 +117,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit"/>
+                <widget class="QLineEdit" name="checkOutPersonNameLineEdit"/>
                </item>
               </layout>
              </item>
@@ -174,7 +177,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit_3"/>
+                <widget class="QLineEdit" name="returnBookTitleLineEdit"/>
                </item>
               </layout>
              </item>
