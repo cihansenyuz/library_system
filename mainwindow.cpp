@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->checkOutButton, &QPushButton::clicked, this, &MainWindow::checkOutButtonClicked);
     connect(ui->returnButton, &QPushButton::clicked, this, &MainWindow::returnButtonClicked);
     connect(ui->switchButton, &QPushButton::clicked, this, &MainWindow::switchButtonClicked);
+    connect(ui->clearButton, &QPushButton::clicked, this, &MainWindow::clearButtonClickled);
 
     // init the table
     updateBookTable();
@@ -154,4 +155,16 @@ void MainWindow::switchButtonClicked(){
         this->updateBookTable();
     else
         this->updatePersonTable();
+}
+
+/**
+* @brief Slot method to handle click action on clearButton
+*
+* Clears all appended text on the infoTextBrowser.
+*
+* @param none
+* @return none
+*/
+void MainWindow::clearButtonClickled(){
+    ui->infoTextBrowser->clear();
 }

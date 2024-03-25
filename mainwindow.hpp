@@ -28,6 +28,7 @@ private slots:
     void checkOutButtonClicked();
     void returnButtonClicked();
     void switchButtonClicked();
+    void clearButtonClickled();
 private:
     Ui::MainWindow *ui;
     Library *library;
