@@ -25,65 +25,70 @@ MainWindow::~MainWindow()
 }
 
 /**
- * @brief Initializes bookTableWidget
+ * @brief Updates content in tableWidget
  *
- * @param lib Library object whose bookList will be listed in the bookTableWidget
+ * Gets book's contents from Library object. Creates and add items in the tableWidget
  * */
 void MainWindow::updateBookTable(){
     // create the table
     unsigned int rowCount = library->getBookList()->size();
-    ui->bookTableWidget->setRowCount(rowCount);
-    ui->bookTableWidget->setColumnCount(BOOK_DATA_COLUMN_COUNT);
+    ui->tableWidget->setRowCount(rowCount);
+    ui->tableWidget->setColumnCount(BOOK_DATA_COLUMN_COUNT);
 
     // set labels
     QStringList labels;
     labels << "Title" << "Author" << "ISBN" << "Availability";
-    ui->bookTableWidget->setHorizontalHeaderLabels(labels);
+    ui->tableWidget->setHorizontalHeaderLabels(labels);
 
     // create items and add them into the table
     QTableWidgetItem *item;
-    for (int row = 0; row < rowCount; row++)
+    for (unsigned int row = 0; row < rowCount; row++)
     {
         item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getTitle()));
-        ui->bookTableWidget->setItem(row, 0, item);
+        ui->tableWidget->setItem(row, 0, item);
 
         item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getAuthor()));
-        ui->bookTableWidget->setItem(row, 1, item);
+        ui->tableWidget->setItem(row, 1, item);
 
         item = new QTableWidgetItem(QString::number(library->getBookList()->at(row).getISBN()));
-        ui->bookTableWidget->setItem(row, 2, item);
+        ui->tableWidget->setItem(row, 2, item);
 
         if(library->getBookList()->at(row).isAvailable())
             item = new QTableWidgetItem("Free");
         else
             item = new QTableWidgetItem("Already Booked");
         item->setTextAlignment(Qt::AlignHCenter);
-        ui->bookTableWidget->setItem(row, 3, item);
+        ui->tableWidget->setItem(row, 3, item);
     }
-    ui->bookTableWidget->resizeColumnsToContents();
+    ui->tableWidget->resizeColumnsToContents();
     this->currentTable = 0;
 }
 
+/**
+ * @brief Updates content in tableWidget
+ *
+ * Gets user's contents from Library object. Creates and add items in the tableWidget
+ * */
 void MainWindow::updatePersonTable(){
     // create the table
     unsigned int rowCount = library->getPersonList()->size();
-    ui->bookTableWidget->setRowCount(rowCount);
-    ui->bookTableWidget->setColumnCount(PERSON_DATA_COLUMN_COUNT);
+    ui->tableWidget->setRowCount(rowCount);
+    ui->tableWidget->setColumnCount(PERSON_DATA_COLUMN_COUNT);
 
     // set labels
     QStringList labels;
     labels << "Name" << "ID" << "Taken Book";
-    ui->bookTableWidget->setHorizontalHeaderLabels(labels);
+    ui->tableWidget->setHorizontalHeaderLabels(labels);
 
     // create items and add them into the table
     QTableWidgetItem *item;
-    for (int row = 0; row < rowCount; row++)
+    for (unsigned int row = 0; row < rowCount; row++)
     {
         item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getName()));
-        ui->bookTableWidget->setItem(row, 0, item);
+        ui->tableWidget->setItem(row, 0, item);
 
         item = new QTableWidgetItem(QString::fromStdString(std::to_string(library->getPersonList()->at(row).getId())));
-        ui->bookTableWidget->setItem(row, 1, item);
+        ui->tableWidget->setItem(row, 1, item);
 
 
         if(library->getPersonList()->at(row).getTakenBook())
@@ -91,9 +96,9 @@ void MainWindow::updatePersonTable(){
         else
             item = new QTableWidgetItem(" - ");
         item->setTextAlignment(Qt::AlignHCenter);
-        ui->bookTableWidget->setItem(row, 2, item);
+        ui->tableWidget->setItem(row, 2, item);
     }
-    ui->bookTableWidget->resizeColumnsToContents();
+    ui->tableWidget->resizeColumnsToContents();
     this->currentTable = 1;
 }
 

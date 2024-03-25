@@ -33,7 +33,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
       <item>
-       <widget class="QTableWidget" name="bookTableWidget">
+       <widget class="QTableWidget" name="tableWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
           <horstretch>0</horstretch>
