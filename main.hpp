@@ -14,5 +14,4 @@
 #define BOOK_DATA_FILE_PATH "..\\library_system\\book_data.txt"
 #define PERSON_DATA_FILE_PATH "..\\library_system\\person_data.txt"
 
-
 #endif

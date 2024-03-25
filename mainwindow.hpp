@@ -7,6 +7,9 @@
 #include "book.hpp"
 #include "person.hpp"
 
+#define BOOK_DATA_COLUMN_COUNT 4
+#define PERSON_DATA_COLUMN_COUNT 3
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;

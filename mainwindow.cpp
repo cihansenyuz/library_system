@@ -31,8 +31,9 @@ MainWindow::~MainWindow()
  * */
 void MainWindow::updateBookTable(){
     // create the table
-    ui->bookTableWidget->setRowCount(library->getBookList()->size());
-    ui->bookTableWidget->setColumnCount(4);
+    unsigned int rowCount = library->getBookList()->size();
+    ui->bookTableWidget->setRowCount(rowCount);
+    ui->bookTableWidget->setColumnCount(BOOK_DATA_COLUMN_COUNT);
 
     // set labels
     QStringList labels;
@@ -41,7 +42,7 @@ void MainWindow::updateBookTable(){
 
     // create items and add them into the table
     QTableWidgetItem *item;
-    for (int row = 0; row < 4; row++)
+    for (int row = 0; row < rowCount; row++)
     {
         item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getTitle()));
         ui->bookTableWidget->setItem(row, 0, item);
@@ -65,8 +66,9 @@ void MainWindow::updateBookTable(){
 
 void MainWindow::updatePersonTable(){
     // create the table
-    ui->bookTableWidget->setRowCount(library->getPersonList()->size());
-    ui->bookTableWidget->setColumnCount(3);
+    unsigned int rowCount = library->getPersonList()->size();
+    ui->bookTableWidget->setRowCount(rowCount);
+    ui->bookTableWidget->setColumnCount(PERSON_DATA_COLUMN_COUNT);
 
     // set labels
     QStringList labels;
@@ -75,7 +77,7 @@ void MainWindow::updatePersonTable(){
 
     // create items and add them into the table
     QTableWidgetItem *item;
-    for (int row = 0; row < 3; row++)
+    for (int row = 0; row < rowCount; row++)
     {
         item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getName()));
         ui->bookTableWidget->setItem(row, 0, item);
