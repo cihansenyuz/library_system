@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
 
 MainWindow::~MainWindow()
 {
+    library->saveLatestData();
     delete ui;
 }
 
@@ -65,9 +66,8 @@ void MainWindow::updateBookTable(){
 void MainWindow::updatePersonTable(){
     // create the table
     ui->bookTableWidget->setRowCount(library->getPersonList()->size());
-
     ui->bookTableWidget->setColumnCount(3);
-        std::cout << "debug";
+
     // set labels
     QStringList labels;
     labels << "Name" << "ID" << "Taken Book";
@@ -75,7 +75,7 @@ void MainWindow::updatePersonTable(){
 
     // create items and add them into the table
     QTableWidgetItem *item;
-    for (int row = 0; row < 2; row++)
+    for (int row = 0; row < 3; row++)
     {
         item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getName()));
         ui->bookTableWidget->setItem(row, 0, item);

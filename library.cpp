@@ -9,81 +9,72 @@
  */
 Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf){
     // create input file and open it
-    try{
-        ifstream bookData(bdf);
-        string temp;    // string to store input file reads
-        vector<Book>* savedBookList = new vector<Book>;
 
-        // read until end of file
-        while(!bookData.eof())
-        {
-            getline(bookData, temp, '\t');
-            string t = temp;    // title
-            getline(bookData, temp, '\t');
-            string a = temp;    // author
-            getline(bookData, temp, '\t');
-            long long int n;    // ISBN
-            try{
-                n = stoll(temp);
-            }
-            catch (const std::invalid_argument& e) {
-                // no problem
-            }
-            getline(bookData, temp, '\t');
-            char b = temp[0];   // availability
-            // create book instances with proper availability
-            if(b == '0'){
-                Book book(t,a,n,false);
-                savedBookList->push_back(book);
-            }
-            else if(b == '1'){
-                Book book(t,a,n);
-                savedBookList->push_back(book);
-            }
+    ifstream bookData(bdf);
+    string temp;    // string to store input file reads
+    vector<Book>* savedBookList = new vector<Book>;
+
+    // read until end of file
+    while(!bookData.eof())
+    {
+        getline(bookData, temp, '\t');
+        string t = temp;    // title
+        getline(bookData, temp, '\t');
+        string a = temp;    // author
+        getline(bookData, temp, '\t');
+        long long int n;    // ISBN
+        try{
+            n = stoll(temp);
         }
-        bookList = savedBookList;   // set bookList pointer
-        available = true;           // set library availability
-        bookData.close();
-    }
-    catch (const std::invalid_argument& err) {
-        cout << err.what();
-    }
-    
-    try{
-        ifstream personData(pdf);
-        vector<Person>* savedPersonList = new vector<Person>;
-
-        while(!personData.eof()){
-            string temp;
-            getline(personData, temp, '\t');
-            string n = temp;    // name
-            getline(personData, temp, '\t');
-            int i; // id
-            try{
-                i = stoll(temp);
-            }
-            catch (const std::invalid_argument& e) {
-                // no problem
-            }
-            getline(personData, temp, '\t');
-            string t = temp;    // title
-
-            if(n == "") // workaround of a bug
-                break;
-
-            // create person and set takenBook
-            Person person(n,i);
-            for(auto &book : *bookList)
-                if(book.getTitle() == t)    // if not taken any book, then it is already nullptr
-                    person.setTakenBook(book);
-            savedPersonList->push_back(person);
+        catch (const std::invalid_argument& e) {
+            // no problem
         }
-        personList = savedPersonList;   // set personList pointer
-        personData.close();
+        getline(bookData, temp, '\t');
+        char b = temp[0];   // availability
+        // create book instances with proper availability
+        if(b == '0'){
+            Book book(t,a,n,false);
+            savedBookList->push_back(book);
+        }
+        else if(b == '1'){
+            Book book(t,a,n);
+            savedBookList->push_back(book);
+        }
     }
-    catch (const std::invalid_argument& err) {
-        cout << err.what();
+    bookList = savedBookList;   // set bookList pointer
+    available = true;           // set library availability
+    bookData.close();
+
+    ifstream personData(pdf);
+    vector<Person>* savedPersonList = new vector<Person>;
+
+    while(!personData.eof()){
+        string temp;
+        getline(personData, temp, '\t');
+        string n = temp;    // name
+        getline(personData, temp, '\t');
+        int i; // id
+        try{
+            i = stoll(temp);
+        }
+        catch (const std::invalid_argument& e) {
+            // no problem
+        }
+        getline(personData, temp, '\t');
+        string t = temp;    // title
+
+        if(n == "") // workaround of a bug
+            break;
+
+        // create person and set takenBook
+        Person person(n,i);
+        for(auto &book : *bookList)
+            if(book.getTitle() == t)    // if not taken any book, then it is already nullptr
+                person.setTakenBook(book);
+        savedPersonList->push_back(person);
     }
+    personList = savedPersonList;   // set personList pointer
+    personData.close();
 }
 
 /**
@@ -231,7 +222,7 @@ QString Library::getSummary(void) {
     short nonAvailableCount = 0;
 
     // printing starts here
-    result += " - " + std::to_string(bookList->size()) + " books in the library" + '\n';
+    result += " - " ;//+ QString::fromStdString(std::to_string(bookList->size())) + " books in the library" + '\n';
     for(auto &book : *bookList) // print all books in the library
     {
         if(book.isAvailable()){
