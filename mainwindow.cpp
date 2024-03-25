@@ -14,8 +14,40 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->switchButton, &QPushButton::clicked, this, &MainWindow::switchButtonClicked);
     connect(ui->clearButton, &QPushButton::clicked, this, &MainWindow::clearButtonClickled);
 
+    Library newLib("..\\library_system\\book_data.txt", "..\\library_system\\person_data.txt");
+    // create the table
+    ui->bookTableWidget->setRowCount(newLib.getBookList()->size());
+    ui->bookTableWidget->setColumnCount(4);
+
+    // set labels
+    QStringList labels;
+    labels << "Title" << "Author" << "ISBN" << "Availability";
+    ui->bookTableWidget->setHorizontalHeaderLabels(labels);
+
+    // create items and add them into the table
+    QTableWidgetItem *item;
+    for (int row = 0; row < 4; row++)
+    {
+        item = new QTableWidgetItem(QString::fromStdString(newLib.getBookList()->at(row).getTitle()));
+        ui->bookTableWidget->setItem(row, 0, item);
+
+        item = new QTableWidgetItem(QString::fromStdString(newLib.getBookList()->at(row).getAuthor()));
+        ui->bookTableWidget->setItem(row, 1, item);
+
+        item = new QTableWidgetItem(QString::number(newLib.getBookList()->at(row).getISBN()));
+        ui->bookTableWidget->setItem(row, 2, item);
+
+        if(newLib.getBookList()->at(row).isAvailable())
+            item = new QTableWidgetItem("Free");
+        else
+            item = new QTableWidgetItem("Already Booked");
+        item->setTextAlignment(Qt::AlignHCenter);
+        ui->bookTableWidget->setItem(row, 3, item);
+    }
+    ui->bookTableWidget->resizeColumnsToContents();
+    this->currentTable = 0;
     // init the table
-    updateBookTable();
+    //updateBookTable();
 }
 
 MainWindow::~MainWindow()

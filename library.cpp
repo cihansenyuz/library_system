@@ -10,37 +10,68 @@
 Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf){
     // create input file and open it
     try{
-        ifstream bookData(bdf);
-        string temp;    // string to store input file reads
+        QFile bookData(QString::fromStdString(bdf));
+        if (!bookData.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Failed to open file:" << bookData.errorString();
+        }
+
+        // Create a QTextStream to read from the file
+        QTextStream inputData(&bookData);
+
         vector<Book>* savedBookList = new vector<Book>;
 
-        // read until end of file
-        while(!bookData.eof())
+        QString line = inputData.readLine();
+        QString partialLine;
+        int index;
+        while ((index = line.indexOf('\r')) != -1)
         {
-            getline(bookData, temp, '\t');
-            string t = temp;    // title
-            getline(bookData, temp, '\t');
-            string a = temp;    // author
-            getline(bookData, temp, '\t');
-            long long int n;    // ISBN
+            // Extract text until first occurrence of '\r'
+            partialLine += line.left(index);
+            string t = partialLine.toStdString(); // title
+            partialLine.clear();
+
+            // Update line to start from after '\r'
+            line = line.mid(index + 1);
+            index = line.indexOf('\r');
+            partialLine += line.left(index);
+            string a = partialLine.toStdString(); // author
+            partialLine.clear();
+
+            // Update line to start from after '\r'
+            line = line.mid(index + 1);
+            index = line.indexOf('\r');
+            partialLine += line.left(index);
+            string n = partialLine.toStdString(); // ISBN
+            partialLine.clear();
+
+            // Update line to start from after '\r'
+            line = line.mid(index + 1);
+            index = line.indexOf('\r');
+            partialLine += line.left(index);
+            char b = partialLine.toStdString().at(0); // Availability
+            partialLine.clear();
+
+            // Update line to start from after '\r'
+            line = line.mid(index + 1);
+            index = line.indexOf('\r');
+            // create book instances with proper availability
+            if(b == '0'){
+                Book book(t,a,500,false);
+                savedBookList->push_back(book);
+            }
+            else if(b == '1'){
+                Book book(t,a,500);
+                savedBookList->push_back(book);
+            }
+        }
+
+            /*long long int n;    // ISBN
             try{
                 n = stoll(temp);
             }
             catch (const std::invalid_argument& e) {
                 // no problem
-            }
-            getline(bookData, temp, '\t');
-            char b = temp[0];   // availability
-            // create book instances with proper availability
-            if(b == '0'){
-                Book book(t,a,n,false);
-                savedBookList->push_back(book);
-            }
-            else if(b == '1'){
-                Book book(t,a,n);
-                savedBookList->push_back(book);
-            }
-        }
+            }*/
         bookList = savedBookList;   // set bookList pointer
         available = true;           // set library availability
         bookData.close();
@@ -48,7 +79,7 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
     catch (const std::invalid_argument& err) {
         cout << err.what();
     }
-    
+    /*
     try{
         ifstream personData(pdf);
         vector<Person>* savedPersonList = new vector<Person>;
@@ -83,7 +114,7 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
     }
     catch (const std::invalid_argument& err) {
         cout << err.what();
-    }
+    }*/
 }
 
 /**

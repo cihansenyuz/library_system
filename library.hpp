@@ -6,6 +6,9 @@
 #include <vector>
 #include <fstream>
 #include <QString>
+#include <QFile>
+#include <QTextStream>
+#include <QDebug>
 
 /**
  * @brief This class is to handle behaviours in the library.
