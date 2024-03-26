@@ -13,6 +13,7 @@ RegisterDialog::RegisterDialog(QWidget *parent)
 
 RegisterDialog::~RegisterDialog()
 {
+
     delete ui;
 }
 
@@ -28,4 +29,5 @@ void RegisterDialog::registerButtonClicked(){
     std::string name = ui->nameLineEdit->text().toStdString();
     int id = std::stoi(ui->IDLineEdit->text().toStdString());
     emit userInputReady(name, id);
+    this->close();
 }

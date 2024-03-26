@@ -212,6 +212,8 @@ void MainWindow::registerButtonClicked(){
 */
 void MainWindow::getRegisterInput(const string &name, const int &id){
     this->library->registerPerson(name, id);
+    this->updatePersonTable();
+    ui->infoTextBrowser->append("New user registered in the system!");
 }
 
 void MainWindow::addButtonClicked(){

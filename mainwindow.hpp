@@ -39,7 +39,7 @@ private slots:
     void clearButtonClickled();
     void registerButtonClicked();
     void addButtonClicked();
-    void getRegisterInput(const string &name, const long long int &id);
+    void getRegisterInput(const string &name, const int &id);
 private:
     Ui::MainWindow *ui;
     Library *library;
