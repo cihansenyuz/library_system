@@ -14,7 +14,8 @@ SOURCES += \
     library.cpp \
     main.cpp \
     mainwindow.cpp \
-    person.cpp
+    person.cpp \
+    registerdialog.cpp
 
 HEADERS += \
     book.hpp \
@@ -22,10 +23,12 @@ HEADERS += \
     library.hpp \
     main.hpp \
     mainwindow.hpp \
-    person.hpp
+    person.hpp \
+    registerdialog.hpp
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    registerdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

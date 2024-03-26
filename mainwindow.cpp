@@ -1,5 +1,6 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
+#include "registerdialog.hpp"
 
 MainWindow::MainWindow(QWidget *parent, Library *lib)
     : QMainWindow(parent)
@@ -13,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->returnButton, &QPushButton::clicked, this, &MainWindow::returnButtonClicked);
     connect(ui->switchButton, &QPushButton::clicked, this, &MainWindow::switchButtonClicked);
     connect(ui->clearButton, &QPushButton::clicked, this, &MainWindow::clearButtonClickled);
+    connect(ui->registerButton, &QPushButton::clicked, this, &MainWindow::registerButtonClicked);
+    connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::addButtonClicked);
 
     // init the table
     updateBookTable();
@@ -28,6 +31,9 @@ MainWindow::~MainWindow()
  * @brief Updates content in tableWidget
  *
  * Gets book's contents from Library object. Creates and add items in the tableWidget
+ *
+* @param none
+* @return none
  * */
 void MainWindow::updateBookTable(){
     // create the table
@@ -61,13 +67,16 @@ void MainWindow::updateBookTable(){
         ui->tableWidget->setItem(row, 3, item);
     }
     ui->tableWidget->resizeColumnsToContents();
-    this->currentTable = 0;
+    this->currentTable = bookTable;
 }
 
 /**
  * @brief Updates content in tableWidget
  *
  * Gets user's contents from Library object. Creates and add items in the tableWidget
+ *
+* @param none
+* @return none
  * */
 void MainWindow::updatePersonTable(){
     // create the table
@@ -99,7 +108,7 @@ void MainWindow::updatePersonTable(){
         ui->tableWidget->setItem(row, 2, item);
     }
     ui->tableWidget->resizeColumnsToContents();
-    this->currentTable = 1;
+    this->currentTable = personTable;
 }
 
 /**
@@ -158,9 +167,9 @@ void MainWindow::returnButtonClicked(){
 * @return none
 */
 void MainWindow::switchButtonClicked(){
-    if(this->currentTable)
+    if(this->currentTable == personTable)
         this->updateBookTable();
-    else
+    else // bookTable
         this->updatePersonTable();
 }
 
@@ -174,4 +183,37 @@ void MainWindow::switchButtonClicked(){
 */
 void MainWindow::clearButtonClickled(){
     ui->infoTextBrowser->clear();
+}
+
+/**
+* @brief Slot method to handle click action on registerButton
+*
+* Creates an RegisterDialog object, makes signal/slot connection to get user input from
+* RegisterDialog to MainWindow
+*
+* @param none
+* @return none
+*/
+void MainWindow::registerButtonClicked(){
+    RegisterDialog dialog;
+    connect(&dialog, &RegisterDialog::userInputReady, this, &MainWindow::getRegisterInput);
+    dialog.setModal(true);
+    dialog.exec();
+}
+
+/**
+* @brief Slot method to handle signal from RegisterDialog
+*
+* Takes argumants from the signal and registers new Person in the library
+*
+* @param name name of the Person
+* @param id id of the Person
+* @return none
+*/
+void MainWindow::getRegisterInput(const string &name, const int &id){
+    this->library->registerPerson(name, id);
+}
+
+void MainWindow::addButtonClicked(){
+
 }

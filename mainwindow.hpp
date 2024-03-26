@@ -10,6 +10,10 @@
 #define BOOK_DATA_COLUMN_COUNT 4
 #define PERSON_DATA_COLUMN_COUNT 3
 
+typedef enum tableType{
+    bookTable, personTable
+}tableType;
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -25,13 +29,17 @@ public:
     ~MainWindow();
     void updateBookTable();
     void updatePersonTable();
-    int currentTable; // 0: Book, 1: Person
+    tableType currentTable;
+    void createDialog();
 private slots:
     void summaryButtonClicked();
     void checkOutButtonClicked();
     void returnButtonClicked();
     void switchButtonClicked();
     void clearButtonClickled();
+    void registerButtonClicked();
+    void addButtonClicked();
+    void getRegisterInput(const string &name, const long long int &id);
 private:
     Ui::MainWindow *ui;
     Library *library;

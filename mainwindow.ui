@@ -55,6 +55,20 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
+             <widget class="QPushButton" name="registerButton">
+              <property name="text">
+               <string>Register User</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addButton">
+              <property name="text">
+               <string>Add Book</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="summaryButton">
               <property name="text">
                <string>Print Summary</string>
