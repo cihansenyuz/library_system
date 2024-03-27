@@ -1,6 +1,5 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
-#include "registerdialog.hpp"
 
 MainWindow::MainWindow(QWidget *parent, Library *lib)
     : QMainWindow(parent)
@@ -216,6 +215,34 @@ void MainWindow::getRegisterInput(const string &name, const int &id){
     ui->infoTextBrowser->append("New user registered in the system!");
 }
 
+/**
+* @brief Slot method to handle click action on addButton
+*
+* Creates an AddDialog object, makes signal/slot connection to get user input from
+* AddDialog to MainWindow
+*
+* @param none
+* @return none
+*/
 void MainWindow::addButtonClicked(){
+    AddDialog dialog;
+    connect(&dialog, &AddDialog::userInputReady, this, &MainWindow::getAddInput);
+    dialog.setModal(true);
+    dialog.exec();
+}
 
+/**
+* @brief Slot method to handle signal from AddDialog
+*
+* Takes argumants from the signal and registers new Person in the library
+*
+* @param tit title of the Book
+* @param ath author of the Book
+* @param isbn ISBN of the Book
+* @return none
+*/
+void MainWindow::getAddInput(const string &tit, const string &ath, const long long &isbn){
+    this->library->addBook(tit, ath, isbn);
+    this->updateBookTable();
+    ui->infoTextBrowser->append("New book added to the library!");
 }

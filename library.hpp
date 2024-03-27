@@ -33,7 +33,7 @@ public:
     }
     Library(string bdf, string pdf);
     void addBook(const Book& newBook);
-    void addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN);
+    void addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN);
     void registerPerson(const Person& newPerson);
     void registerPerson(const string& personName, const int& personId);
     void displayAvailables(void);

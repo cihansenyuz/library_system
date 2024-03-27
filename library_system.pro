@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    adddialog.cpp \
     book.cpp \
     item.cpp \
     library.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
     registerdialog.cpp
 
 HEADERS += \
+    adddialog.hpp \
     book.hpp \
     item.hpp \
     library.hpp \
@@ -27,6 +29,7 @@ HEADERS += \
     registerdialog.hpp
 
 FORMS += \
+    adddialog.ui \
     mainwindow.ui \
     registerdialog.ui
 

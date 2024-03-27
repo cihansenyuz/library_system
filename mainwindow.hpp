@@ -6,6 +6,8 @@
 #include "item.hpp"
 #include "book.hpp"
 #include "person.hpp"
+#include "registerdialog.hpp"
+#include "adddialog.hpp"
 
 #define BOOK_DATA_COLUMN_COUNT 4
 #define PERSON_DATA_COLUMN_COUNT 3
@@ -40,6 +42,7 @@ private slots:
     void registerButtonClicked();
     void addButtonClicked();
     void getRegisterInput(const string &name, const int &id);
+    void getAddInput(const string &tit, const string &ath, const long long &isbn);
 private:
     Ui::MainWindow *ui;
     Library *library;
