@@ -41,6 +41,7 @@ private slots:
     void clearButtonClickled();
     void registerButtonClicked();
     void addButtonClicked();
+    void exitButtonClicked();
     void getRegisterInput(const string &name, const int &id);
     void getAddInput(const string &tit, const string &ath, const long long &isbn);
 private:

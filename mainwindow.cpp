@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->clearButton, &QPushButton::clicked, this, &MainWindow::clearButtonClickled);
     connect(ui->registerButton, &QPushButton::clicked, this, &MainWindow::registerButtonClicked);
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::addButtonClicked);
+    connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButtonClicked);
 
     // init the table
     updateBookTable();
@@ -247,4 +248,16 @@ void MainWindow::getAddInput(const string &tit, const string &ath, const long lo
     this->library->addBook(tit, ath, isbn);
     this->updateBookTable();
     ui->infoTextBrowser->append("New book added to the library!");
+}
+
+/**
+* @brief Slot method to handle click action on exitButton
+*
+* Basicly, calls destructor to save latest status and exit
+*
+* @param none
+* @return none
+*/
+void MainWindow::exitButtonClicked(){
+    this->~MainWindow();
 }

@@ -214,18 +214,25 @@ QString Library::checkOut(const string personName, const string bookTitle){
  * @return informative messages about operation as QString
  */
 QString Library::returnBook(const string bookTitle){
+    // check if the book really exists
+    if(!checkBook(bookTitle))
+        return "There is no such book! Please check spelling...";
+
     // find book in the library and set availability true
     for(auto &book : *bookList)
         if(book.getTitle() == bookTitle)
             book.setAvailable(true);
 
     // find person and reset takenBook pointer
-    for(auto &person : *personList)
-        if(person.getTakenBook()->getTitle() == bookTitle)
-        {
+    for(auto &person : *personList){
+        if(!person.getTakenBook())      // check if it s null before to get title, otherwise crashes
+            continue;
+        if(person.getTakenBook()->getTitle() == bookTitle){
             person.resetTakenBook();
             return QString::fromStdString(bookTitle) + " is taken back from " + QString::fromStdString(person.getName());
         }
+    }
+    return "This book is already available";
 }
 
 /**
