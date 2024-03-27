@@ -9,6 +9,7 @@ RegisterDialog::RegisterDialog(QWidget *parent)
 
     // signal-slot connections
     connect(ui->registerButton, &QPushButton::clicked, this, &RegisterDialog::registerButtonClicked);
+    connect(ui->cancelButton, &QPushButton::clicked, this, &RegisterDialog::cancelButtonClicked);
 }
 
 RegisterDialog::~RegisterDialog()
@@ -29,5 +30,17 @@ void RegisterDialog::registerButtonClicked(){
     std::string name = ui->nameLineEdit->text().toStdString();
     int id = std::stoi(ui->IDLineEdit->text().toStdString());
     emit userInputReady(name, id);
+    this->close();
+}
+
+/**
+* @brief Slot method to handle click action on cancelButton
+*
+* Closes the dialog box without any action
+*
+* @param none
+* @return none
+*/
+void RegisterDialog::cancelButtonClicked(){
     this->close();
 }

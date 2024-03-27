@@ -20,6 +20,7 @@ signals:
 
 private slots:
     void registerButtonClicked();
+    void cancelButtonClicked();
 
 private:
     Ui::RegisterDialog *ui;
