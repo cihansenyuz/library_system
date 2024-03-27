@@ -86,7 +86,28 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
  * @param newBook Book object to be added
  */
 void Library::addBook(const Book& newBook){
+    // once push back an obj to vector, objs pointed inside vector are lost
+    // which causes crash in the program since tries to access wrong/not valid memory address
+    // to overcome issue, temporarily saved information about which person points to which book
+    vector<pair<int, long long int>> temp;
+    for(auto &person : *personList){
+        if((person.getTakenBook()))
+            temp.push_back(make_pair(person.getId(), person.getTakenBook()->getISBN()));
+    }
+
     bookList->push_back(newBook);
+
+    // fix broken data
+    for(auto &pair : temp){                             // for each pair
+        for(auto &person : *personList){                // iterate all persons and find who matches to the pair
+            if(pair.first == person.getId()){           // once person matches
+                for(auto &book : *bookList){            // iterate all books and find which matches to the pair
+                    if(pair.second == book.getISBN())   // once also book matches
+                        person.setTakenBook(book);      // set person taken book again which was broken
+                }
+            }
+        }
+    }
 }
 
 /**
