@@ -3,7 +3,7 @@ A library system to keep track of books and users
 
 06.03.2024 the start of the project.
 
-14.03.2024 the release of Library System Terminal Application
+14.03.2024 the release of Library System Terminal Application v1.0
 Functionalities and features:
 - Add new books to the library
 - Register new users
@@ -12,3 +12,7 @@ Functionalities and features:
 - Display the latest information about the library (registered users and books)
 - Saves the changes done during execution to a file
 - Reads the latest library data from the file
+
+27.03.2024 the release of Library System Terminal Application v1.1
+- Bugfix: removed forgetten debug print
+- Bugfix: program crash after adding a new book
