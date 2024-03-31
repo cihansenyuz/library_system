@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->registerButton, &QPushButton::clicked, this, &MainWindow::registerButtonClicked);
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::addButtonClicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButtonClicked);
+    connect(ui->tableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
 
     // init the table
     updateBookTable();
@@ -144,7 +145,7 @@ void MainWindow::checkOutButtonClicked(){
     ui->checkOutBookTitleLineEdit->clear();
     ui->checkOutPersonNameLineEdit->clear();
     ui->infoTextBrowser->append(result);
-    updateBookTable();
+    updateTable();
 }
 
 /**
@@ -160,7 +161,7 @@ void MainWindow::returnButtonClicked(){
     result = this->library->returnBook(ui->returnBookTitleLineEdit->text().toStdString());
     ui->returnBookTitleLineEdit->clear();
     ui->infoTextBrowser->append(result);
-    updateBookTable();
+    updateTable();
 }
 
 /**
@@ -202,6 +203,7 @@ void MainWindow::clearButtonClickled(){
 void MainWindow::registerButtonClicked(){
     RegisterDialog dialog;
     connect(&dialog, &RegisterDialog::userInputReady, this, &MainWindow::getRegisterInput);
+    updatePersonTable();
     dialog.setModal(true);
     dialog.exec();
 }
@@ -217,7 +219,7 @@ void MainWindow::registerButtonClicked(){
 */
 void MainWindow::getRegisterInput(const string &name, const int &id){
     this->library->registerPerson(name, id);
-    this->updatePersonTable();
+    updateTable();
     ui->infoTextBrowser->append("New user registered in the system!");
 }
 
@@ -233,6 +235,7 @@ void MainWindow::getRegisterInput(const string &name, const int &id){
 void MainWindow::addButtonClicked(){
     AddDialog dialog;
     connect(&dialog, &AddDialog::userInputReady, this, &MainWindow::getAddInput);
+    updateBookTable();
     dialog.setModal(true);
     dialog.exec();
 }
@@ -249,7 +252,7 @@ void MainWindow::addButtonClicked(){
 */
 void MainWindow::getAddInput(const string &tit, const string &ath, const long long &isbn){
     this->library->addBook(tit, ath, isbn);
-    this->updateBookTable();
+    updateTable();
     ui->infoTextBrowser->append("New book added to the library!");
 }
 
@@ -263,4 +266,29 @@ void MainWindow::getAddInput(const string &tit, const string &ath, const long lo
 */
 void MainWindow::exitButtonClicked(){
     this->~MainWindow();
+}
+
+void MainWindow::tableItemSelected(const int &row, const int &column){
+    if(currentTable == bookTable){
+        ui->checkOutBookTitleLineEdit->clear();
+        QString bookTitle = (ui->tableWidget->item(row, 0))->text();    // column is 0 cause bookTitle is in the first column
+        ui->checkOutBookTitleLineEdit->setText(bookTitle);
+    }
+    else{   // personTable
+        ui->returnBookTitleLineEdit->clear();
+        QString bookTitle = (ui->tableWidget->item(row, 2))->text(); // column is 2 cause takenBook is in the third column
+        if(bookTitle != " - ")  // user wants to return a book
+            ui->returnBookTitleLineEdit->setText(bookTitle);
+        else{   // user wants to check out a book
+            QString personName = (ui->tableWidget->item(row, 0))->text(); // column is 0 cause personName is in the first column
+            ui->checkOutPersonNameLineEdit->setText(personName);
+        }
+    }
+}
+
+void MainWindow::updateTable(){
+    if(currentTable == bookTable)
+        updateBookTable();
+    else
+        updatePersonTable();
 }

@@ -33,6 +33,7 @@ public:
     void updatePersonTable();
     tableType currentTable;
     void createDialog();
+    void updateTable();
 private slots:
     void summaryButtonClicked();
     void checkOutButtonClicked();
@@ -44,6 +45,7 @@ private slots:
     void exitButtonClicked();
     void getRegisterInput(const string &name, const int &id);
     void getAddInput(const string &tit, const string &ath, const long long &isbn);
+    void tableItemSelected(const int &row, const int &column);
 private:
     Ui::MainWindow *ui;
     Library *library;
