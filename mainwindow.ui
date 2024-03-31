@@ -184,6 +184,12 @@
                    <height>0</height>
                   </size>
                  </property>
+                 <property name="toolTip">
+                  <string>Enter a valid book title in the library</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Enter a valid book title in the library, typing will auto search among book list</string>
+                 </property>
                 </widget>
                </item>
               </layout>
@@ -198,7 +204,14 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="checkOutPersonNameLineEdit"/>
+                <widget class="QLineEdit" name="checkOutPersonNameLineEdit">
+                 <property name="toolTip">
+                  <string>Enter a registered user name</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Enter a registered user name, typing will auto search among book list</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -270,6 +283,12 @@
                    <width>200</width>
                    <height>0</height>
                   </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Enter a valid book title in the library</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Enter a valid book title in the library, typing will auto search among book list</string>
                  </property>
                 </widget>
                </item>

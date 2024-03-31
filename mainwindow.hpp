@@ -2,6 +2,7 @@
 #define MAINWINDOW_HPP
 
 #include <QMainWindow>
+#include <QCompleter>
 #include "library.hpp"
 #include "item.hpp"
 #include "book.hpp"
@@ -49,5 +50,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Library *library;
+    QStringList bookTitleCompletions;
+    QStringList personNameCompletions;
+    QCompleter *bookCompleter;
+    QCompleter *personCompleter;
 };
 #endif // MAINWINDOW_HPP

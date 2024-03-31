@@ -1,9 +1,10 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent, Library *lib)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), library(lib)
+    , ui(new Ui::MainWindow), library(lib), bookCompleter(nullptr), personCompleter(nullptr)
 {
     ui->setupUi(this);
 
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->tableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
 
     // init the table
+    updatePersonTable();    // needs to be updated to create auto completer for user name
     updateBookTable();
 
     // welcome user
@@ -28,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
 MainWindow::~MainWindow()
 {
     library->saveLatestData();
+    delete bookCompleter;
     delete ui;
 }
 
@@ -40,6 +43,11 @@ MainWindow::~MainWindow()
 * @return none
  * */
 void MainWindow::updateBookTable(){
+    // preparetions for completer
+    if(bookCompleter)               // delete old completer
+        delete bookCompleter;
+    bookTitleCompletions.clear();   // delete old completions
+
     // create the table
     unsigned int rowCount = library->getBookList()->size();
     ui->tableWidget->setRowCount(rowCount);
@@ -56,6 +64,7 @@ void MainWindow::updateBookTable(){
     {
         item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getTitle()));
         ui->tableWidget->setItem(row, 0, item);
+        bookTitleCompletions << item->text();
 
         item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getAuthor()));
         ui->tableWidget->setItem(row, 1, item);
@@ -73,6 +82,13 @@ void MainWindow::updateBookTable(){
     }
     ui->tableWidget->resizeColumnsToContents();
     this->currentTable = bookTable;
+
+    // final configuration for completer
+    bookCompleter = new QCompleter(bookTitleCompletions, ui->checkOutBookTitleLineEdit);    // create completer
+    bookCompleter->setCaseSensitivity(Qt::CaseInsensitive);                                 // setting
+    bookCompleter->setFilterMode(Qt::MatchContains);                                        // setting
+    ui->checkOutBookTitleLineEdit->setCompleter(bookCompleter);                             // set completer for line edit
+    ui->returnBookTitleLineEdit->setCompleter(bookCompleter);                               // set completer for line edit
 }
 
 /**
@@ -84,6 +100,11 @@ void MainWindow::updateBookTable(){
 * @return none
  * */
 void MainWindow::updatePersonTable(){
+    // preparetions for completer
+    if(personCompleter)               // delete old completer
+        delete personCompleter;
+    personNameCompletions.clear();   // delete old completions
+
     // create the table
     unsigned int rowCount = library->getPersonList()->size();
     ui->tableWidget->setRowCount(rowCount);
@@ -100,6 +121,7 @@ void MainWindow::updatePersonTable(){
     {
         item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getName()));
         ui->tableWidget->setItem(row, 0, item);
+        personNameCompletions << item->text();
 
         item = new QTableWidgetItem(QString::fromStdString(std::to_string(library->getPersonList()->at(row).getId())));
         ui->tableWidget->setItem(row, 1, item);
@@ -115,6 +137,12 @@ void MainWindow::updatePersonTable(){
     }
     ui->tableWidget->resizeColumnsToContents();
     this->currentTable = personTable;
+
+    // final configuration for completer
+    personCompleter = new QCompleter(personNameCompletions, ui->checkOutBookTitleLineEdit); // create completer
+    personCompleter->setCaseSensitivity(Qt::CaseInsensitive);                               // setting
+    personCompleter->setFilterMode(Qt::MatchContains);                                      // setting
+    ui->checkOutPersonNameLineEdit->setCompleter(personCompleter);                          // set completer for line edit
 }
 
 /**
