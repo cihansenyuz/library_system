@@ -201,7 +201,7 @@ QString Library::checkOut(const string personName, const string bookTitle){
             }
     }
     else if(!bookAvailable)
-        return "This book is already taken by someone";
+        return "This book is already taken by someone else";
     else if(!personAvailable)
         return QString::fromStdString(personName) + " has already taken a book. Needs to return it to take a new one.";
 }

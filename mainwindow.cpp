@@ -19,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
 
     // init the table
     updateBookTable();
+
+    // welcome user
+    ui->infoTextBrowser->append("Welcome to the Library System v2.0");
 }
 
 MainWindow::~MainWindow()
