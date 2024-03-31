@@ -270,18 +270,28 @@ void MainWindow::exitButtonClicked(){
 
 void MainWindow::tableItemSelected(const int &row, const int &column){
     if(currentTable == bookTable){
-        ui->checkOutBookTitleLineEdit->clear();
         QString bookTitle = (ui->tableWidget->item(row, 0))->text();    // column is 0 cause bookTitle is in the first column
-        ui->checkOutBookTitleLineEdit->setText(bookTitle);
+        if((ui->tableWidget->item(row, 3)->text() == "Free")){   // book is free
+            ui->returnBookTitleLineEdit->clear();
+            ui->checkOutBookTitleLineEdit->setText(bookTitle);
+        }
+        else{   // or already booked
+            ui->checkOutBookTitleLineEdit->clear();
+            ui->checkOutPersonNameLineEdit->clear();
+            ui->returnBookTitleLineEdit->setText(bookTitle);
+        }
     }
     else{   // personTable
-        ui->returnBookTitleLineEdit->clear();
         QString bookTitle = (ui->tableWidget->item(row, 2))->text(); // column is 2 cause takenBook is in the third column
-        if(bookTitle != " - ")  // user wants to return a book
-            ui->returnBookTitleLineEdit->setText(bookTitle);
-        else{   // user wants to check out a book
-            QString personName = (ui->tableWidget->item(row, 0))->text(); // column is 0 cause personName is in the first column
+        QString personName = (ui->tableWidget->item(row, 0))->text(); // column is 0 cause personName is in the first column
+        if(bookTitle == " - "){   // person can take
+            ui->returnBookTitleLineEdit->clear();
             ui->checkOutPersonNameLineEdit->setText(personName);
+        }
+        else{   // or already taken
+            ui->checkOutBookTitleLineEdit->clear();
+            ui->checkOutPersonNameLineEdit->clear();
+            ui->returnBookTitleLineEdit->setText(bookTitle);
         }
     }
 }
