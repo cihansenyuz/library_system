@@ -179,11 +179,10 @@ QString Library::checkOut(const string personName, const string bookTitle){
             personAvailable = true;
 
     // check if given argumants are valid
-    bool bookExists = checkBook(bookTitle);
-    bool personExists = checkPerson(personName);
-    if(!bookExists || !personExists){
-        return "No such book or registered person";
-    }
+    if(!checkBook(bookTitle))
+        return "No such book in the library: " + QString::fromStdString(bookTitle);
+    else if(!checkPerson(personName))
+        return "This person is not registered: " + QString::fromStdString(personName);
 
     // check availability of person and book
     if(bookAvailable && personAvailable)
