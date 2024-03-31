@@ -5,6 +5,7 @@
 #include "person.hpp"
 #include <vector>
 #include <fstream>
+#include <QString>
 
 /**
  * @brief This class is to handle behaviours in the library.
@@ -32,17 +33,19 @@ public:
     }
     Library(string bdf, string pdf);
     void addBook(const Book& newBook);
-    void addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN);
+    void addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN);
     void registerPerson(const Person& newPerson);
     void registerPerson(const string& personName, const int& personId);
     void displayAvailables(void);
-    void checkOut(const string personName, const string bookTitle);
-    void returnBook(const string bookTitle);
-    void displayInfo(void);
+    QString checkOut(const string personName, const string bookTitle);
+    QString returnBook(const string bookTitle);
+    QString getSummary(void);
     void setPersonList(vector<Person>* list);
     bool checkPerson(const string name);
     bool checkBook(const string title);
     void saveLatestData(void);
+    vector<Book>* getBookList(void);
+    vector<Person>* getPersonList(void);
     ~Library(){
         delete bookList;
         delete personList;

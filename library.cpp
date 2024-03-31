@@ -9,13 +9,10 @@
  */
 Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf){
     // create input file and open it
+
     ifstream bookData(bdf);
-    if(!(bookData.is_open()))
-        cout << "couldnot open the data file" << endl;
-    
     string temp;    // string to store input file reads
     vector<Book>* savedBookList = new vector<Book>;
-    vector<Person>* savedPersonList = new vector<Person>;
 
     // read until end of file
     while(!bookData.eof())
@@ -47,11 +44,12 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
     bookList = savedBookList;   // set bookList pointer
     available = true;           // set library availability
     bookData.close();
-    
+
     ifstream personData(pdf);
-    if(!(personData.is_open()))
-        cout << "couldnot open the person file" << endl;
+    vector<Person>* savedPersonList = new vector<Person>;
+
     while(!personData.eof()){
+        string temp;
         getline(personData, temp, '\t');
         string n = temp;    // name
         getline(personData, temp, '\t');
@@ -168,8 +166,9 @@ void Library::displayAvailables(void){
  * Takes person name and book title, sets the book not available, sets persons takenBook pointer
  * @param personName name of the person
  * @param bookTitle title of the book
+ * @return informative messages about operation as QString
  */
-void Library::checkOut(const string personName, const string bookTitle){
+QString Library::checkOut(const string personName, const string bookTitle){
     bool bookAvailable = false;
     bool personAvailable = false;
     for(auto &book : *bookList)
@@ -180,13 +179,10 @@ void Library::checkOut(const string personName, const string bookTitle){
             personAvailable = true;
 
     // check if given argumants are valid
-    bool bookExists = checkBook(bookTitle);
-    bool personExists = checkPerson(personName);
-    if(!bookExists || !personExists)
-    {
-        cout << "No such book or registered person" << endl;
-        return;
-    }
+    if(!checkBook(bookTitle))
+        return "No such book in the library: " + QString::fromStdString(bookTitle);
+    else if(!checkPerson(personName))
+        return "This person is not registered: " + QString::fromStdString(personName);
 
     // check availability of person and book
     if(bookAvailable && personAvailable)
@@ -199,14 +195,14 @@ void Library::checkOut(const string personName, const string bookTitle){
                     if(person.getName() == personName)
                     {   
                         person.setTakenBook(book); // give the book to the person setting takenBook
-                        cout << "Book '" << bookTitle << "' is given to " << personName << endl;
+                        return "Book '" + QString::fromStdString(bookTitle) + "' is given to " + QString::fromStdString(personName);
                     }
             }
     }
     else if(!bookAvailable)
-        cout << "This book is already taken by someone" << endl;
+        return "This book is already taken by someone else";
     else if(!personAvailable)
-        cout << personName << " has already taken a book. Needs to return it to take a new one." << endl;
+        return QString::fromStdString(personName) + " has already taken a book. Needs to return it to take a new one.";
 }
 
 /**
@@ -214,62 +210,58 @@ void Library::checkOut(const string personName, const string bookTitle){
  *
  * Takes book title, sets the book available, sets persons takenBook pointer to nullptr
  * @param bookTitle title of the book
+ * @return informative messages about operation as QString
  */
-void Library::returnBook(const string bookTitle){
+QString Library::returnBook(const string bookTitle){
+    // check if the book really exists
+    if(!checkBook(bookTitle))
+        return "There is no such book! Please check spelling...";
+
     // find book in the library and set availability true
     for(auto &book : *bookList)
         if(book.getTitle() == bookTitle)
             book.setAvailable(true);
 
     // find person and reset takenBook pointer
-    for(auto &person : *personList)
-        if(person.getTakenBook()->getTitle() == bookTitle)
-        {
+    for(auto &person : *personList){
+        if(!person.getTakenBook())      // check if it s null before to get title, otherwise crashes
+            continue;
+        if(person.getTakenBook()->getTitle() == bookTitle){
             person.resetTakenBook();
-            cout << bookTitle << " is taken back from " << person.getName() << endl;              
-            return;
+            return QString::fromStdString(bookTitle) + " is taken back from " + QString::fromStdString(person.getName());
         }
+    }
+    return "This book is already available";
 }
 
 /**
- * @brief Prints properties of the library.
+ * @brief Gets summary of the library.
  *
- * Prints book information in the library and how many available/not available.
- * Also, prints registered persons and which book is taken by whom.
+ * Prints how many available/not available books there are.
+ * Also, prints registered how many users registered
+ * @return QString type of all the summary text
  */
-void Library::displayInfo(void) {
+QString Library::getSummary(void) {
+    QString result = "Library Summary:\n";
+
     // counters to keep status of books
     short availableCount = 0;
     short nonAvailableCount = 0;
 
     // printing starts here
-    cout << "Library Information: " << endl;
-    cout << " - " << bookList->size() << " books in the library" << endl;
+    result += " - " ;//+ QString::fromStdString(std::to_string(bookList->size())) + " books in the library" + '\n';
     for(auto &book : *bookList) // print all books in the library
     {
-        cout << "Title: " << book.getTitle() << ", Author: " << book.getAuthor() << ", ";
-        if(book.isAvailable())
-        {
+        if(book.isAvailable()){
             availableCount++;
-            cout << " available" << endl;
         }
-        else
-        {
+        else{
             nonAvailableCount++;
-            cout << " taken" << endl;
         }
-
     }
-    cout << "Available: " << availableCount << " Checked Out: " << nonAvailableCount << endl;
-    cout << "- " << personList->size() << " users registered in the library" << endl;
-    for(auto &person : *personList) // print all users in the library
-    {
-        cout << "Name: " << person.getName() << " Book: ";
-        if(person.getTakenBook())
-            cout << person.getTakenBook()->getTitle() << endl;
-        else
-            cout << "-" << endl;
-    }
+    result += "Available: " + std::to_string(availableCount) + " Checked Out: " + std::to_string(nonAvailableCount) + '\n';
+    result += " - " + std::to_string(personList->size()) + " users registered in the library" + '\n';
+    return result;
 }
 
 /**
@@ -345,3 +337,21 @@ void Library::saveLatestData(void){
         }
         personData.close();
     }
+
+/**
+ * @brief Getter function for bookList pointer.
+ *
+ * @return addres of the bookList
+ */
+vector<Book>* Library::getBookList(void){
+    return bookList;
+}
+
+/**
+ * @brief Getter function for personList pointer.
+ *
+ * @return addres of the personList
+ */
+vector<Person>* Library::getPersonList(void){
+    return personList;
+}

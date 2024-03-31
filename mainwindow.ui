@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Library System v2.0</string>
+  </property>
+  <property name="statusTip">
+   <string/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
+      <item>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="2,3">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QTextBrowser" name="infoTextBrowser">
+            <property name="toolTip">
+             <string>Message panel</string>
+            </property>
+            <property name="statusTip">
+             <string>Message panel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QPushButton" name="registerButton">
+              <property name="toolTip">
+               <string>Opens a dialog box to register a new user</string>
+              </property>
+              <property name="statusTip">
+               <string>Opens a dialog box to register a new user</string>
+              </property>
+              <property name="text">
+               <string>Register User</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addButton">
+              <property name="toolTip">
+               <string>Opens a dialog box to add a new book</string>
+              </property>
+              <property name="statusTip">
+               <string>Opens a dialog box to add a new book</string>
+              </property>
+              <property name="text">
+               <string>Add Book</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="summaryButton">
+              <property name="toolTip">
+               <string>Shows informative message on the message panel about summary of the system</string>
+              </property>
+              <property name="statusTip">
+               <string>Shows informative message on the message panel about summary of the system</string>
+              </property>
+              <property name="text">
+               <string>Print Summary</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="switchButton">
+              <property name="toolTip">
+               <string>Switches the table between user list and book list</string>
+              </property>
+              <property name="statusTip">
+               <string>Switches the table between user list and book list</string>
+              </property>
+              <property name="text">
+               <string>Switch Table</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="clearButton">
+              <property name="toolTip">
+               <string>Cleans all the messages on the message panel</string>
+              </property>
+              <property name="statusTip">
+               <string>Cleans all the messages on the message panel</string>
+              </property>
+              <property name="text">
+               <string>Clear History</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="exitButton">
+              <property name="toolTip">
+               <string>Saves the latest status of the system and exits program</string>
+              </property>
+              <property name="statusTip">
+               <string>Saves the latest status of the system and exits program</string>
+              </property>
+              <property name="text">
+               <string>Save and Exit</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1">
+          <item>
+           <widget class="QGroupBox" name="checkOutGroupBox">
+            <property name="title">
+             <string>Check Out A Book</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>Book Title  </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="checkOutBookTitleLineEdit">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>User Name</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="checkOutPersonNameLineEdit"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="checkOutButton">
+                 <property name="toolTip">
+                  <string>Updates book status not available and registers the book in the user's record</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Updates book status not available and registers the book in the user's record</string>
+                 </property>
+                 <property name="text">
+                  <string>Check Out</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="returnGroupBox">
+            <property name="title">
+             <string>Return A Book</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Book Title</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="returnBookTitleLineEdit">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>26</height>
+                </size>
+               </property>
+               <property name="baseSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="returnButton">
+                 <property name="toolTip">
+                  <string>Updates book status to available</string>
+                 </property>
+                 <property name="statusTip">
+                  <string>Updates book status to available</string>
+                 </property>
+                 <property name="text">
+                  <string>Return</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
