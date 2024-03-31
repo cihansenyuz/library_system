@@ -12,11 +12,11 @@ using namespace std;
  */
 typedef class Item
 {
+protected:
+    string title;       /**< Title of the book */
 private:
     string author;      /**< Author of the book */
     long long int ISBN; /**< ISBN of the book */
-protected:
-    string title;       /**< Title of the book */
 public:
     /**
      * @brief Parameterized constructor.

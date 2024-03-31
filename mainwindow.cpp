@@ -296,7 +296,17 @@ void MainWindow::exitButtonClicked(){
     this->~MainWindow();
 }
 
+/**
+* @brief Slot method to handle item selection on tableWidget
+*
+* Gets row number of the selected item and decides which lineEdit to be auto filled.
+*
+* @param row Row number of the selected item
+* @param column Column number of the selected item(not used)
+* @return none
+*/
 void MainWindow::tableItemSelected(const int &row, const int &column){
+    (void) column;
     if(currentTable == bookTable){
         QString bookTitle = (ui->tableWidget->item(row, 0))->text();    // column is 0 cause bookTitle is in the first column
         if((ui->tableWidget->item(row, 3)->text() == "Free")){   // book is free
@@ -324,6 +334,14 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
     }
 }
 
+/**
+* @brief Update data on the tableWidget
+*
+* Updates data on current table. Does not change table type.
+*
+* @param none
+* @return none
+*/
 void MainWindow::updateTable(){
     if(currentTable == bookTable)
         updateBookTable();
