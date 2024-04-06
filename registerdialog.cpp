@@ -30,7 +30,10 @@ void RegisterDialog::registerButtonClicked(){
     std::string name = ui->nameLineEdit->text().toStdString();
     int id = std::stoi(ui->IDLineEdit->text().toStdString());
     emit userInputReady(name, id);
-    this->close();
+    if(!ui->multipleCheckBox->isChecked())
+        this->close();
+    ui->nameLineEdit->clear();
+    ui->IDLineEdit->clear();
 }
 
 /**
