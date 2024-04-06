@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     ui->returnISBN->setText("xxxxxxxxxxxxxx");
 
     // welcome user
-    ui->infoTextBrowser->append("Welcome to the Library System v2.0");
+    ui->infoTextBrowser->append("Welcome to the Library System v2.1");
 }
 
 MainWindow::~MainWindow()
