@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
 {
     ui->setupUi(this);
 
-    // signal-slot connections
+    // signal-slot connections for pushButtons clicks
     connect(ui->summaryButton, &QPushButton::clicked, this, &MainWindow::summaryButtonClicked);
     connect(ui->checkOutButton, &QPushButton::clicked, this, &MainWindow::checkOutButtonClicked);
     connect(ui->returnButton, &QPushButton::clicked, this, &MainWindow::returnButtonClicked);
@@ -17,16 +17,20 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->registerButton, &QPushButton::clicked, this, &MainWindow::registerButtonClicked);
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::addButtonClicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButtonClicked);
+
+    // signal-slot connections for tableWidgets cell selections
     connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
     connect(ui->personTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
+
+    // signal-slot connections for lineEdit edits
     connect(ui->returnBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::returnBookTitleLineEditUpdated);
     connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutBookTitleLineEditUpdated);
     connect(ui->checkOutPersonNameLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutPersonTitleLineEditUpdated);
 
-    // init the table
-    updatePersonTable();    // needs to be updated to create auto completer for user name
+    // create tables for the first time
+    updatePersonTable();
     updateBookTable();
-    ui->tabWidget->setCurrentIndex(bookTable);
+    ui->tabWidget->setCurrentIndex(bookTable);  // init tabWidget showing book table
 
     // init unique number labels to prevent window resize after item selection
     ui->checkOutISBN->setText("xxxxxxxxxxxxxx");
@@ -180,46 +184,46 @@ void MainWindow::summaryButtonClicked()
 /**
 * @brief Slot method to handle click action on checkOutButton
 *
-* Gets texts on editLines, and passes it to Library::checkOut function.
+* Gets texts on editLines, and passes relevant book or person object to Library::checkOut function.
 *
 * @param none
 * @return none
 */
 void MainWindow::checkOutButtonClicked(){
-    QString result;
+    QString resultMessage;
     Book *bookToCheckOut;
     Person *userCheckingOut;
     bookToCheckOut = this->library->checkBook(std::stoll(ui->checkOutISBN->text().toStdString()));
     userCheckingOut = this->library->checkPerson(std::stoi(ui->checkOutID->text().toStdString()));
-    result = this->library->checkOut(userCheckingOut, bookToCheckOut);
+    resultMessage = this->library->checkOut(userCheckingOut, bookToCheckOut);
     ui->checkOutBookTitleLineEdit->clear();
     ui->checkOutPersonNameLineEdit->clear();
-    ui->infoTextBrowser->append(result);
+    ui->infoTextBrowser->append(resultMessage);
     updateTables();
 }
 
 /**
 * @brief Slot method to handle click action on returnButton
 *
-* Gets the text on editLine, and passes it to Library::returnBook function.
+* Gets the text on editLine, and passes relevant book to Library::returnBook function.
 *
 * @param none
 * @return none
 */
 void MainWindow::returnButtonClicked(){
-    QString result;
+    QString resultMessage;
     Book *bookToReturn;
     bookToReturn = this->library->checkBook(std::stoll(ui->returnISBN->text().toStdString()));
-    result = this->library->returnBook(bookToReturn);
+    resultMessage = this->library->returnBook(bookToReturn);
     ui->returnBookTitleLineEdit->clear();
-    ui->infoTextBrowser->append(result);
+    ui->infoTextBrowser->append(resultMessage);
     updateTables();
 }
 
 /**
 * @brief Slot method to handle click action on switchButton
 *
-* Calls updatePersonTable function to recreate the table.
+* Switches between tabWidget tabs
 *
 * @param none
 * @return none
@@ -324,6 +328,7 @@ void MainWindow::exitButtonClicked(){
 * @brief Slot method to handle item selection on tableWidget
 *
 * Gets row number of the selected item and decides which lineEdit to be auto filled.
+* Also sets relevant QLabels to pass unique data to be later on used action buttons
 *
 * @param row Row number of the selected item
 * @param column Column number of the selected item(not used)
@@ -362,13 +367,20 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
             ui->checkOutISBN->setText("xxxxxxxxxxxxxx");
             ui->checkOutPersonNameLineEdit->clear();
             ui->checkOutID->setText("xxxxxxxx");
-            /*ui->returnBookTitleLineEdit->setText(bookTitle);
-            ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());*/   // bring ISBN for checkOut action
-            // needs new implemantation, row number is not correct
+            ui->returnBookTitleLineEdit->setText(bookTitle);
+            returnBookTitleLineEditUpdated(bookTitle);                  // bring ISBN for return action
         }
     }
 }
 
+/**
+* @brief Slot method to handle editing on returnBookTitleLineEdit
+*
+* Takes book title, finds corresponding QTableWidgetItem, passes ISBN data to relevant label
+*
+* @param title edited book title
+* @return none
+*/
 void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
     if(temp.size() == 0)
@@ -380,12 +392,28 @@ void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
         ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());
 }
 
+/**
+* @brief Slot method to handle click action on returnBookTitleLineEditCompleter
+*
+* Takes book title, finds corresponding QTableWidgetItem, passes ISBN data to relevant label
+*
+* @param title edited book title
+* @return none
+*/
 void MainWindow::returnBookTitleLineEditCompleterClicked(const QString &title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchExactly);
     int row = ui->bookTableWidget->row(temp[0]);
     ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());
 }
 
+/**
+* @brief Slot method to handle editing on checkOutBookTitleLineEdit
+*
+* Takes book title, finds corresponding QTableWidgetItem, passes ISBN data to relevant label
+*
+* @param title edited book title
+* @return none
+*/
 void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
     if(temp.size() == 0)
@@ -397,12 +425,28 @@ void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
         ui->checkOutISBN->setText(ui->bookTableWidget->item(row, 2)->text());
 }
 
+/**
+* @brief Slot method to handle click action on checkOutBookTitleLineEditCompleter
+*
+* Takes book title, finds corresponding QTableWidgetItem, passes ISBN data to relevant label
+*
+* @param title edited book title
+* @return none
+*/
 void MainWindow::checkOutBookTitleLineEditCompleterClicked(const QString &title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchExactly);
     int row = ui->bookTableWidget->row(temp[0]);
     ui->checkOutISBN->setText(ui->bookTableWidget->item(row, 2)->text());
 }
 
+/**
+* @brief Slot method to handle editing on checkOutPersonTitleLineEdit
+*
+* Takes user name, finds corresponding QTableWidgetItem, passes user ID data to relevant label
+*
+* @param name edited user name
+* @return none
+*/
 void MainWindow::checkOutPersonTitleLineEditUpdated(const QString& name){
     QList temp = ui->personTableWidget->findItems(name, Qt::MatchFixedString);
     if(temp.size() == 0)
@@ -414,6 +458,14 @@ void MainWindow::checkOutPersonTitleLineEditUpdated(const QString& name){
         ui->checkOutID->setText(ui->personTableWidget->item(row, 1)->text());
 }
 
+/**
+* @brief Slot method to handle click action on checkOutPersonTitleLineEditCompleter
+*
+* Takes user name, finds corresponding QTableWidgetItem, passes user ID data to relevant label
+*
+* @param name edited user name
+* @return none
+*/
 void MainWindow::checkOutPersonTitleLineEditCompleterClicked(const QString &name){
     QList temp = ui->personTableWidget->findItems(name, Qt::MatchExactly);
     int row = ui->personTableWidget->row(temp[0]);

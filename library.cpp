@@ -169,7 +169,6 @@ void Library::displayAvailables(void){
  * @return informative messages about operation as QString
  */
 QString Library::checkOut(Person* person, Book* book){
-
     // check if given argumants are valid
     if(!book)
         return "No such book in the library!";
@@ -188,6 +187,8 @@ QString Library::checkOut(Person* person, Book* book){
         return "This book is already taken by someone else";
     else if(!person->getTakenBook())
         return QString::fromStdString(person->getName()) + " has already taken a book. Needs to return it to take a new one.";
+
+    return "supress for -Wreturn-type";
 }
 
 /**
