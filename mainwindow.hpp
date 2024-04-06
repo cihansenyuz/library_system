@@ -34,7 +34,7 @@ public:
     void updatePersonTable();
     tableType currentTable;
     void createDialog();
-    void updateTable();
+    void updateTables();
 private slots:
     void summaryButtonClicked();
     void checkOutButtonClicked();

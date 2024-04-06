@@ -90,7 +90,7 @@ void Library::addBook(const Book& newBook){
     vector<pair<int, long long int>> temp;
     for(auto &person : *personList){
         if((person.getTakenBook()))
-            temp.push_back(make_pair(person.getId(), person.getTakenBook()->getISBN()));
+            temp.push_back(make_pair(person.getID(), person.getTakenBook()->getISBN()));
     }
 
     bookList->push_back(newBook);
@@ -98,7 +98,7 @@ void Library::addBook(const Book& newBook){
     // fix broken data
     for(auto &pair : temp){                             // for each pair
         for(auto &person : *personList){                // iterate all persons and find who matches to the pair
-            if(pair.first == person.getId()){           // once person matches
+            if(pair.first == person.getID()){           // once person matches
                 for(auto &book : *bookList){            // iterate all books and find which matches to the pair
                     if(pair.second == book.getISBN())   // once also book matches
                         person.setTakenBook(book);      // set person taken book again which was broken
@@ -168,41 +168,26 @@ void Library::displayAvailables(void){
  * @param bookTitle title of the book
  * @return informative messages about operation as QString
  */
-QString Library::checkOut(const string personName, const string bookTitle){
-    bool bookAvailable = false;
-    bool personAvailable = false;
-    for(auto &book : *bookList)
-        if(book.getTitle() == bookTitle)
-            bookAvailable = book.isAvailable();
-    for(auto &person : *personList)
-        if(person.getName() == personName && person.getTakenBook() == nullptr)
-            personAvailable = true;
+QString Library::checkOut(Person* person, Book* book){
 
     // check if given argumants are valid
-    if(!checkBook(bookTitle))
-        return "No such book in the library: " + QString::fromStdString(bookTitle);
-    else if(!checkPerson(personName))
-        return "This person is not registered: " + QString::fromStdString(personName);
+    if(!book)
+        return "No such book in the library!";
+    else if(!person)
+        return "This user is not registered!";
 
     // check availability of person and book
-    if(bookAvailable && personAvailable)
-    {   
-        for(auto &book : *bookList) // find the book in the list
-            if(book.getTitle() == bookTitle)
-            {   
-                book.setAvailable(false); // set not available
-                for(auto &person : *personList) // find the person in the list
-                    if(person.getName() == personName)
-                    {   
-                        person.setTakenBook(book); // give the book to the person setting takenBook
-                        return "Book '" + QString::fromStdString(bookTitle) + "' is given to " + QString::fromStdString(personName);
-                    }
-            }
+    if(book->isAvailable() && person->getTakenBook() == nullptr)
+    {
+
+        book->setAvailable(false); // set not available
+        person->setTakenBook(*book); // give the book to the person setting takenBook
+        return "Book '" + QString::fromStdString(book->getTitle()) + "' is given to " + QString::fromStdString(person->getName());
     }
-    else if(!bookAvailable)
+    else if(!book->isAvailable())
         return "This book is already taken by someone else";
-    else if(!personAvailable)
-        return QString::fromStdString(personName) + " has already taken a book. Needs to return it to take a new one.";
+    else if(!person->getTakenBook())
+        return QString::fromStdString(person->getName()) + " has already taken a book. Needs to return it to take a new one.";
 }
 
 /**
@@ -212,23 +197,20 @@ QString Library::checkOut(const string personName, const string bookTitle){
  * @param bookTitle title of the book
  * @return informative messages about operation as QString
  */
-QString Library::returnBook(const string bookTitle){
+QString Library::returnBook(Book* book){
     // check if the book really exists
-    if(!checkBook(bookTitle))
+    if(!book)
         return "There is no such book! Please check spelling...";
 
-    // find book in the library and set availability true
-    for(auto &book : *bookList)
-        if(book.getTitle() == bookTitle)
-            book.setAvailable(true);
+    book->setAvailable(true);
 
     // find person and reset takenBook pointer
     for(auto &person : *personList){
         if(!person.getTakenBook())      // check if it s null before to get title, otherwise crashes
             continue;
-        if(person.getTakenBook()->getTitle() == bookTitle){
+        if(person.getTakenBook() == book){
             person.resetTakenBook();
-            return QString::fromStdString(bookTitle) + " is taken back from " + QString::fromStdString(person.getName());
+            return "The book is taken back from " + QString::fromStdString(person.getName());
         }
     }
     return "This book is already available";
@@ -276,29 +258,29 @@ void Library::setPersonList(vector<Person>* list){
 /**
  * @brief Checks if a person is registered in the library
  *
- * Takes name of the person, and searches for it in the vector pointed by personList
- * @param name name of the person
- * @return true: name exists, false: does not
+ * Takes ID of the person, and searches for it in the vector pointed by personList
+ * @param personID unique ID of the person
+ * @return true: person exists, false: does not
  */
-bool Library::checkPerson(const string name){
+Person* Library::checkPerson(const int &personID){
     for(auto &person : *personList)
-        if(person.getName() == name)
-            return true;
-    return false;
+        if(person.getID() == personID)
+            return &person;
+    return nullptr;
 }
 
 /**
  * @brief Checks if a book is registered in the library
  *
- * Takes title of the book, and searches for it in the vector pointed by bookList
- * @param title title of the book
- * @return true: title exists, false: does not
+ * Takes ISBN of the book, and searches for it in the vector pointed by bookList
+ * @param bookISBN unique ISBN of the book
+ * @return true: book exists, false: does not
  */
-bool Library::checkBook(const string title){
+Book* Library::checkBook(const long long int &bookISBN){
     for(auto &book : *bookList)
-        if(book.getTitle() == title)
-            return true;
-    return false;
+        if(book.getISBN() == bookISBN)
+            return &book;
+    return nullptr;
 }
 
 /**
@@ -329,7 +311,7 @@ void Library::saveLatestData(void){
         // keep record of every person, \t is terminator for reading operation
         for(auto &person : *personList)
         {
-            personData << person.getName() << '\t' << person.getId() << "\t";
+            personData << person.getName() << '\t' << person.getID() << "\t";
             if((person.getTakenBook()))
                 personData << person.getTakenBook()->getTitle() << '\t';
             else

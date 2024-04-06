@@ -21,7 +21,7 @@ public:
     Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
     void displayInfo(void);
     string getName(void);
-    int getId(void);
+    int getID(void);
     void setTakenBook(Book& b);
     void resetTakenBook(void);
     Book* getTakenBook(void);
