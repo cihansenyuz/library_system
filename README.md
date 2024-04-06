@@ -16,3 +16,15 @@ Functionalities and features:
 27.03.2024 the release of Library System Terminal Application v1.1
 - Bugfix: removed forgetten debug print
 - Bugfix: program crash after adding a new book
+
+31.03.2024 the release of Library System Terminal Application v2.0
+- A graphical user interface added, along with many GUI functionalities
+
+06.04.2024 the release of Library System Terminal Application v2.1
+New features and improvements added:
+- New feature: Users and books in the library system now can be removed from the database.
+- New feature: Add/register dialog boxes now has multiple add/register option.
+- New feature: Inputs for check out/return actions now automatically provided upon row selection on the book/user table.
+- QoL improvement: Check out/Return buttons are now disabled until proper input provided.
+- QoL improvement: Inputs for check out/return actions now have auto completer upon typing on line edits.
+- QoL improvement: Switching between book list and user list is possible upon tab selection.
