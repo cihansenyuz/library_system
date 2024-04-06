@@ -4,7 +4,7 @@
 
 MainWindow::MainWindow(QWidget *parent, Library *lib)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), library(lib), bookCompleter(nullptr), personCompleter(nullptr)
+    , ui(new Ui::MainWindow), library(lib), returnBookCompleter(nullptr), checkOutBookCompleter(nullptr), personCompleter(nullptr)
 {
     ui->setupUi(this);
 
@@ -19,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButtonClicked);
     connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
     connect(ui->personTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
+    connect(ui->returnBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::returnBookTitleLineEditUpdated);
+    connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutBookTitleLineEditUpdated);
+    connect(ui->checkOutPersonNameLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutPersonTitleLineEditUpdated);
 
     // init the table
     updatePersonTable();    // needs to be updated to create auto completer for user name
@@ -37,7 +40,9 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
 MainWindow::~MainWindow()
 {
     library->saveLatestData();
-    delete bookCompleter;
+    delete returnBookCompleter;
+    delete checkOutBookCompleter;
+    delete personCompleter;
     delete ui;
 }
 
@@ -51,9 +56,11 @@ MainWindow::~MainWindow()
  * */
 void MainWindow::updateBookTable(){
     // preparetions for completer
-    if(bookCompleter)               // delete old completer
-        delete bookCompleter;
-    bookTitleCompletions.clear();   // delete old completions
+    if(returnBookCompleter)             // delete old completer
+        delete returnBookCompleter;
+    if(checkOutBookCompleter)           // delete old completer
+        delete checkOutBookCompleter;
+    bookTitleCompletions.clear();       // delete old completions
 
     // create the table
     unsigned int rowCount = library->getBookList()->size();
@@ -88,14 +95,19 @@ void MainWindow::updateBookTable(){
         ui->bookTableWidget->setItem(row, 3, item);
     }
     ui->bookTableWidget->resizeColumnsToContents();
-    this->currentTable = bookTable;
 
     // final configuration for completer
-    bookCompleter = new QCompleter(bookTitleCompletions, ui->checkOutBookTitleLineEdit);    // create completer
-    bookCompleter->setCaseSensitivity(Qt::CaseInsensitive);                                 // setting
-    bookCompleter->setFilterMode(Qt::MatchContains);                                        // setting
-    ui->checkOutBookTitleLineEdit->setCompleter(bookCompleter);                             // set completer for line edit
-    ui->returnBookTitleLineEdit->setCompleter(bookCompleter);                               // set completer for line edit
+    checkOutBookCompleter = new QCompleter(bookTitleCompletions, ui->checkOutBookTitleLineEdit);    // create completer
+    checkOutBookCompleter->setCaseSensitivity(Qt::CaseInsensitive);                                 // setting
+    checkOutBookCompleter->setFilterMode(Qt::MatchContains);                                        // setting
+    ui->checkOutBookTitleLineEdit->setCompleter(checkOutBookCompleter);                             // set completer for line edit
+    connect(checkOutBookCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::checkOutBookTitleLineEditCompleterClicked);
+
+    returnBookCompleter = new QCompleter(bookTitleCompletions, ui->returnBookTitleLineEdit);        // create completer
+    returnBookCompleter->setCaseSensitivity(Qt::CaseInsensitive);                                   // setting
+    returnBookCompleter->setFilterMode(Qt::MatchContains);                                          // setting
+    ui->returnBookTitleLineEdit->setCompleter(returnBookCompleter);                                 // set completer for line edit
+    connect(returnBookCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::returnBookTitleLineEditCompleterClicked);
 }
 
 /**
@@ -143,13 +155,13 @@ void MainWindow::updatePersonTable(){
         ui->personTableWidget->setItem(row, 2, item);
     }
     ui->personTableWidget->resizeColumnsToContents();
-    this->currentTable = personTable;
 
     // final configuration for completer
     personCompleter = new QCompleter(personNameCompletions, ui->checkOutBookTitleLineEdit); // create completer
     personCompleter->setCaseSensitivity(Qt::CaseInsensitive);                               // setting
     personCompleter->setFilterMode(Qt::MatchContains);                                      // setting
     ui->checkOutPersonNameLineEdit->setCompleter(personCompleter);                          // set completer for line edit
+    connect(personCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::checkOutPersonTitleLineEditCompleterClicked);
 }
 
 /**
@@ -355,6 +367,57 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
             // needs new implemantation, row number is not correct
         }
     }
+}
+
+void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
+    QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
+    if(temp.size() == 0)
+        return;
+    int row = ui->bookTableWidget->row(temp[0]);
+    if(row == -1)
+        return;
+    else
+        ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+}
+
+void MainWindow::returnBookTitleLineEditCompleterClicked(const QString &title){
+    QList temp = ui->bookTableWidget->findItems(title, Qt::MatchExactly);
+    int row = ui->bookTableWidget->row(temp[0]);
+    ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+}
+
+void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
+    QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
+    if(temp.size() == 0)
+        return;
+    int row = ui->bookTableWidget->row(temp[0]);
+    if(row == -1)
+        return;
+    else
+        ui->checkOutISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+}
+
+void MainWindow::checkOutBookTitleLineEditCompleterClicked(const QString &title){
+    QList temp = ui->bookTableWidget->findItems(title, Qt::MatchExactly);
+    int row = ui->bookTableWidget->row(temp[0]);
+    ui->checkOutISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+}
+
+void MainWindow::checkOutPersonTitleLineEditUpdated(const QString& name){
+    QList temp = ui->personTableWidget->findItems(name, Qt::MatchFixedString);
+    if(temp.size() == 0)
+        return;
+    int row = ui->personTableWidget->row(temp[0]);
+    if(row == -1)
+        return;
+    else
+        ui->checkOutID->setText(ui->personTableWidget->item(row, 1)->text());
+}
+
+void MainWindow::checkOutPersonTitleLineEditCompleterClicked(const QString &name){
+    QList temp = ui->personTableWidget->findItems(name, Qt::MatchExactly);
+    int row = ui->personTableWidget->row(temp[0]);
+    ui->checkOutID->setText(ui->personTableWidget->item(row, 1)->text());
 }
 
 /**

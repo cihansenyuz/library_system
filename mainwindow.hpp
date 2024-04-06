@@ -47,12 +47,19 @@ private slots:
     void getRegisterInput(const string &name, const int &id);
     void getAddInput(const string &tit, const string &ath, const long long &isbn);
     void tableItemSelected(const int &row, const int &column);
+    void returnBookTitleLineEditUpdated(const QString& title);
+    void returnBookTitleLineEditCompleterClicked(const QString &title);
+    void checkOutBookTitleLineEditUpdated(const QString& title);
+    void checkOutBookTitleLineEditCompleterClicked(const QString &title);
+    void checkOutPersonTitleLineEditUpdated(const QString& name);
+    void checkOutPersonTitleLineEditCompleterClicked(const QString &name);
 private:
     Ui::MainWindow *ui;
     Library *library;
     QStringList bookTitleCompletions;
     QStringList personNameCompletions;
-    QCompleter *bookCompleter;
+    QCompleter *returnBookCompleter;
+    QCompleter *checkOutBookCompleter;
     QCompleter *personCompleter;
 };
 #endif // MAINWINDOW_HPP
