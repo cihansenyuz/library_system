@@ -14,6 +14,6 @@ string Item::getAuthor(void){
  *
  * @return Current value of the variable
  */
-long long int Item::getISBN(void) const{
+long long int Item::getISBN(void){
     return ISBN;
 }

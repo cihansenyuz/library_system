@@ -143,6 +143,24 @@ void Library::registerPerson(const string& personName, const int& personId){
     this->registerPerson(p);
 }
 
+void Library::remove(Book* book){
+    for(auto it = getBookList()->begin(); it != getBookList()->end(); it++){
+        if(it->getISBN() == book->getISBN()){
+            getBookList()->erase(it);
+            break;
+        }
+    }
+}
+
+void Library::remove(Person* person){
+    for(auto it = getPersonList()->begin(); it != getPersonList()->end(); it++){
+        if(it->getID() == person->getID()){
+            getPersonList()->erase(it);
+            break;
+        }
+    }
+}
+
 /**
  * @brief Prints all available books
  *

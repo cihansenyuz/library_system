@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->registerButton, &QPushButton::clicked, this, &MainWindow::registerButtonClicked);
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::addButtonClicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButtonClicked);
+    connect(ui->removeButton, &QPushButton::clicked, this, &MainWindow::removeButtonClicked);
 
     // signal-slot connections for tableWidgets cell selections
     connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
@@ -321,6 +322,51 @@ void MainWindow::getAddInput(const string &tit, const string &ath, const long lo
     updateTables();
     ui->infoTextBrowser->append("New book added to the library!");
 }
+
+/**
+* @brief Slot method to handle click action on removeButton
+*
+* Creates an RemoveDialog object, makes signal/slot connection to get user input from
+* RemoveDialog to MainWindow
+*
+* @param none
+* @return none
+*/
+void MainWindow::removeButtonClicked(){
+    RemoveDialog dialog;
+    connect(&dialog, &RemoveDialog::userInputReady, this, &MainWindow::getRemoveInput);
+    updateTables();
+    dialog.setModal(true);
+    dialog.exec();
+}
+
+/**
+* @brief Slot method to handle signal from AddDialog
+*
+* Takes argumants from the signal and decides which object need to be removed
+* then calls relevant remove function in the library
+*
+* @param uniqueData ISBN of the Book or user ID
+* @return none
+*/
+void MainWindow::getRemoveInput(const long long int &uniqueData){
+    if(uniqueData == INVALID_INPUT){
+        ui->infoTextBrowser->append("Cannot remove any book or user; invalid input");
+        return;
+    }
+    if(uniqueData > MAX_POSSIBLE_ID){
+        Book* temp = library->checkBook(uniqueData);
+        library->remove(temp);
+        ui->infoTextBrowser->append("The book removed from the database!");
+    }
+    else{
+        Person* temp = library->checkPerson(uniqueData);
+        library->remove(temp);
+        ui->infoTextBrowser->append("The user removed from the database!");
+    }
+    updateTables();
+}
+
 
 /**
 * @brief Slot method to handle click action on exitButton

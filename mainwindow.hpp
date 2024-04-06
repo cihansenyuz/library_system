@@ -9,9 +9,11 @@
 #include "person.hpp"
 #include "registerdialog.hpp"
 #include "adddialog.hpp"
+#include "removedialog.hpp"
 
 #define BOOK_DATA_COLUMN_COUNT 4
 #define PERSON_DATA_COLUMN_COUNT 3
+#define MAX_POSSIBLE_ID 99999999
 
 typedef enum tableType{
     bookTable, personTable
@@ -43,9 +45,11 @@ private slots:
     void clearButtonClickled();
     void registerButtonClicked();
     void addButtonClicked();
+    void removeButtonClicked();
     void exitButtonClicked();
     void getRegisterInput(const string &name, const int &id);
     void getAddInput(const string &tit, const string &ath, const long long &isbn);
+    void getRemoveInput(const long long int &uniqueData);
     void tableItemSelected(const int &row, const int &column);
     void returnBookTitleLineEditUpdated(const QString& title);
     void returnBookTitleLineEditCompleterClicked(const QString &title);

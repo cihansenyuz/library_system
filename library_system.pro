@@ -16,7 +16,8 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     person.cpp \
-    registerdialog.cpp
+    registerdialog.cpp \
+    removedialog.cpp
 
 HEADERS += \
     adddialog.hpp \
@@ -26,12 +27,14 @@ HEADERS += \
     main.hpp \
     mainwindow.hpp \
     person.hpp \
-    registerdialog.hpp
+    registerdialog.hpp \
+    removedialog.hpp
 
 FORMS += \
     adddialog.ui \
     mainwindow.ui \
-    registerdialog.ui
+    registerdialog.ui \
+    removedialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

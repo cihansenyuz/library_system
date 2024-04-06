@@ -100,7 +100,7 @@
        <item>
         <widget class="QCheckBox" name="multipleCheckBox">
          <property name="text">
-          <string>CheckBox</string>
+          <string>Multiple Register</string>
          </property>
         </widget>
        </item>

@@ -36,6 +36,8 @@ public:
     void addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN);
     void registerPerson(const Person& newPerson);
     void registerPerson(const string& personName, const int& personId);
+    void remove(Book* book);
+    void remove(Person* person);
     void displayAvailables(void);
     QString checkOut(Person* person, Book* book);
     QString returnBook(Book* book);

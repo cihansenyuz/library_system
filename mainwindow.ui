@@ -115,6 +115,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="removeButton">
+              <property name="text">
+               <string>Remove User/Book</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="summaryButton">
               <property name="toolTip">
                <string>Shows informative message on the message panel about summary of the system</string>

@@ -29,7 +29,7 @@ public:
     Item(string t, string a, long long int i):title(t),author(a),ISBN(i){}
     virtual void displayInfo(void) = 0;
     string getAuthor(void);
-    long long int getISBN(void) const;
+    long long int getISBN(void);
 }Item;
 
 #endif
