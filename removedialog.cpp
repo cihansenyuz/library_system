@@ -18,7 +18,14 @@ RemoveDialog::~RemoveDialog()
     delete ui;
 }
 
-
+/**
+* @brief Slot method to handle click action on deleteButton
+*
+* Gets user inpuıs from lineEdit and emits signal for MainWindow to catch
+*
+* @param none
+* @return none
+*/
 void RemoveDialog::deleteButtonClicked(){
     QString temp = ui->selectionLineEdit->text();
     long long int uniqueData;
@@ -36,10 +43,26 @@ void RemoveDialog::deleteButtonClicked(){
     this->close();
 }
 
+/**
+* @brief Slot method to handle click action on cancelButton
+*
+* Closes the dialog box without any action
+*
+* @param none
+* @return none
+*/
 void RemoveDialog::cancelButtonClicked(){
     this->close();
 }
 
+/**
+* @brief Slot method to handle selection on radioButtons
+*
+* Edits relevant labels on the window upon selection change
+*
+* @param none
+* @return none
+*/
 void RemoveDialog::selectionToggled(){
     if(ui->bookRadioButton->isChecked())
         ui->selectionLabel->setText("ISBN");
