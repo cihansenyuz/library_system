@@ -28,7 +28,7 @@ string Person::getName(void) {
  *
  * @return name of the person
  */
-int Person::getId(void){
+int Person::getID(void){
     return id;
 }
 

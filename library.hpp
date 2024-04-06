@@ -37,12 +37,12 @@ public:
     void registerPerson(const Person& newPerson);
     void registerPerson(const string& personName, const int& personId);
     void displayAvailables(void);
-    QString checkOut(const string personName, const string bookTitle);
-    QString returnBook(const string bookTitle);
+    QString checkOut(Person* person, Book* book);
+    QString returnBook(Book* book);
     QString getSummary(void);
     void setPersonList(vector<Person>* list);
-    bool checkPerson(const string name);
-    bool checkBook(const string title);
+    Person* checkPerson(const int& personID);
+    Book* checkBook(const long long int& bookISBN);
     void saveLatestData(void);
     vector<Book>* getBookList(void);
     vector<Person>* getPersonList(void);
