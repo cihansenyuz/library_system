@@ -27,6 +27,13 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutBookTitleLineEditUpdated);
     connect(ui->checkOutPersonNameLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutPersonTitleLineEditUpdated);
 
+    // second signal-slot connections for user input actions
+    connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::newUserInput);
+    connect(ui->personTableWidget, &QTableWidget::cellClicked, this, &MainWindow::newUserInput);
+    connect(ui->returnBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::newUserInput);
+    connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::newUserInput);
+    connect(ui->checkOutPersonNameLineEdit, &QLineEdit::textEdited, this, &MainWindow::newUserInput);
+
     // create tables for the first time
     updatePersonTable();
     updateBookTable();
@@ -106,12 +113,14 @@ void MainWindow::updateBookTable(){
     checkOutBookCompleter->setFilterMode(Qt::MatchContains);                                        // setting
     ui->checkOutBookTitleLineEdit->setCompleter(checkOutBookCompleter);                             // set completer for line edit
     connect(checkOutBookCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::checkOutBookTitleLineEditCompleterClicked);
+    connect(checkOutBookCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::newUserInput);
 
     returnBookCompleter = new QCompleter(bookTitleCompletions, ui->returnBookTitleLineEdit);        // create completer
     returnBookCompleter->setCaseSensitivity(Qt::CaseInsensitive);                                   // setting
     returnBookCompleter->setFilterMode(Qt::MatchContains);                                          // setting
     ui->returnBookTitleLineEdit->setCompleter(returnBookCompleter);                                 // set completer for line edit
     connect(returnBookCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::returnBookTitleLineEditCompleterClicked);
+    connect(returnBookCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::newUserInput);
 }
 
 /**
@@ -166,6 +175,7 @@ void MainWindow::updatePersonTable(){
     personCompleter->setFilterMode(Qt::MatchContains);                                      // setting
     ui->checkOutPersonNameLineEdit->setCompleter(personCompleter);                          // set completer for line edit
     connect(personCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::checkOutPersonTitleLineEditCompleterClicked);
+    connect(personCompleter, QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::newUserInput);
 }
 
 /**
@@ -483,4 +493,19 @@ void MainWindow::checkOutPersonTitleLineEditCompleterClicked(const QString &name
 void MainWindow::updateTables(){
     updateBookTable();
     updatePersonTable();
+}
+
+
+void MainWindow::newUserInput(){
+    //check if inputs are proper for checkout action
+    if(ui->checkOutISBN->text() != "xxxxxxxxxxxxxx" && ui->checkOutID->text() != "xxxxxxxx")
+        ui->checkOutButton->setEnabled(true);
+    else
+        ui->checkOutButton->setEnabled(false);
+
+    //check if inputs are proper for return action
+    if(ui->returnISBN->text() != "xxxxxxxxxxxxxx")
+        ui->returnButton->setEnabled(true);
+    else
+        ui->returnButton->setEnabled(false);
 }

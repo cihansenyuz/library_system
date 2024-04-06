@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>826</width>
     <height>600</height>
    </rect>
   </property>
@@ -284,6 +284,9 @@
                </item>
                <item>
                 <widget class="QPushButton" name="checkOutButton">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="toolTip">
                   <string>Updates book status not available and registers the book in the user's record</string>
                  </property>
@@ -396,6 +399,9 @@
                </item>
                <item>
                 <widget class="QPushButton" name="returnButton">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="toolTip">
                   <string>Updates book status to available</string>
                  </property>
@@ -438,7 +444,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>826</width>
      <height>21</height>
     </rect>
    </property>

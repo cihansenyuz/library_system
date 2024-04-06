@@ -53,6 +53,7 @@ private slots:
     void checkOutBookTitleLineEditCompleterClicked(const QString &title);
     void checkOutPersonTitleLineEditUpdated(const QString& name);
     void checkOutPersonTitleLineEditCompleterClicked(const QString &name);
+    void newUserInput();
 private:
     Ui::MainWindow *ui;
     Library *library;
