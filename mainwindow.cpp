@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent, Library *lib, QString pv)
     ui->tabWidget->setCurrentIndex(bookTable);  // init tabWidget showing book table
 
     // init unique number labels to prevent window resize after item selection
-    ui->checkOutISBN->setText("xxxxxxxxxxxxxx");
-    ui->checkOutID->setText("xxxxxxxx");
-    ui->returnISBN->setText("xxxxxxxxxxxxxx");
+    ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
+    ui->checkOutID->setText(NOT_VALID_INPUT_ID);
+    ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
 
     // welcome user
     ui->infoTextBrowser->append("Welcome to the " + programVersion);
@@ -86,25 +86,25 @@ void MainWindow::updateBookTable(){
 
     // create items and add them into the table
     QTableWidgetItem *item;
-    for (unsigned int row = 0; row < rowCount; row++)
+    for (unsigned int currentRow = 0; currentRow < rowCount; currentRow++)
     {
-        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getTitle()));
-        ui->bookTableWidget->setItem(row, 0, item);
+        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(currentRow).getTitle()));
+        ui->bookTableWidget->setItem(currentRow, titleColumn, item);
         bookTitleCompletions << item->text();
 
-        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(row).getAuthor()));
-        ui->bookTableWidget->setItem(row, 1, item);
+        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(currentRow).getAuthor()));
+        ui->bookTableWidget->setItem(currentRow, authorColumn, item);
 
-        item = new QTableWidgetItem(QString::number(library->getBookList()->at(row).getISBN()));
-        ui->bookTableWidget->setItem(row, 2, item);
+        item = new QTableWidgetItem(QString::number(library->getBookList()->at(currentRow).getISBN()));
+        ui->bookTableWidget->setItem(currentRow, ISBNColumn, item);
         item->setTextAlignment(Qt::AlignCenter);
 
-        if(library->getBookList()->at(row).isAvailable())
-            item = new QTableWidgetItem("Free");
+        if(library->getBookList()->at(currentRow).isAvailable())
+            item = new QTableWidgetItem(BOOK_AVAILABLE);
         else
-            item = new QTableWidgetItem("Already Booked");
+            item = new QTableWidgetItem(BOOK_NOT_AVAILABLE);
         item->setTextAlignment(Qt::AlignCenter);
-        ui->bookTableWidget->setItem(row, 3, item);
+        ui->bookTableWidget->setItem(currentRow, availabilityColumn, item);
     }
     ui->bookTableWidget->resizeColumnsToContents();
 
@@ -150,23 +150,23 @@ void MainWindow::updatePersonTable(){
 
     // create items and add them into the table
     QTableWidgetItem *item;
-    for (unsigned int row = 0; row < rowCount; row++)
+    for (unsigned int currentRow = 0; currentRow < rowCount; currentRow++)
     {
-        item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getName()));
-        ui->personTableWidget->setItem(row, 0, item);
+        item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(currentRow).getName()));
+        ui->personTableWidget->setItem(currentRow, nameColumn, item);
         personNameCompletions << item->text();
 
-        item = new QTableWidgetItem(QString::fromStdString(std::to_string(library->getPersonList()->at(row).getID())));
-        ui->personTableWidget->setItem(row, 1, item);
+        item = new QTableWidgetItem(QString::fromStdString(std::to_string(library->getPersonList()->at(currentRow).getID())));
+        ui->personTableWidget->setItem(currentRow, IDColumn, item);
         item->setTextAlignment(Qt::AlignCenter);
 
-        if(library->getPersonList()->at(row).getTakenBook())
-            item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(row).getTakenBook()->getTitle()));
+        if(library->getPersonList()->at(currentRow).getTakenBook())
+            item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(currentRow).getTakenBook()->getTitle()));
         else{
-            item = new QTableWidgetItem(" - ");
+            item = new QTableWidgetItem(NO_TAKEN_BOOK);
             item->setTextAlignment(Qt::AlignCenter);
         }
-        ui->personTableWidget->setItem(row, 2, item);
+        ui->personTableWidget->setItem(currentRow, takenBookColumn, item);
     }
     ui->personTableWidget->resizeColumnsToContents();
 
@@ -393,38 +393,38 @@ void MainWindow::exitButtonClicked(){
 void MainWindow::tableItemSelected(const int &row, const int &column){
     (void) column;
     if(ui->tabWidget->currentIndex() == bookTable){
-        QString bookTitle = (ui->bookTableWidget->item(row, 0))->text();    // column is 0 cause bookTitle is in the first column
-        if((ui->bookTableWidget->item(row, 3)->text() == "Free")){   // book is free
+        QString bookTitle = (ui->bookTableWidget->item(row, titleColumn))->text();                    // get book title
+        if((ui->bookTableWidget->item(row, availabilityColumn)->text() == BOOK_AVAILABLE)){ // book is free
             ui->returnBookTitleLineEdit->clear();
-            ui->returnISBN->setText("xxxxxxxxxxxxxx");
+            ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
             ui->checkOutBookTitleLineEdit->setText(bookTitle);
-            ui->checkOutISBN->setText(ui->bookTableWidget->item(row, 2)->text());   // bring ISBN for checkOut action
+            ui->checkOutISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());  // set ISBN for checkOut action
         }
         else{   // or already booked
             ui->checkOutBookTitleLineEdit->clear();
-            ui->checkOutISBN->setText("xxxxxxxxxxxxxx");
+            ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
             ui->checkOutPersonNameLineEdit->clear();
-            ui->checkOutID->setText("xxxxxxxx");
+            ui->checkOutID->setText(NOT_VALID_INPUT_ID);
             ui->returnBookTitleLineEdit->setText(bookTitle);
-            ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());   // bring ISBN for checkOut action
+            ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());    // set ISBN for checkOut action
         }
     }
     else{   // personTable
-        QString bookTitle = (ui->personTableWidget->item(row, 2))->text(); // column is 2 cause takenBook is in the third column
-        QString personName = (ui->personTableWidget->item(row, 0))->text(); // column is 0 cause personName is in the first column
-        if(bookTitle == " - "){   // person can take
+        QString bookTitle = (ui->personTableWidget->item(row, takenBookColumn))->text();    // get taken book title
+        QString personName = (ui->personTableWidget->item(row, nameColumn))->text();        // get user name
+        if(bookTitle == NO_TAKEN_BOOK){   // person can take
             ui->returnBookTitleLineEdit->clear();
-            ui->returnISBN->setText("xxxxxxxxxxxxxx");
+            ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
             ui->checkOutPersonNameLineEdit->setText(personName);
-            ui->checkOutID->setText(ui->personTableWidget->item(row, 1)->text());   // bring ID for checkOut action
+            ui->checkOutID->setText(ui->personTableWidget->item(row, IDColumn)->text());    // set ID for checkOut action
         }
         else{   // or already taken
             ui->checkOutBookTitleLineEdit->clear();
-            ui->checkOutISBN->setText("xxxxxxxxxxxxxx");
+            ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
             ui->checkOutPersonNameLineEdit->clear();
-            ui->checkOutID->setText("xxxxxxxx");
+            ui->checkOutID->setText(NOT_VALID_INPUT_ID);
             ui->returnBookTitleLineEdit->setText(bookTitle);
-            returnBookTitleLineEditUpdated(bookTitle);                  // bring ISBN for return action
+            returnBookTitleLineEditUpdated(bookTitle);                  // set ISBN for return action
         }
     }
 }
@@ -441,11 +441,11 @@ void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
     if(temp.size() == 0)
         return;
-    int row = ui->bookTableWidget->row(temp[0]);
-    if(row == -1)
+    int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
+    if(row == NO_ITEM)
         return;
     else
-        ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+        ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
 }
 
 /**
@@ -459,7 +459,7 @@ void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
 void MainWindow::returnBookTitleLineEditCompleterClicked(const QString &title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchExactly);
     int row = ui->bookTableWidget->row(temp[0]);
-    ui->returnISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+    ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
 }
 
 /**
@@ -475,10 +475,10 @@ void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
     if(temp.size() == 0)
         return;
     int row = ui->bookTableWidget->row(temp[0]);
-    if(row == -1)
+    if(row == NO_ITEM)
         return;
     else
-        ui->checkOutISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+        ui->checkOutISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
 }
 
 /**
@@ -492,7 +492,7 @@ void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
 void MainWindow::checkOutBookTitleLineEditCompleterClicked(const QString &title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchExactly);
     int row = ui->bookTableWidget->row(temp[0]);
-    ui->checkOutISBN->setText(ui->bookTableWidget->item(row, 2)->text());
+    ui->checkOutISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
 }
 
 /**
@@ -508,10 +508,10 @@ void MainWindow::checkOutPersonTitleLineEditUpdated(const QString& name){
     if(temp.size() == 0)
         return;
     int row = ui->personTableWidget->row(temp[0]);
-    if(row == -1)
+    if(row == NO_ITEM)
         return;
     else
-        ui->checkOutID->setText(ui->personTableWidget->item(row, 1)->text());
+        ui->checkOutID->setText(ui->personTableWidget->item(row, IDColumn)->text());
 }
 
 /**
@@ -525,7 +525,7 @@ void MainWindow::checkOutPersonTitleLineEditUpdated(const QString& name){
 void MainWindow::checkOutPersonTitleLineEditCompleterClicked(const QString &name){
     QList temp = ui->personTableWidget->findItems(name, Qt::MatchExactly);
     int row = ui->personTableWidget->row(temp[0]);
-    ui->checkOutID->setText(ui->personTableWidget->item(row, 1)->text());
+    ui->checkOutID->setText(ui->personTableWidget->item(row, IDColumn)->text());
 }
 
 /**
@@ -544,13 +544,13 @@ void MainWindow::updateTables(){
 
 void MainWindow::newUserInput(){
     //check if inputs are proper for checkout action
-    if(ui->checkOutISBN->text() != "xxxxxxxxxxxxxx" && ui->checkOutID->text() != "xxxxxxxx")
+    if(ui->checkOutISBN->text() != NOT_VALID_INPUT_ISBN && ui->checkOutID->text() != NOT_VALID_INPUT_ID)
         ui->checkOutButton->setEnabled(true);
     else
         ui->checkOutButton->setEnabled(false);
 
     //check if inputs are proper for return action
-    if(ui->returnISBN->text() != "xxxxxxxxxxxxxx")
+    if(ui->returnISBN->text() != NOT_VALID_INPUT_ISBN)
         ui->returnButton->setEnabled(true);
     else
         ui->returnButton->setEnabled(false);

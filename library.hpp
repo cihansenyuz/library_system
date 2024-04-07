@@ -7,6 +7,9 @@
 #include <fstream>
 #include <QString>
 
+#define BOOK_NOT_AVAILABLE '0'
+#define BOOK_AVAILABLE '1'
+
 /**
  * @brief This class is to handle behaviours in the library.
  *

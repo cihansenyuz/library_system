@@ -32,11 +32,11 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
         getline(bookData, temp, '\t');
         char b = temp[0];   // availability
         // create book instances with proper availability
-        if(b == '0'){
+        if(b == BOOK_NOT_AVAILABLE){
             Book book(t,a,n,false);
             savedBookList->push_back(book);
         }
-        else if(b == '1'){
+        else if(b == BOOK_AVAILABLE){
             Book book(t,a,n);
             savedBookList->push_back(book);
         }

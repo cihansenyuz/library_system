@@ -13,7 +13,26 @@
 
 #define BOOK_DATA_COLUMN_COUNT 4
 #define PERSON_DATA_COLUMN_COUNT 3
+
+typedef enum bookColumns{   // enum for column labels of book table
+    titleColumn, authorColumn, ISBNColumn, availabilityColumn  
+}bookColumns;
+
+typedef enum personColumns{ // enum for column labels of user table
+    nameColumn, IDColumn, takenBookColumn  
+}personColumns;
+
 #define MAX_POSSIBLE_ID 99999999    // user ID must be 8 digits
+#define NO_ITEM -1                  // no item found
+
+// strings for line edit labels
+#define NOT_VALID_INPUT_ISBN "xxxxxxxxxxxxxx"
+#define NOT_VALID_INPUT_ID "xxxxxxxx"
+
+// strings for tables
+#define NO_TAKEN_BOOK " - "
+#define BOOK_AVAILABLE "Free"
+#define BOOK_NOT_AVAILABLE "Already Booked"
 
 typedef enum tableType{
     bookTable, personTable  // enum to track which list is visible at the moment
