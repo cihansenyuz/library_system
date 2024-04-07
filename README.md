@@ -4,6 +4,7 @@ A library system to keep track of books and users
 06.03.2024 the start of the project.
 
 14.03.2024 the release of Library System Terminal Application v1.0
+
 Functionalities and features:
 - Add new books to the library
 - Register new users
@@ -21,6 +22,7 @@ Functionalities and features:
 - A graphical user interface added, along with many GUI functionalities
 
 06.04.2024 the release of Library System Terminal Application v2.1
+
 New features and improvements added:
 - New feature: Users and books in the library system now can be removed from the database.
 - New feature: Add/register dialog boxes now has multiple add/register option.

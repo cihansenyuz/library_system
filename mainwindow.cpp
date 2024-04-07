@@ -439,13 +439,13 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
 */
 void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
-    if(temp.size() == 0)
-        return;
-    int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
-    if(row == NO_ITEM)
-        return;
-    else
+    if(temp.size() == 0){       // no match with title
+        ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
+    }
+    else{                       // matches
+        int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
         ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
+    }
 }
 
 /**
@@ -472,13 +472,13 @@ void MainWindow::returnBookTitleLineEditCompleterClicked(const QString &title){
 */
 void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
-    if(temp.size() == 0)
-        return;
-    int row = ui->bookTableWidget->row(temp[0]);
-    if(row == NO_ITEM)
-        return;
-    else
-        ui->checkOutISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
+    if(temp.size() == 0){       // no match with title
+        ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
+    }
+    else{                       // matches
+        int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
+        ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
+    }
 }
 
 /**
@@ -505,13 +505,13 @@ void MainWindow::checkOutBookTitleLineEditCompleterClicked(const QString &title)
 */
 void MainWindow::checkOutPersonTitleLineEditUpdated(const QString& name){
     QList temp = ui->personTableWidget->findItems(name, Qt::MatchFixedString);
-    if(temp.size() == 0)
-        return;
-    int row = ui->personTableWidget->row(temp[0]);
-    if(row == NO_ITEM)
-        return;
-    else
+    if(temp.size() == 0){       // no match with title
+        ui->checkOutID->setText(NOT_VALID_INPUT_ID);
+    }
+    else{                       // matches
+        int row = ui->personTableWidget->row(temp[0]);    // take first element since all books are unique
         ui->checkOutID->setText(ui->personTableWidget->item(row, IDColumn)->text());
+    }
 }
 
 /**
