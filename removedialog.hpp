@@ -3,7 +3,9 @@
 
 #include <QDialog>
 
-#define INVALID_INPUT 0
+#define BOOK_SELECTION 'B'
+#define USER_SELECTION 'U'
+#define INVALID_INPUT 'I'
 
 namespace Ui {
 class RemoveDialog;
@@ -18,7 +20,7 @@ public:
     ~RemoveDialog();
 
 signals:
-    void userInputReady(const long long int &uniqueData);
+    void userInputReady(const long long int& uniqueData, const char& selection);
 
 private slots:
     void deleteButtonClicked();

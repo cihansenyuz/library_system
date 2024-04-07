@@ -22,17 +22,14 @@ typedef enum personColumns{ // enum for column labels of user table
     nameColumn, IDColumn, takenBookColumn  
 }personColumns;
 
-#define MAX_POSSIBLE_ID 99999999    // user ID must be 8 digits
-#define NO_ITEM -1                  // no item found
-
 // strings for line edit labels
 #define NOT_VALID_INPUT_ISBN "xxxxxxxxxxxxxx"
 #define NOT_VALID_INPUT_ID "xxxxxxxx"
 
 // strings for tables
-#define NO_TAKEN_BOOK " - "
-#define BOOK_AVAILABLE "Free"
-#define BOOK_NOT_AVAILABLE "Already Booked"
+#define TABLE_NO_TAKEN_BOOK " - "
+#define TABLE_BOOK_AVAILABLE "Free"
+#define TABLE_BOOK_NOT_AVAILABLE "Already Booked"
 
 typedef enum tableType{
     bookTable, personTable  // enum to track which list is visible at the moment
@@ -66,7 +63,7 @@ private slots:
     // dialog window slots
     void getRegisterInput(const string &name, const int &id);
     void getAddInput(const string &tit, const string &ath, const long long &isbn);
-    void getRemoveInput(const long long int &uniqueData);
+    void getRemoveInput(const long long int &uniqueData, const char& selection);
 
     // line edit slots
     void returnBookTitleLineEditUpdated(const QString& title);

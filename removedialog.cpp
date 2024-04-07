@@ -27,19 +27,24 @@ RemoveDialog::~RemoveDialog()
 * @return none
 */
 void RemoveDialog::deleteButtonClicked(){
-    QString temp = ui->selectionLineEdit->text();
-    long long int uniqueData;
+    QString strData = ui->selectionLineEdit->text();
+    long long int uniqueData = 0;
 
-    if(temp == "")
-        uniqueData = INVALID_INPUT;
+    // check if the input is digit
+    try{
+        uniqueData = std::stoll(strData.toStdString());
+    }
+    catch (const std::invalid_argument& e) {
+        emit userInputReady(uniqueData, INVALID_INPUT);
+        this->close();
+        return;
+    }
+
+    // since input is digit, emit relevant signal
+    if(ui->bookRadioButton->isChecked())    // check which radio button is clicked
+        emit userInputReady(uniqueData, BOOK_SELECTION);
     else
-        uniqueData = std::stoll(temp.toStdString());
-
-    if(uniqueData)
-        emit userInputReady(uniqueData);
-    else
-        emit userInputReady(INVALID_INPUT);
-
+        emit userInputReady(uniqueData, USER_SELECTION);
     this->close();
 }
 

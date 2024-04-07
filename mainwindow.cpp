@@ -100,9 +100,9 @@ void MainWindow::updateBookTable(){
         item->setTextAlignment(Qt::AlignCenter);
 
         if(library->getBookList()->at(currentRow).isAvailable())
-            item = new QTableWidgetItem(BOOK_AVAILABLE);
+            item = new QTableWidgetItem(TABLE_BOOK_AVAILABLE);
         else
-            item = new QTableWidgetItem(BOOK_NOT_AVAILABLE);
+            item = new QTableWidgetItem(TABLE_BOOK_NOT_AVAILABLE);
         item->setTextAlignment(Qt::AlignCenter);
         ui->bookTableWidget->setItem(currentRow, availabilityColumn, item);
     }
@@ -163,7 +163,7 @@ void MainWindow::updatePersonTable(){
         if(library->getPersonList()->at(currentRow).getTakenBook())
             item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(currentRow).getTakenBook()->getTitle()));
         else{
-            item = new QTableWidgetItem(NO_TAKEN_BOOK);
+            item = new QTableWidgetItem(TABLE_NO_TAKEN_BOOK);
             item->setTextAlignment(Qt::AlignCenter);
         }
         ui->personTableWidget->setItem(currentRow, takenBookColumn, item);
@@ -349,21 +349,27 @@ void MainWindow::removeButtonClicked(){
 * @param uniqueData ISBN of the Book or user ID
 * @return none
 */
-void MainWindow::getRemoveInput(const long long int &uniqueData){
-    if(uniqueData == INVALID_INPUT){
-        ui->infoTextBrowser->append("Cannot remove any book or user; invalid input");
-        return;
-    }
-    if(uniqueData > MAX_POSSIBLE_ID){
+void MainWindow::getRemoveInput(const long long int &uniqueData, const char& selection){
+    if(selection == BOOK_SELECTION){
         Book* temp = library->checkBook(uniqueData);
-        library->remove(temp);
-        ui->infoTextBrowser->append("The book removed from the database!");
+        if(temp){
+            library->remove(temp);
+            ui->infoTextBrowser->append("The book removed from the database!");
+        }
+        else
+            ui->infoTextBrowser->append("Error: Could not find such book in the library");
     }
-    else{
+    else if(selection == USER_SELECTION){
         Person* temp = library->checkPerson(uniqueData);
-        library->remove(temp);
-        ui->infoTextBrowser->append("The user removed from the database!");
+        if(temp){
+            library->remove(temp);
+            ui->infoTextBrowser->append("The user removed from the database!");
+        }
+        else
+            ui->infoTextBrowser->append("Error: Could not find such user in the system");
     }
+    else
+        ui->infoTextBrowser->append("Error: Invalid input, please be sure that input only contains digits");
     updateTables();
 }
 
@@ -394,7 +400,7 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
     (void) column;
     if(ui->tabWidget->currentIndex() == bookTable){
         QString bookTitle = (ui->bookTableWidget->item(row, titleColumn))->text();                    // get book title
-        if((ui->bookTableWidget->item(row, availabilityColumn)->text() == BOOK_AVAILABLE)){ // book is free
+        if((ui->bookTableWidget->item(row, availabilityColumn)->text() == TABLE_BOOK_AVAILABLE)){ // book is free
             ui->returnBookTitleLineEdit->clear();
             ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
             ui->checkOutBookTitleLineEdit->setText(bookTitle);
@@ -412,7 +418,7 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
     else{   // personTable
         QString bookTitle = (ui->personTableWidget->item(row, takenBookColumn))->text();    // get taken book title
         QString personName = (ui->personTableWidget->item(row, nameColumn))->text();        // get user name
-        if(bookTitle == NO_TAKEN_BOOK){   // person can take
+        if(bookTitle == TABLE_NO_TAKEN_BOOK){   // person can take
             ui->returnBookTitleLineEdit->clear();
             ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
             ui->checkOutPersonNameLineEdit->setText(personName);
