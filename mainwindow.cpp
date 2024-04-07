@@ -2,9 +2,9 @@
 #include "ui_mainwindow.h"
 
 
-MainWindow::MainWindow(QWidget *parent, Library *lib)
+MainWindow::MainWindow(QWidget *parent, Library *lib, QString pv)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), library(lib), returnBookCompleter(nullptr), checkOutBookCompleter(nullptr), personCompleter(nullptr)
+    , ui(new Ui::MainWindow), library(lib), programVersion(pv), returnBookCompleter(nullptr), checkOutBookCompleter(nullptr), personCompleter(nullptr)
 {
     ui->setupUi(this);
 
@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent, Library *lib)
     ui->returnISBN->setText("xxxxxxxxxxxxxx");
 
     // welcome user
-    ui->infoTextBrowser->append("Welcome to the Library System v2.1");
+    ui->infoTextBrowser->append("Welcome to the " + programVersion);
 }
 
 MainWindow::~MainWindow()
@@ -318,9 +318,9 @@ void MainWindow::addButtonClicked(){
 * @return none
 */
 void MainWindow::getAddInput(const string &tit, const string &ath, const long long &isbn){
-    this->library->addBook(tit, ath, isbn);
+    QString result = this->library->addBook(tit, ath, isbn);
+    ui->infoTextBrowser->append(result);
     updateTables();
-    ui->infoTextBrowser->append("New book added to the library!");
 }
 
 /**

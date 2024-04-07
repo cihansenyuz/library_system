@@ -27,7 +27,7 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
             n = stoll(temp);
         }
         catch (const std::invalid_argument& e) {
-            // no problem
+            // no problem, this is workaround
         }
         getline(bookData, temp, '\t');
         char b = temp[0];   // availability
@@ -55,15 +55,15 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
         getline(personData, temp, '\t');
         int i; // id
         try{
-            i = stoll(temp);
+            i = stoi(temp);
         }
         catch (const std::invalid_argument& e) {
-            // no problem
+            // no problem, this is workaround
         }
         getline(personData, temp, '\t');
         string t = temp;    // title
 
-        if(n == "") // workaround of a bug
+        if(n == "") // crashes on some condition if not initialized
             break;
 
         // create person and set takenBook
@@ -92,7 +92,6 @@ void Library::addBook(const Book& newBook){
         if((person.getTakenBook()))
             temp.push_back(make_pair(person.getID(), person.getTakenBook()->getISBN()));
     }
-
     bookList->push_back(newBook);
 
     // fix broken data
@@ -116,9 +115,12 @@ void Library::addBook(const Book& newBook){
  * @param bookAuthor author of the book
  * @param bookISBN ISBN of the book
  */
-void Library::addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN){
+QString Library::addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN){
+    if(checkBook(bookISBN))
+        return "The book is already registered in the library";
     Book b(bookTitle, bookAuthor, bookISBN);
     this->addBook(b);
+    return "New book is registered in the library";
 }
 
 /**
@@ -138,9 +140,12 @@ void Library::registerPerson(const Person& newPerson){
  * @param personName name of the person
  * @param personId ID of the person
  */
-void Library::registerPerson(const string& personName, const int& personId){
+QString Library::registerPerson(const string& personName, const int& personId){
+    if(checkPerson(personId))
+        return "The user is already registered in the library";
     Person p(personName, personId);
     this->registerPerson(p);
+    return "New user is registered in the library";
 }
 
 void Library::remove(Book* book){
@@ -158,23 +163,6 @@ void Library::remove(Person* person){
             getPersonList()->erase(it);
             break;
         }
-    }
-}
-
-/**
- * @brief Prints all available books
- *
- * Prints titles of books that are not taken by anyone
- */
-void Library::displayAvailables(void){
-    if(!available)
-        cout << "All books are taken!\n";
-    else
-    {
-        cout << "Available books in the library:\n";
-        for(auto &book : *bookList)
-            if(book.isAvailable())
-                cout << "- " << book.getTitle() << endl;
     }
 }
 
