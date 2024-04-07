@@ -114,6 +114,7 @@ void Library::addBook(const Book& newBook){
  * @param bookTitle title of the book
  * @param bookAuthor author of the book
  * @param bookISBN ISBN of the book
+ * @return informative messages about operation as QString
  */
 QString Library::addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN){
     if(checkBook(bookISBN))
@@ -139,6 +140,7 @@ void Library::registerPerson(const Person& newPerson){
  * Takes Person constructor argumants, and creates an instance. Then registers it to the library.
  * @param personName name of the person
  * @param personId ID of the person
+ * @return informative messages about operation as QString
  */
 QString Library::registerPerson(const string& personName, const int& personId){
     if(checkPerson(personId))
@@ -191,7 +193,7 @@ QString Library::checkOut(Person* person, Book* book){
     }
     else if(!book->isAvailable())
         return "This book is already taken by someone else";
-    else if(!person->getTakenBook())
+    else if(person->getTakenBook())
         return QString::fromStdString(person->getName()) + " has already taken a book. Needs to return it to take a new one.";
 
     return "supress for -Wreturn-type";
@@ -267,7 +269,7 @@ void Library::setPersonList(vector<Person>* list){
  *
  * Takes ID of the person, and searches for it in the vector pointed by personList
  * @param personID unique ID of the person
- * @return true: person exists, false: does not
+ * @return object adress which matches, otherwise returns nullptr
  */
 Person* Library::checkPerson(const int &personID){
     for(auto &person : *personList)
@@ -281,7 +283,7 @@ Person* Library::checkPerson(const int &personID){
  *
  * Takes ISBN of the book, and searches for it in the vector pointed by bookList
  * @param bookISBN unique ISBN of the book
- * @return true: book exists, false: does not
+ * @return object adress which matches, otherwise returns nullptr
  */
 Book* Library::checkBook(const long long int &bookISBN){
     for(auto &book : *bookList)
