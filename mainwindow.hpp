@@ -49,7 +49,6 @@ public:
     MainWindow(QWidget *parent = nullptr, Library *lib = nullptr, QString pv = "Library System");
     ~MainWindow();
 private slots:
-    // button slots
     void summaryButtonClicked();
     void checkOutButtonClicked();
     void returnButtonClicked();
@@ -60,12 +59,10 @@ private slots:
     void removeButtonClicked();
     void exitButtonClicked();
 
-    // dialog window slots
     void getRegisterInput(const string &name, const int &id);
     void getAddInput(const string &tit, const string &ath, const long long &isbn);
     void getRemoveInput(const long long int &uniqueData, const char& selection);
 
-    // line edit slots
     void returnBookTitleLineEditUpdated(const QString& title);
     void returnBookTitleLineEditCompleterClicked(const QString &title);
     void checkOutBookTitleLineEditUpdated(const QString& title);
@@ -73,7 +70,6 @@ private slots:
     void checkOutPersonTitleLineEditUpdated(const QString& name);
     void checkOutPersonTitleLineEditCompleterClicked(const QString &name);
 
-    // others
     void tableItemSelected(const int &row, const int &column);
     void newUserInput();
 private:

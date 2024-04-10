@@ -69,6 +69,13 @@ void MainWindow::updateBookTable(){
         delete checkOutBookCompleter;
     bookTitleCompletions.clear();
 
+    // Deallocate memory for each QTableWidgetItem to create updated ones
+    for (int row = 0; row < ui->bookTableWidget->rowCount(); ++row) {
+        for (int col = 0; col < ui->bookTableWidget->columnCount(); ++col) {
+            delete ui->bookTableWidget->item(row, col);
+        }
+    }
+
     unsigned int rowCount = library->getBookList()->size();
     ui->bookTableWidget->setRowCount(rowCount);
     ui->bookTableWidget->setColumnCount(BOOK_DATA_COLUMN_COUNT);
@@ -129,6 +136,13 @@ void MainWindow::updatePersonTable(){
     if(personCompleter)
         delete personCompleter;
     personNameCompletions.clear();
+
+    // Deallocate memory for each QTableWidgetItem to create updated ones
+    for (int row = 0; row < ui->personTableWidget->rowCount(); ++row) {
+        for (int col = 0; col < ui->personTableWidget->columnCount(); ++col) {
+            delete ui->personTableWidget->item(row, col);
+        }
+    }
 
     unsigned int rowCount = library->getPersonList()->size();
     ui->personTableWidget->setRowCount(rowCount);
