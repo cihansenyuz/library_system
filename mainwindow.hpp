@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr, Library *lib = nullptr, QString pv = "Library System");
+    MainWindow(QWidget *parent = nullptr, unique_ptr<Library> lib = nullptr, QString pv = "Library System");
     ~MainWindow();
 private slots:
     void summaryButtonClicked();
@@ -75,7 +75,7 @@ private slots:
     void newUserInput();
 private:
     Ui::MainWindow *ui;
-    Library *library;
+    unique_ptr<Library> library;
     QString programVersion;
     QStringList bookTitleCompletions;
     QStringList personNameCompletions;

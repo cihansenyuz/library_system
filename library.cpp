@@ -12,7 +12,7 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
 
     ifstream bookData(bdf);
     string temp;    // string to store input file reads
-    vector<Book>* savedBookList = new vector<Book>;
+    unique_ptr<vector<Book>> savedBookList = make_unique<vector<Book>>();
 
     // read until end of file
     while(!bookData.eof())
@@ -38,15 +38,15 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
         }
         else if(b == BOOK_AVAILABLE){
             Book book(t,a,n);
-            savedBookList->push_back(book);
+            savedBookList.get()->push_back(book);
         }
     }
-    bookList = savedBookList;   // set bookList pointer
-    available = true;           // set library availability
+    bookList = std::move(savedBookList);
+    available = true;
     bookData.close();
 
     ifstream personData(pdf);
-    vector<Person>* savedPersonList = new vector<Person>;
+    unique_ptr<vector<Person>> savedPersonList = make_unique<vector<Person>>();
 
     while(!personData.eof()){
         string temp;
@@ -71,9 +71,9 @@ Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf
         for(auto &book : *bookList)
             if(book.getTitle() == t)    // if not taken any book, then it is already nullptr
                 person.setTakenBook(book);
-        savedPersonList->push_back(person);
+        savedPersonList.get()->push_back(person);
     }
-    personList = savedPersonList;   // set personList pointer
+    personList = std::move(savedPersonList);
     personData.close();
 }
 
@@ -256,15 +256,6 @@ QString Library::getSummary(void) {
 }
 
 /**
- * @brief Setter function for personList pointer.
- *
- * @param list pointer of a vector of Persons
- */
-void Library::setPersonList(vector<Person>* list){
-    personList = list;
-}
-
-/**
  * @brief Checks if a person is registered in the library
  *
  * Takes ID of the person, and searches for it in the vector pointed by personList
@@ -335,7 +326,7 @@ void Library::saveLatestData(void){
  * @return addres of the bookList
  */
 vector<Book>* Library::getBookList(void){
-    return bookList;
+    return bookList.get();
 }
 
 /**
@@ -344,5 +335,5 @@ vector<Book>* Library::getBookList(void){
  * @return addres of the personList
  */
 vector<Person>* Library::getPersonList(void){
-    return personList;
+    return personList.get();
 }

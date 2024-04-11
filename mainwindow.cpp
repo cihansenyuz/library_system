@@ -2,9 +2,9 @@
 #include "ui_mainwindow.h"
 
 
-MainWindow::MainWindow(QWidget *parent, Library *lib, QString pv)
+MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> lib, QString pv)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), library(lib), programVersion(pv), returnBookCompleter(nullptr), checkOutBookCompleter(nullptr), personCompleter(nullptr)
+    , ui(new Ui::MainWindow), library(std::move(lib)), programVersion(pv), returnBookCompleter(nullptr), checkOutBookCompleter(nullptr), personCompleter(nullptr)
 {
     ui->setupUi(this);
 
@@ -51,8 +51,8 @@ MainWindow::MainWindow(QWidget *parent, Library *lib, QString pv)
 MainWindow::~MainWindow()
 {
     library->saveLatestData();
-    //freeTableMemory(ui->bookTableWidget);
-    //freeTableMemory(ui->personTableWidget);
+    freeTableMemory(ui->bookTableWidget);
+    freeTableMemory(ui->personTableWidget);
     delete ui;
 }
 
@@ -69,7 +69,7 @@ void MainWindow::updateBookTable(){
     checkOutBookCompleter.reset();
     bookTitleCompletions.clear();
     ui->bookTableWidget->clearContents();
-    //freeTableMemory(ui->bookTableWidget);
+    freeTableMemory(ui->bookTableWidget);
 
     unsigned int rowCount = library->getBookList()->size(); // since can change at runtime, need to be updated
     ui->bookTableWidget->setRowCount(rowCount);
@@ -126,7 +126,7 @@ void MainWindow::updatePersonTable(){
     personCompleter.reset();
     personNameCompletions.clear();
     ui->personTableWidget->clearContents();
-    //freeTableMemory(ui->personTableWidget);
+    freeTableMemory(ui->personTableWidget);
 
     unsigned int rowCount = library->getPersonList()->size();
     ui->personTableWidget->setRowCount(rowCount);
@@ -529,6 +529,15 @@ void MainWindow::updateTables(){
     updatePersonTable();
 }
 
+/**
+* @brief Manages whether check out and return buttons to be enabled or disabled
+*
+* Each time user inputs something, checks if ISBN and ID labels are valid or not.
+* Then sets relevant buttons enable or disable.
+*
+* @param none
+* @return none
+*/
 void MainWindow::newUserInput(){
     //check if inputs are proper for checkout action
     if(ui->checkOutISBN->text() != NOT_VALID_INPUT_ISBN && ui->checkOutID->text() != NOT_VALID_INPUT_ID)
@@ -543,6 +552,14 @@ void MainWindow::newUserInput(){
         ui->returnButton->setEnabled(false);
 }
 
+/**
+* @brief Deallocates allocated memory for table items
+*
+* Iterates through all items in the table, and deletes
+*
+* @param table Table need to be deallocated
+* @return none
+*/
 void MainWindow::freeTableMemory(QTableWidget* table){
     for (int row = 0; row < table->rowCount(); ++row) {
         for (int col = 0; col < table->columnCount(); ++col) {
