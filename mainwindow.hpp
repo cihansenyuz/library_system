@@ -86,7 +86,6 @@ private:
 
     void updateBookTable();
     void updatePersonTable();
-    void createDialog();
     void updateTables();
     void freeTableMemory(QTableWidget* table);
 

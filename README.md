@@ -1,5 +1,8 @@
 # library_system
 A library system to keep track of books and users
+This project features OOP concepts utilizing abstract class, virtual function, function overriding, function overloading, access specifiers,
+and also uitilizes File I/O, as well as some newer C++ features up to C++14 such as STL, smart pointers, ranged loops, auto keyword, nullptr,
+and also uitilizes QT framework including multiple UIs
 
 06.03.2024 the start of the project.
 

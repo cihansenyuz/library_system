@@ -323,7 +323,7 @@ void MainWindow::removeButtonClicked(){
 }
 
 /**
-* @brief Slot method to handle signal from AddDialog
+* @brief Slot method to handle signal from RemoveDialog
 *
 * Takes argumants from the signal and decides which object need to be removed
 * then calls relevant remove function in the library
