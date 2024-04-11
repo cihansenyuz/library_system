@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QCompleter>
+#include <QTableWidgetItem>
 #include "library.hpp"
 #include "item.hpp"
 #include "book.hpp"
@@ -78,14 +79,16 @@ private:
     QString programVersion;
     QStringList bookTitleCompletions;
     QStringList personNameCompletions;
-    QCompleter *returnBookCompleter;
-    QCompleter *checkOutBookCompleter;
-    QCompleter *personCompleter;
+    unique_ptr<QCompleter> returnBookCompleter;
+    unique_ptr<QCompleter> checkOutBookCompleter;
+    unique_ptr<QCompleter> personCompleter;
     tableType currentTable;
 
     void updateBookTable();
     void updatePersonTable();
     void createDialog();
     void updateTables();
+    void freeTableMemory(QTableWidget* table);
+
 };
 #endif // MAINWINDOW_HPP
