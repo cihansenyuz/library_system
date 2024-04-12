@@ -4,11 +4,12 @@
  * @brief Parameterized constructor.
  *
  * Initiliazes variables of the object, and sets availability of them true
- * @param t title
- * @param a author
- * @param i ISBN
+ * @param title title of the book
+ * @param author author of the book
+ * @param ISBN ISBN of the book
  */
-Book::Book(string t, string a, long long int i):Item(t, a, i), available(true){}
+Book::Book(string title, string author, long long int ISBN) : Item(title, author, ISBN),
+                                                            m_available(true){}
 
 /**
  * @brief Parameterized constructor.
@@ -19,7 +20,8 @@ Book::Book(string t, string a, long long int i):Item(t, a, i), available(true){}
  * @param i ISBN
  * @param av Availability
  */
-Book::Book(string t, string a, long long int i, bool av):Item(t, a, i), available(av){}
+Book::Book(string title, string author, long long int ISBN, bool available) : Item(title, author, ISBN),
+                                                                            m_available(available){}
 
 /**
  * @brief Copy constructor.
@@ -27,7 +29,7 @@ Book::Book(string t, string a, long long int i, bool av):Item(t, a, i), availabl
  * Initiliazes variables of the object as the given object
  * @param b the book object to be copied
  */
-Book::Book(const Book& b) : Item(b), available(b.isAvailable()){}
+Book::Book(const Book& other) : Item(other), m_available(other.isAvailable()){}
 
 /**
  * @brief Copy assignment operator.
@@ -38,7 +40,7 @@ Book::Book(const Book& b) : Item(b), available(b.isAvailable()){}
 Book& Book::operator=(const Book& other){
     if(this != &other){
         static_cast<Item&>(*this) = static_cast<const Item&>(other);
-        available = other.isAvailable();
+        m_available = other.isAvailable();
     }
     return *this;
 }
@@ -47,8 +49,8 @@ Book& Book::operator=(const Book& other){
  *
  * @param opt true: book is available, false: book is taken by someone
  */
-void Book::setAvailable(bool opt){
-    available = opt;
+void Book::setAvailable(bool option){
+    m_available = option;
 }
 
 /**
@@ -57,7 +59,7 @@ void Book::setAvailable(bool opt){
  * @return true: book is available, false: book is taken by someone
  */
 bool Book::isAvailable(void) const{
-    return available;
+    return m_available;
 }
 
 /**
@@ -66,7 +68,7 @@ bool Book::isAvailable(void) const{
  * Overriden function
  */
 void Book::displayInfo(void){
-    std::cout << "Title: " << getTitle() << endl;
+    std::cout << "Title: " << getTitle() << std::endl;
     std::cout << "Author: " << getAuthor() << std::endl;
     std::cout << "ISBN: " << getISBN() << std::endl;
 }
@@ -77,5 +79,5 @@ void Book::displayInfo(void){
  * @return Current value of the variable
  */
 string Book::getTitle(void) {
-    return title;
+    return m_title;
 }

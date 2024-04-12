@@ -2,9 +2,13 @@
 #include "ui_mainwindow.h"
 
 
-MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> lib, QString pv)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow), library(std::move(lib)), programVersion(pv), returnBookCompleter(nullptr), checkOutBookCompleter(nullptr), personCompleter(nullptr)
+MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> library, QString programVersion)
+    : QMainWindow(parent), ui(new Ui::MainWindow),
+                           m_library(std::move(library)),
+                           m_programVersion(programVersion),
+                           returnBookCompleter(nullptr),
+                           checkOutBookCompleter(nullptr),
+                           personCompleter(nullptr)
 {
     ui->setupUi(this);
 
@@ -45,12 +49,12 @@ MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> lib, QString pv)
     ui->checkOutID->setText(NOT_VALID_INPUT_ID);
     ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
 
-    ui->infoTextBrowser->append("Welcome to the " + programVersion);
+    ui->infoTextBrowser->append("Welcome to the " + m_programVersion);
 }
 
 MainWindow::~MainWindow()
 {
-    library->saveLatestData();
+    m_library->saveLatestData();
     freeTableMemory(ui->bookTableWidget);
     freeTableMemory(ui->personTableWidget);
     delete ui;
@@ -71,25 +75,25 @@ void MainWindow::updateBookTable(){
     ui->bookTableWidget->clearContents();
     freeTableMemory(ui->bookTableWidget);
 
-    unsigned int rowCount = library->getBookList()->size(); // since can change at runtime, need to be updated
+    unsigned int rowCount = m_library->getBookList()->size(); // since can change at runtime, need to be updated
     ui->bookTableWidget->setRowCount(rowCount);
 
     // create items and add them into the table
     QTableWidgetItem *item;
     for (unsigned int currentRow = 0; currentRow < rowCount; currentRow++)
     {
-        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(currentRow).getTitle()));
+        item = new QTableWidgetItem(QString::fromStdString(m_library->getBookList()->at(currentRow).getTitle()));
         ui->bookTableWidget->setItem(currentRow, titleColumn, item);
         bookTitleCompletions << item->text();
 
-        item = new QTableWidgetItem(QString::fromStdString(library->getBookList()->at(currentRow).getAuthor()));
+        item = new QTableWidgetItem(QString::fromStdString(m_library->getBookList()->at(currentRow).getAuthor()));
         ui->bookTableWidget->setItem(currentRow, authorColumn, item);
 
-        item = new QTableWidgetItem(QString::number(library->getBookList()->at(currentRow).getISBN()));
+        item = new QTableWidgetItem(QString::number(m_library->getBookList()->at(currentRow).getISBN()));
         ui->bookTableWidget->setItem(currentRow, ISBNColumn, item);
         item->setTextAlignment(Qt::AlignCenter);
 
-        if(library->getBookList()->at(currentRow).isAvailable())
+        if(m_library->getBookList()->at(currentRow).isAvailable())
             item = new QTableWidgetItem(TABLE_BOOK_AVAILABLE);
         else
             item = new QTableWidgetItem(TABLE_BOOK_NOT_AVAILABLE);
@@ -103,15 +107,19 @@ void MainWindow::updateBookTable(){
     checkOutBookCompleter.get()->setCaseSensitivity(Qt::CaseInsensitive);
     checkOutBookCompleter.get()->setFilterMode(Qt::MatchContains);
     ui->checkOutBookTitleLineEdit->setCompleter(checkOutBookCompleter.get());                             // set completer for line edit
-    connect(checkOutBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::checkOutBookTitleLineEditCompleterClicked);
-    connect(checkOutBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::newUserInput);
+    connect(checkOutBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated),
+            this, &MainWindow::checkOutBookTitleLineEditCompleterClicked);
+    connect(checkOutBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated),
+            this, &MainWindow::newUserInput);
 
     returnBookCompleter = make_unique<QCompleter>(bookTitleCompletions, ui->returnBookTitleLineEdit);        // create completer
     returnBookCompleter.get()->setCaseSensitivity(Qt::CaseInsensitive);
     returnBookCompleter.get()->setFilterMode(Qt::MatchContains);
     ui->returnBookTitleLineEdit->setCompleter(returnBookCompleter.get());                                 // set completer for line edit
-    connect(returnBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::returnBookTitleLineEditCompleterClicked);
-    connect(returnBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::newUserInput);
+    connect(returnBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated),
+            this, &MainWindow::returnBookTitleLineEditCompleterClicked);
+    connect(returnBookCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated),
+            this, &MainWindow::newUserInput);
 }
 
 /**
@@ -128,23 +136,23 @@ void MainWindow::updatePersonTable(){
     ui->personTableWidget->clearContents();
     freeTableMemory(ui->personTableWidget);
 
-    unsigned int rowCount = library->getPersonList()->size();
+    unsigned int rowCount = m_library->getPersonList()->size();
     ui->personTableWidget->setRowCount(rowCount);
 
     // create items and add them into the table
     QTableWidgetItem *item;
     for (unsigned int currentRow = 0; currentRow < rowCount; currentRow++)
     {
-        item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(currentRow).getName()));
+        item = new QTableWidgetItem(QString::fromStdString(m_library->getPersonList()->at(currentRow).getName()));
         ui->personTableWidget->setItem(currentRow, nameColumn, item);
         personNameCompletions << item->text();
 
-        item = new QTableWidgetItem(QString::fromStdString(std::to_string(library->getPersonList()->at(currentRow).getID())));
+        item = new QTableWidgetItem(QString::fromStdString(std::to_string(m_library->getPersonList()->at(currentRow).getID())));
         ui->personTableWidget->setItem(currentRow, IDColumn, item);
         item->setTextAlignment(Qt::AlignCenter);
 
-        if(library->getPersonList()->at(currentRow).getTakenBook())
-            item = new QTableWidgetItem(QString::fromStdString(library->getPersonList()->at(currentRow).getTakenBook()->getTitle()));
+        if(m_library->getPersonList()->at(currentRow).getTakenBook())
+            item = new QTableWidgetItem(QString::fromStdString(m_library->getPersonList()->at(currentRow).getTakenBook()->getTitle()));
         else{
             item = new QTableWidgetItem(TABLE_NO_TAKEN_BOOK);
             item->setTextAlignment(Qt::AlignCenter);
@@ -157,8 +165,10 @@ void MainWindow::updatePersonTable(){
     personCompleter.get()->setCaseSensitivity(Qt::CaseInsensitive);
     personCompleter.get()->setFilterMode(Qt::MatchContains);
     ui->checkOutPersonNameLineEdit->setCompleter(personCompleter.get());                          // set completer for line edit
-    connect(personCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::checkOutPersonTitleLineEditCompleterClicked);
-    connect(personCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated), this, &MainWindow::newUserInput);
+    connect(personCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated),
+            this, &MainWindow::checkOutPersonTitleLineEditCompleterClicked);
+    connect(personCompleter.get(), QOverload<const QString &>::of(&QCompleter::activated),
+            this, &MainWindow::newUserInput);
 }
 
 /**
@@ -171,7 +181,7 @@ void MainWindow::updatePersonTable(){
 */
 void MainWindow::summaryButtonClicked()
 {
-    ui->infoTextBrowser->append(this->library->getSummary());
+    ui->infoTextBrowser->append(this->m_library->getSummary());
 }
 
 /**
@@ -186,9 +196,9 @@ void MainWindow::checkOutButtonClicked(){
     QString resultMessage;
     Book *bookToCheckOut;
     Person *userCheckingOut;
-    bookToCheckOut = this->library->checkBook(std::stoll(ui->checkOutISBN->text().toStdString()));
-    userCheckingOut = this->library->checkPerson(std::stoi(ui->checkOutID->text().toStdString()));
-    resultMessage = this->library->checkOut(userCheckingOut, bookToCheckOut);
+    bookToCheckOut = this->m_library->checkBook(std::stoll(ui->checkOutISBN->text().toStdString()));
+    userCheckingOut = this->m_library->checkPerson(std::stoi(ui->checkOutID->text().toStdString()));
+    resultMessage = this->m_library->checkOut(userCheckingOut, bookToCheckOut);
     ui->checkOutBookTitleLineEdit->clear();
     ui->checkOutPersonNameLineEdit->clear();
     ui->infoTextBrowser->append(resultMessage);
@@ -206,8 +216,8 @@ void MainWindow::checkOutButtonClicked(){
 void MainWindow::returnButtonClicked(){
     QString resultMessage;
     Book *bookToReturn;
-    bookToReturn = this->library->checkBook(std::stoll(ui->returnISBN->text().toStdString()));
-    resultMessage = this->library->returnBook(bookToReturn);
+    bookToReturn = this->m_library->checkBook(std::stoll(ui->returnISBN->text().toStdString()));
+    resultMessage = this->m_library->returnBook(bookToReturn);
     ui->returnBookTitleLineEdit->clear();
     ui->infoTextBrowser->append(resultMessage);
     updateTables();
@@ -251,9 +261,10 @@ void MainWindow::clearButtonClickled(){
 */
 void MainWindow::registerButtonClicked(){
     RegisterDialog dialog;
-    connect(&dialog, &RegisterDialog::userInputReady, this, [&](const string &name, const int &id){
-        this->getDialogInputs(name, id);
-    });
+    connect(&dialog, &RegisterDialog::userInputReady,
+            this, [&](const string &name, const int &ID){
+                        this->getDialogInputs(name, ID);
+                    });
     updatePersonTable();
     dialog.setModal(true);
     dialog.exec();
@@ -268,8 +279,8 @@ void MainWindow::registerButtonClicked(){
 * @param id id of the Person
 * @return none
 */
-void MainWindow::getDialogInputs(const string &name, const int &id){
-    this->library->registerPerson(name, id);
+void MainWindow::getDialogInputs(const string &name, const int &ID){
+    this->m_library->registerPerson(name, ID);
     updateTables();
     ui->infoTextBrowser->append("New user registered in the system!");
 }
@@ -285,9 +296,10 @@ void MainWindow::getDialogInputs(const string &name, const int &id){
 */
 void MainWindow::addButtonClicked(){
     AddDialog dialog;
-    connect(&dialog, &AddDialog::userInputReady, this, [&](const string &tit, const string &ath, const long long &isbn){
-        this->getDialogInputs(tit, ath, isbn);
-    });
+    connect(&dialog, &AddDialog::userInputReady,
+            this, [&](const string &title, const string &author, const long long &ISBN){
+                        this->getDialogInputs(title, author, ISBN);
+                    });
     updateBookTable();
     dialog.setModal(true);
     dialog.exec();
@@ -304,7 +316,7 @@ void MainWindow::addButtonClicked(){
 * @return none
 */
 void MainWindow::getDialogInputs(const string &tit, const string &ath, const long long &isbn){
-    QString result = this->library->addBook(tit, ath, isbn);
+    QString result = this->m_library->addBook(tit, ath, isbn);
     ui->infoTextBrowser->append(result);
     updateTables();
 }
@@ -320,9 +332,10 @@ void MainWindow::getDialogInputs(const string &tit, const string &ath, const lon
 */
 void MainWindow::removeButtonClicked(){
     RemoveDialog dialog;
-    connect(&dialog, &RemoveDialog::userInputReady, this, [&](const long long int &uniqueData, const char& selection){
-        this->getDialogInputs(uniqueData, selection);
-    });
+    connect(&dialog, &RemoveDialog::userInputReady,
+            this, [&](const long long int &uniqueData, const char& selection){
+                        this->getDialogInputs(uniqueData, selection);
+                    });
     updateTables();
     dialog.setModal(true);
     dialog.exec();
@@ -339,18 +352,18 @@ void MainWindow::removeButtonClicked(){
 */
 void MainWindow::getDialogInputs(const long long int &uniqueData, const char& selection){
     if(selection == BOOK_SELECTION){
-        Book* temp = library->checkBook(uniqueData);
+        Book* temp = m_library->checkBook(uniqueData);
         if(temp){
-            library->remove(temp);
+            m_library->remove(temp);
             ui->infoTextBrowser->append("The book removed from the database!");
         }
         else
             ui->infoTextBrowser->append("Error: Could not find such book in the library");
     }
     else if(selection == USER_SELECTION){
-        Person* temp = library->checkPerson(uniqueData);
+        Person* temp = m_library->checkPerson(uniqueData);
         if(temp){
-            library->remove(temp);
+            m_library->remove(temp);
             ui->infoTextBrowser->append("The user removed from the database!");
         }
         else

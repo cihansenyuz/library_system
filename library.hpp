@@ -18,18 +18,17 @@
 typedef class Library
 {
 private:
-    unique_ptr<vector<Book>> bookList;         /** vector pointer for all books */
-    unique_ptr<vector<Person>> personList;     /** vector pointer for all persons */
-    bool available;                 /** availability of the library */
+    unique_ptr<vector<Book>> m_bookList;         /** vector pointer for all books */
+    unique_ptr<vector<Person>> m_personList;     /** vector pointer for all persons */
+    bool m_available;                 /** availability of the library */
 
     void addBook(const Book& newBook);
     void registerPerson(const Person& newPerson);
 public:
-    const string fileNameBook;            /** path to txt where book data kept */
-    const string fileNamePerson;          /** path to txt where user data kept */
+    const string m_pathToBookData;            /** path to txt where book data kept */
+    const string m_pathToPersonData;          /** path to txt where user data kept */
 
-    Library(string bdf, string pdf);
-    Library(const Library& lib);
+    Library(string pathToBookData, string pathToPersonData);
     QString addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN);
     QString registerPerson(const string& personName, const int& personId);
     void remove(Book* book);

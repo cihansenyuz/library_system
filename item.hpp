@@ -13,12 +13,12 @@ using namespace std;
 typedef class Item
 {
 protected:
-    string title;       /**< Title of the book */
+    string m_title;       /**< Title of the book */
 private:
-    string author;      /**< Author of the book */
-    long long int ISBN; /**< ISBN of the book */
+    string m_author;      /**< Author of the book */
+    long long int m_ISBN; /**< ISBN of the book */
 public:
-    Item(string t, string a, long long int i);
+    Item(string title, string author, long long int ISBN);
     virtual void displayInfo(void) = 0;
     string getAuthor(void);
     long long int getISBN(void);

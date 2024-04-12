@@ -27,8 +27,8 @@ AddDialog::~AddDialog()
 void AddDialog::addButtonClicked(){
     std::string title = ui->titleLineEdit->text().toStdString();
     std::string author = ui->authorLineEdit->text().toStdString();
-    long long int isbn = std::stoll(ui->ISBNLineEdit->text().toStdString());
-    emit userInputReady(title, author, isbn);
+    long long int ISBN = std::stoll(ui->ISBNLineEdit->text().toStdString());
+    emit userInputReady(title, author, ISBN);
     if(!ui->multipleCheckBox->isChecked())
         this->close();
     ui->titleLineEdit->clear();

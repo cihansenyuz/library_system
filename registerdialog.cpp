@@ -14,7 +14,6 @@ RegisterDialog::RegisterDialog(QWidget *parent)
 
 RegisterDialog::~RegisterDialog()
 {
-
     delete ui;
 }
 
@@ -28,8 +27,8 @@ RegisterDialog::~RegisterDialog()
 */
 void RegisterDialog::registerButtonClicked(){
     std::string name = ui->nameLineEdit->text().toStdString();
-    int id = std::stoi(ui->IDLineEdit->text().toStdString());
-    emit userInputReady(name, id);
+    int ID = std::stoi(ui->IDLineEdit->text().toStdString());
+    emit userInputReady(name, ID);
     if(!ui->multipleCheckBox->isChecked())
         this->close();
     ui->nameLineEdit->clear();

@@ -4,76 +4,76 @@
  * @brief Constructor from previously saved data.
  *
  * Creates input file from saved data, gets book informations, and sets bookList pointer
- * @param bdf book data file name to be read
- * @param pdf person data file name to be read
+ * @param pathToBookData book data file name to be read
+ * @param pathToPersonData person data file name to be read
  */
-Library::Library(string bdf, string pdf) : fileNameBook(bdf), fileNamePerson(pdf){
+Library::Library(string pathToBookData, string pathToPersonData) : m_pathToBookData(pathToBookData), m_pathToPersonData(pathToPersonData){
     // create input file and open it
-
-    ifstream bookData(bdf);
-    string temp;    // string to store input file reads
+    ifstream bookData(pathToBookData);
+    string subString;    // string to store input file reads
     unique_ptr<vector<Book>> savedBookList = make_unique<vector<Book>>();
 
     // read until end of file
     while(!bookData.eof())
     {
-        getline(bookData, temp, '\t');
-        string t = temp;    // title
-        getline(bookData, temp, '\t');
-        string a = temp;    // author
-        getline(bookData, temp, '\t');
-        long long int n;    // ISBN
+        getline(bookData, subString, '\t');
+        string title = subString;
+        getline(bookData, subString, '\t');
+        string author = subString;
+        getline(bookData, subString, '\t');
+        long long int ISBN;
         try{
-            n = stoll(temp);
+            ISBN = stoll(subString);
         }
         catch (const std::invalid_argument& e) {
             // no problem, this is workaround
         }
-        getline(bookData, temp, '\t');
-        char b = temp[0];   // availability
+        getline(bookData, subString, '\t');
+        char available = subString[0];
+
         // create book instances with proper availability
-        if(b == BOOK_NOT_AVAILABLE){
-            Book book(t,a,n,false);
+        if(available == BOOK_NOT_AVAILABLE){
+            Book book(title, author, ISBN, false);
             savedBookList->push_back(book);
         }
-        else if(b == BOOK_AVAILABLE){
-            Book book(t,a,n);
+        else if(available == BOOK_AVAILABLE){
+            Book book(title, author, ISBN);
             savedBookList.get()->push_back(book);
         }
     }
-    bookList = std::move(savedBookList);
-    available = true;
+    m_bookList = std::move(savedBookList);
+    m_available = true;
     bookData.close();
 
-    ifstream personData(pdf);
+    ifstream personData(pathToPersonData);
     unique_ptr<vector<Person>> savedPersonList = make_unique<vector<Person>>();
 
     while(!personData.eof()){
-        string temp;
-        getline(personData, temp, '\t');
-        string n = temp;    // name
-        getline(personData, temp, '\t');
-        int i; // id
+        string subString;
+        getline(personData, subString, '\t');
+        string name = subString;
+        getline(personData, subString, '\t');
+        int ID;
         try{
-            i = stoi(temp);
+            ID = stoi(subString);
         }
         catch (const std::invalid_argument& e) {
             // no problem, this is workaround
         }
-        getline(personData, temp, '\t');
-        string t = temp;    // title
+        getline(personData, subString, '\t');
+        string takenBookTitle = subString;
 
-        if(n == "") // crashes on some condition if not initialized
+        if(name == "") // crashes on some condition if not initialized
             break;
 
         // create person and set takenBook
-        Person person(n,i);
-        for(auto &book : *bookList)
-            if(book.getTitle() == t)    // if not taken any book, then it is already nullptr
+        Person person(name, ID);
+        for(auto &book : *m_bookList)
+            if(book.getTitle() == takenBookTitle)    // if not taken any book, then it is already nullptr
                 person.setTakenBook(book);
         savedPersonList.get()->push_back(person);
     }
-    personList = std::move(savedPersonList);
+    m_personList = std::move(savedPersonList);
     personData.close();
 }
 
@@ -87,18 +87,18 @@ void Library::addBook(const Book& newBook){
     // once push back an obj to vector, objs pointed inside vector are lost
     // which causes crash in the program since tries to access wrong/not valid memory address
     // to overcome issue, temporarily saved information about which person points to which book
-    vector<pair<int, long long int>> temp;
-    for(auto &person : *personList){
+    vector<pair<int, long long int>> takenBookMatches;
+    for(auto &person : *m_personList){
         if((person.getTakenBook()))
-            temp.push_back(make_pair(person.getID(), person.getTakenBook()->getISBN()));
+            takenBookMatches.push_back(make_pair(person.getID(), person.getTakenBook()->getISBN()));
     }
-    bookList->push_back(newBook);
+    m_bookList->push_back(newBook);
 
     // fix broken data
-    for(auto &pair : temp){                             // for each pair
-        for(auto &person : *personList){                // iterate all persons and find who matches to the pair
+    for(auto &pair : takenBookMatches){                 // for each pair
+        for(auto &person : *m_personList){              // iterate all persons and find who matches to the pair
             if(pair.first == person.getID()){           // once person matches
-                for(auto &book : *bookList){            // iterate all books and find which matches to the pair
+                for(auto &book : *m_bookList){          // iterate all books and find which matches to the pair
                     if(pair.second == book.getISBN())   // once also book matches
                         person.setTakenBook(book);      // set person taken book again which was broken
                 }
@@ -119,8 +119,8 @@ void Library::addBook(const Book& newBook){
 QString Library::addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN){
     if(checkBook(bookISBN))
         return "The book is already registered in the library";
-    Book b(bookTitle, bookAuthor, bookISBN);
-    this->addBook(b);
+    Book newBook(bookTitle, bookAuthor, bookISBN);
+    this->addBook(newBook);
     return "New book is registered in the library";
 }
 
@@ -131,7 +131,7 @@ QString Library::addBook(const string& bookTitle, const string& bookAuthor, cons
  * @param newPerson Person object to be added
  */
 void Library::registerPerson(const Person& newPerson){
-    personList->push_back(newPerson);
+    m_personList->push_back(newPerson);
 }
 
 /**
@@ -145,8 +145,8 @@ void Library::registerPerson(const Person& newPerson){
 QString Library::registerPerson(const string& personName, const int& personId){
     if(checkPerson(personId))
         return "The user is already registered in the library";
-    Person p(personName, personId);
-    this->registerPerson(p);
+    Person newPerson(personName, personId);
+    this->registerPerson(newPerson);
     return "New user is registered in the library";
 }
 
@@ -214,7 +214,7 @@ QString Library::returnBook(Book* book){
     book->setAvailable(true);
 
     // find person and reset takenBook pointer
-    for(auto &person : *personList){
+    for(auto &person : *m_personList){
         if(!person.getTakenBook())      // check if it s null before to get title, otherwise crashes
             continue;
         if(person.getTakenBook() == book){
@@ -233,15 +233,15 @@ QString Library::returnBook(Book* book){
  * @return QString type of all the summary text
  */
 QString Library::getSummary(void) {
-    QString result = "Library Summary:\n";
+    QString message = "Library Summary:\n";
 
-    // counters to keep status of books
+    // temp counters to keep status of books
     short availableCount = 0;
     short nonAvailableCount = 0;
 
     // printing starts here
-    result += " - " ;//+ QString::fromStdString(std::to_string(bookList->size())) + " books in the library" + '\n';
-    for(auto &book : *bookList) // print all books in the library
+    message += " - " ;
+    for(auto &book : *m_bookList) // print all books in the library
     {
         if(book.isAvailable()){
             availableCount++;
@@ -250,9 +250,9 @@ QString Library::getSummary(void) {
             nonAvailableCount++;
         }
     }
-    result += "Available: " + std::to_string(availableCount) + " Checked Out: " + std::to_string(nonAvailableCount) + '\n';
-    result += " - " + std::to_string(personList->size()) + " users registered in the library" + '\n';
-    return result;
+    message += "Available: " + std::to_string(availableCount) + " Checked Out: " + std::to_string(nonAvailableCount) + '\n';
+    message += " - " + std::to_string(m_personList->size()) + " users registered in the library" + '\n';
+    return message;
 }
 
 /**
@@ -263,7 +263,7 @@ QString Library::getSummary(void) {
  * @return object adress which matches, otherwise returns nullptr
  */
 Person* Library::checkPerson(const int &personID){
-    for(auto &person : *personList)
+    for(auto &person : *m_personList)
         if(person.getID() == personID)
             return &person;
     return nullptr;
@@ -277,7 +277,7 @@ Person* Library::checkPerson(const int &personID){
  * @return object adress which matches, otherwise returns nullptr
  */
 Book* Library::checkBook(const long long int &bookISBN){
-    for(auto &book : *bookList)
+    for(auto &book : *m_bookList)
         if(book.getISBN() == bookISBN)
             return &book;
     return nullptr;
@@ -290,12 +290,12 @@ Book* Library::checkBook(const long long int &bookISBN){
  */
 void Library::saveLatestData(void){
         // create output file
-        ofstream bookData(fileNameBook);
+        ofstream bookData(m_pathToBookData);
         if(!(bookData.is_open()))
             cout << "couldnot open the data file" << endl;
         
         // keep record of every book, \t is terminator for reading operation
-        for(auto &book : *bookList)
+        for(auto &book : *m_bookList)
         {
             bookData << book.getTitle() << '\t' 
                     << book.getAuthor() << "\t" 
@@ -304,12 +304,12 @@ void Library::saveLatestData(void){
         }
         bookData.close();
         
-        ofstream personData(fileNamePerson);
+        ofstream personData(m_pathToPersonData);
         if(!(personData.is_open()))
             cout << "couldnot open the person file" << endl;
 
         // keep record of every person, \t is terminator for reading operation
-        for(auto &person : *personList)
+        for(auto &person : *m_personList)
         {
             personData << person.getName() << '\t' << person.getID() << "\t";
             if((person.getTakenBook()))
@@ -326,7 +326,7 @@ void Library::saveLatestData(void){
  * @return addres of the bookList
  */
 vector<Book>* Library::getBookList(void){
-    return bookList.get();
+    return m_bookList.get();
 }
 
 /**
@@ -335,5 +335,5 @@ vector<Book>* Library::getBookList(void){
  * @return addres of the personList
  */
 vector<Person>* Library::getPersonList(void){
-    return personList.get();
+    return m_personList.get();
 }

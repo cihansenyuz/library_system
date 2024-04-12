@@ -4,10 +4,10 @@
  * @brief Parameterized constructor.
  *
  * Initiliazes variables of the object, and sets takenBook to nullptr
- * @param n name
- * @param i ID
+ * @param name name of the person
+ * @param ID ID of the person
  */
-Person::Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
+Person::Person(string name, int ID) : m_name(name), m_ID(ID), m_takenBook(nullptr){}
 
 /**
  * @brief Copy constructor.
@@ -15,7 +15,7 @@ Person::Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
  * Initiliazes variables of the object as the given object
  * @param p the person object to be copied
  */
-Person::Person(const Person& p) : name(p.getName()), id(p.getID()), takenBook(p.getTakenBook()){}
+Person::Person(const Person& p) : m_name(p.getName()), m_ID(p.getID()), m_takenBook(p.getTakenBook()){}
 
 /**
  * @brief Copy assignment operator.
@@ -25,9 +25,9 @@ Person::Person(const Person& p) : name(p.getName()), id(p.getID()), takenBook(p.
  */
 Person& Person::operator=(const Person& other){
     if(this != &other){
-        name = other.getName();
-        id = other.getID();
-        takenBook = other.getTakenBook();
+        m_name = other.getName();
+        m_ID = other.getID();
+        m_takenBook = other.getTakenBook();
     }
     return *this;
 }
@@ -38,10 +38,10 @@ Person& Person::operator=(const Person& other){
  * Prints Name, ID and the title of the taken book
  */
 void Person::displayInfo(void) {
-    cout << "Name: " << name << endl;
-    cout << "ID: " << id << endl;
-    if(takenBook)
-        cout << "Book: " << takenBook->getTitle() << endl;
+    cout << "Name: " << m_name << endl;
+    cout << "ID: " << m_ID << endl;
+    if(m_takenBook)
+        cout << "Book: " << m_takenBook->getTitle() << endl;
     else
         cout << "Book: not taken" << endl;
 }
@@ -52,16 +52,16 @@ void Person::displayInfo(void) {
  * @return name of the person
  */
 string Person::getName(void) const{
-    return name;
+    return m_name;
 }
 
 /**
- * @brief Getter function for name variable.
+ * @brief Getter function for ID variable.
  *
- * @return name of the person
+ * @return ID number of the person
  */
 int Person::getID(void) const{
-    return id;
+    return m_ID;
 }
 
 /**
@@ -69,8 +69,8 @@ int Person::getID(void) const{
  * 
  * @param b the book object which is taken by the person
  */
-void Person::setTakenBook(Book& b){
-    takenBook = &b;
+void Person::setTakenBook(Book& takenBook){
+    m_takenBook = &takenBook;
 }
 
 /**
@@ -79,7 +79,7 @@ void Person::setTakenBook(Book& b){
  * Resets the takenBook pointer to nullptr
  */
 void Person::resetTakenBook(void){
-    takenBook = nullptr;
+    m_takenBook = nullptr;
 }
 
 /**
@@ -88,5 +88,5 @@ void Person::resetTakenBook(void){
  * @return adress of the pointed object
  */
 Book* Person::getTakenBook(void) const{
-    return takenBook;
+    return m_takenBook;
 }

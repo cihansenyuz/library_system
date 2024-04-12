@@ -8,7 +8,9 @@
  * @param a author
  * @param i ISBN
  */
-Item::Item(string t, string a, long long int i):title(t),author(a),ISBN(i){}
+Item::Item(string title, string author, long long int ISBN) : m_title(title),
+                                                              m_author(author),
+                                                              m_ISBN(ISBN){}
 
 /**
  * @brief Getter function for author variable.
@@ -16,7 +18,7 @@ Item::Item(string t, string a, long long int i):title(t),author(a),ISBN(i){}
  * @return Current value of the variable
  */
 string Item::getAuthor(void){
-    return author;
+    return m_author;
 }
 
 /**
@@ -25,5 +27,5 @@ string Item::getAuthor(void){
  * @return Current value of the variable
  */
 long long int Item::getISBN(void){
-    return ISBN;
+    return m_ISBN;
 }

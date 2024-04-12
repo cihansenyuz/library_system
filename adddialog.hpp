@@ -16,7 +16,9 @@ public:
     ~AddDialog();
 
 signals:
-    void userInputReady(const std::string &tit, const std::string &ath, const long long &isbn);
+    void userInputReady(const std::string &title,
+                        const std::string &author,
+                        const long long &ISBN);
 
 private slots:
     void addButtonClicked();

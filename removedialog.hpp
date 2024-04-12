@@ -20,7 +20,8 @@ public:
     ~RemoveDialog();
 
 signals:
-    void userInputReady(const long long int& uniqueData, const char& selection);
+    void userInputReady(const long long int& uniqueData,
+                        const char& selection);
 
 private slots:
     void deleteButtonClicked();

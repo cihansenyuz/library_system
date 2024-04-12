@@ -60,8 +60,8 @@ private slots:
     void removeButtonClicked();
     void exitButtonClicked();
 
-    void getDialogInputs(const string &name, const int &id);
-    void getDialogInputs(const string &tit, const string &ath, const long long &isbn);
+    void getDialogInputs(const string &name, const int &ID);
+    void getDialogInputs(const string &title, const string &author, const long long &ISBN);
     void getDialogInputs(const long long int &uniqueData, const char& selection);
 
     void returnBookTitleLineEditUpdated(const QString& title);
@@ -75,14 +75,13 @@ private slots:
     void newUserInput();
 private:
     Ui::MainWindow *ui;
-    unique_ptr<Library> library;
-    QString programVersion;
+    unique_ptr<Library> m_library;
+    QString m_programVersion;
     QStringList bookTitleCompletions;
     QStringList personNameCompletions;
     unique_ptr<QCompleter> returnBookCompleter;
     unique_ptr<QCompleter> checkOutBookCompleter;
     unique_ptr<QCompleter> personCompleter;
-    tableType currentTable;
 
     void updateBookTable();
     void updatePersonTable();
