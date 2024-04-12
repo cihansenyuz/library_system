@@ -251,7 +251,9 @@ void MainWindow::clearButtonClickled(){
 */
 void MainWindow::registerButtonClicked(){
     RegisterDialog dialog;
-    connect(&dialog, &RegisterDialog::userInputReady, this, &MainWindow::getRegisterInput);
+    connect(&dialog, &RegisterDialog::userInputReady, this, [&](const string &name, const int &id){
+        this->getDialogInputs(name, id);
+    });
     updatePersonTable();
     dialog.setModal(true);
     dialog.exec();
@@ -266,7 +268,7 @@ void MainWindow::registerButtonClicked(){
 * @param id id of the Person
 * @return none
 */
-void MainWindow::getRegisterInput(const string &name, const int &id){
+void MainWindow::getDialogInputs(const string &name, const int &id){
     this->library->registerPerson(name, id);
     updateTables();
     ui->infoTextBrowser->append("New user registered in the system!");
@@ -283,7 +285,9 @@ void MainWindow::getRegisterInput(const string &name, const int &id){
 */
 void MainWindow::addButtonClicked(){
     AddDialog dialog;
-    connect(&dialog, &AddDialog::userInputReady, this, &MainWindow::getAddInput);
+    connect(&dialog, &AddDialog::userInputReady, this, [&](const string &tit, const string &ath, const long long &isbn){
+        this->getDialogInputs(tit, ath, isbn);
+    });
     updateBookTable();
     dialog.setModal(true);
     dialog.exec();
@@ -299,7 +303,7 @@ void MainWindow::addButtonClicked(){
 * @param isbn ISBN of the Book
 * @return none
 */
-void MainWindow::getAddInput(const string &tit, const string &ath, const long long &isbn){
+void MainWindow::getDialogInputs(const string &tit, const string &ath, const long long &isbn){
     QString result = this->library->addBook(tit, ath, isbn);
     ui->infoTextBrowser->append(result);
     updateTables();
@@ -316,7 +320,9 @@ void MainWindow::getAddInput(const string &tit, const string &ath, const long lo
 */
 void MainWindow::removeButtonClicked(){
     RemoveDialog dialog;
-    connect(&dialog, &RemoveDialog::userInputReady, this, &MainWindow::getRemoveInput);
+    connect(&dialog, &RemoveDialog::userInputReady, this, [&](const long long int &uniqueData, const char& selection){
+        this->getDialogInputs(uniqueData, selection);
+    });
     updateTables();
     dialog.setModal(true);
     dialog.exec();
@@ -331,7 +337,7 @@ void MainWindow::removeButtonClicked(){
 * @param uniqueData ISBN of the Book or user ID
 * @return none
 */
-void MainWindow::getRemoveInput(const long long int &uniqueData, const char& selection){
+void MainWindow::getDialogInputs(const long long int &uniqueData, const char& selection){
     if(selection == BOOK_SELECTION){
         Book* temp = library->checkBook(uniqueData);
         if(temp){

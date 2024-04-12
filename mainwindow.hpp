@@ -60,9 +60,9 @@ private slots:
     void removeButtonClicked();
     void exitButtonClicked();
 
-    void getRegisterInput(const string &name, const int &id);
-    void getAddInput(const string &tit, const string &ath, const long long &isbn);
-    void getRemoveInput(const long long int &uniqueData, const char& selection);
+    void getDialogInputs(const string &name, const int &id);
+    void getDialogInputs(const string &tit, const string &ath, const long long &isbn);
+    void getDialogInputs(const long long int &uniqueData, const char& selection);
 
     void returnBookTitleLineEditUpdated(const QString& title);
     void returnBookTitleLineEditCompleterClicked(const QString &title);
