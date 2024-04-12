@@ -1,6 +1,38 @@
 #include "person.hpp"
 
 /**
+ * @brief Parameterized constructor.
+ *
+ * Initiliazes variables of the object, and sets takenBook to nullptr
+ * @param n name
+ * @param i ID
+ */
+Person::Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
+
+/**
+ * @brief Copy constructor.
+ *
+ * Initiliazes variables of the object as the given object
+ * @param p the person object to be copied
+ */
+Person::Person(const Person& p) : name(p.getName()), id(p.getID()), takenBook(p.getTakenBook()){}
+
+/**
+ * @brief Copy assignment operator.
+ *
+ * Initiliazes variables of the assignee object as the assigned object
+ * @param other the person object to be assigned
+ */
+Person& Person::operator=(const Person& other){
+    if(this != &other){
+        name = other.getName();
+        id = other.getID();
+        takenBook = other.getTakenBook();
+    }
+    return *this;
+}
+
+/**
  * @brief Prints properties of the object.
  *
  * Prints Name, ID and the title of the taken book
@@ -19,7 +51,7 @@ void Person::displayInfo(void) {
  *
  * @return name of the person
  */
-string Person::getName(void) {
+string Person::getName(void) const{
     return name;
 }
 
@@ -28,7 +60,7 @@ string Person::getName(void) {
  *
  * @return name of the person
  */
-int Person::getID(void){
+int Person::getID(void) const{
     return id;
 }
 
@@ -55,6 +87,6 @@ void Person::resetTakenBook(void){
  * 
  * @return adress of the pointed object
  */
-Book* Person::getTakenBook(void){
+Book* Person::getTakenBook(void) const{
     return takenBook;
 }

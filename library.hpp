@@ -21,13 +21,15 @@ private:
     unique_ptr<vector<Book>> bookList;         /** vector pointer for all books */
     unique_ptr<vector<Person>> personList;     /** vector pointer for all persons */
     bool available;                 /** availability of the library */
-    string fileNameBook;            /** path to txt where book data kept */
-    string fileNamePerson;          /** path to txt where user data kept */
 
     void addBook(const Book& newBook);
     void registerPerson(const Person& newPerson);
 public:
+    const string fileNameBook;            /** path to txt where book data kept */
+    const string fileNamePerson;          /** path to txt where user data kept */
+
     Library(string bdf, string pdf);
+    Library(const Library& lib);
     QString addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN);
     QString registerPerson(const string& personName, const int& personId);
     void remove(Book* book);

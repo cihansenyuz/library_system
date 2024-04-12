@@ -18,15 +18,7 @@ private:
     string author;      /**< Author of the book */
     long long int ISBN; /**< ISBN of the book */
 public:
-    /**
-     * @brief Parameterized constructor.
-     *
-     * Initiliazes variables of the object
-     * @param t title
-     * @param a author
-     * @param i ISBN
-     */
-    Item(string t, string a, long long int i):title(t),author(a),ISBN(i){}
+    Item(string t, string a, long long int i);
     virtual void displayInfo(void) = 0;
     string getAuthor(void);
     long long int getISBN(void);

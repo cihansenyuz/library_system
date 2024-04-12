@@ -14,24 +14,15 @@ typedef class Book : public Item
 private:
     bool available;     /** Check out availability of the book */
 public:
-    /**
-     * @brief Parameterized constructor.
-     *
-     * Initiliazes variables of the object, and sets availability of them true
-     * @param t title
-     * @param a author
-     * @param i ISBN
-     */
-    Book(string t, string a, long long int i):Item(t, a, i){
-        available = true;
-    }
-    Book(string t, string a, long long int i, bool av):Item(t, a, i){
-        available = av;
-    }
+    Book(string t, string a, long long int i);
+    Book(string t, string a, long long int i, bool av);
+    Book(const Book& b);
+    Book& operator=(const Book& other);
     void setAvailable(bool opt);
-    bool isAvailable(void);
+    bool isAvailable(void) const;
     void displayInfo(void) override;
     string getTitle(void);
+    ~Book(){}
 }Book;
 
 #endif

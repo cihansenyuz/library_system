@@ -11,20 +11,16 @@ private:
     int id;             /** ID of the person */
     Book* takenBook;    /** Pointed book taken by the person */
 public:
-    /**
-     * @brief Parameterized constructor.
-     *
-     * Initiliazes variables of the object, and sets takenBook to nullptr
-     * @param n name
-     * @param i ID
-     */
-    Person(string n, int i) : name(n), id(i), takenBook(nullptr){}
+    Person(string n, int i);
+    Person(const Person& p);
+    Person& operator=(const Person& other);
     void displayInfo(void);
-    string getName(void);
-    int getID(void);
+    string getName(void) const;
+    int getID(void) const;
     void setTakenBook(Book& b);
     void resetTakenBook(void);
-    Book* getTakenBook(void);
+    Book* getTakenBook(void) const;
+    ~Person(){}
 }Person;
 
 #endif
