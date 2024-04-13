@@ -68,9 +68,23 @@ Library::Library(string pathToBookData, string pathToPersonData) : m_pathToBookD
 
         // create person and set takenBook
         Person person(name, ID);
-        for(auto &book : *m_bookList)
-            if(book.getTitle() == takenBookTitle)    // if not taken any book, then it is already nullptr
-                person.setTakenBook(book);
+        for(auto &book : *m_bookList){
+            if(book.getTitle() == takenBookTitle){    // if not taken any book, then it is already nullptr
+                vector<int> takenDate;
+                for(int i=0; i<3; i++){
+                    getline(personData, subString, '\t');
+                    int date;
+                    try{
+                        date = stoi(subString);
+                    }
+                    catch (const std::invalid_argument& e) {
+                        // no problem, this is workaround
+                    }
+                    takenDate.push_back(date);
+                }
+                person = Person(name, ID, book, takenDate);
+            }
+        }
         savedPersonList.get()->push_back(person);
     }
     m_personList = std::move(savedPersonList);
@@ -193,9 +207,10 @@ QString Library::checkOut(Person* person, Book* book){
     }
     else if(!book->isAvailable())
         return "This book is already taken by someone else";
-    else if(person->getTakenBook())
-        return QString::fromStdString(person->getName()) + " has already taken a book. Needs to return it to take a new one.";
+    else if(person->getTakenBook()){
 
+        return QString::fromStdString(person->getName()) + " has already taken a book. Needs to return it to take a new one.";
+    }
     return "supress for -Wreturn-type";
 }
 
@@ -312,8 +327,14 @@ void Library::saveLatestData(void){
         for(auto &person : *m_personList)
         {
             personData << person.getName() << '\t' << person.getID() << "\t";
-            if((person.getTakenBook()))
+
+            if((person.getTakenBook())){
                 personData << person.getTakenBook()->getTitle() << '\t';
+                vector<int> takenDate = person.getTakenDate();
+                for(auto &date : takenDate){
+                    personData << date << '\t';
+                }
+            }
             else
                 personData << '-' << '\t';
         }

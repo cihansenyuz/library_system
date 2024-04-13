@@ -13,14 +13,17 @@
 #include "removedialog.hpp"
 
 #define BOOK_DATA_COLUMN_COUNT 4
-#define PERSON_DATA_COLUMN_COUNT 3
+#define PERSON_DATA_COLUMN_COUNT 4
+#define YEAR 2
+#define MONTH 1
+#define DAY 0
 
 typedef enum bookColumns{   // enum for column labels of book table
     titleColumn, authorColumn, ISBNColumn, availabilityColumn  
 }bookColumns;
 
 typedef enum personColumns{ // enum for column labels of user table
-    nameColumn, IDColumn, takenBookColumn  
+    nameColumn, IDColumn, takenBookColumn, takenDateColumn
 }personColumns;
 
 // strings for line edit labels

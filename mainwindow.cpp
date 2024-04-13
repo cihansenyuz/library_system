@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> library, QString pro
     ui->bookTableWidget->setColumnCount(BOOK_DATA_COLUMN_COUNT);    // fixed at compile time
     ui->personTableWidget->setColumnCount(PERSON_DATA_COLUMN_COUNT);
     ui->bookTableWidget->setHorizontalHeaderLabels(QStringList({"Title", "Author", "ISBN", "Availability"}));
-    ui->personTableWidget->setHorizontalHeaderLabels(QStringList({"Name", "ID", "Taken Book"}));
+    ui->personTableWidget->setHorizontalHeaderLabels(QStringList({"Name", "ID", "Taken Book", "Taken Date"}));
     updatePersonTable();
     updateBookTable();
     ui->tabWidget->setCurrentIndex(bookTable);
@@ -151,13 +151,24 @@ void MainWindow::updatePersonTable(){
         ui->personTableWidget->setItem(currentRow, IDColumn, item);
         item->setTextAlignment(Qt::AlignCenter);
 
-        if(m_library->getPersonList()->at(currentRow).getTakenBook())
+        if(m_library->getPersonList()->at(currentRow).getTakenBook()){
             item = new QTableWidgetItem(QString::fromStdString(m_library->getPersonList()->at(currentRow).getTakenBook()->getTitle()));
+            ui->personTableWidget->setItem(currentRow, takenBookColumn, item);
+
+            QString takenDate = QString::fromStdString(std::to_string(m_library->getPersonList()->at(currentRow).getTakenDate().at(DAY)));
+            takenDate += "/" + QString::fromStdString(std::to_string(m_library->getPersonList()->at(currentRow).getTakenDate().at(MONTH)));
+            takenDate += "/" + QString::fromStdString(std::to_string(m_library->getPersonList()->at(currentRow).getTakenDate().at(YEAR)));
+            item = new QTableWidgetItem(takenDate);
+            ui->personTableWidget->setItem(currentRow, takenDateColumn, item);
+        }
         else{
             item = new QTableWidgetItem(TABLE_NO_TAKEN_BOOK);
+            ui->personTableWidget->setItem(currentRow, takenBookColumn, item);
+            item->setTextAlignment(Qt::AlignCenter);
+            item = new QTableWidgetItem(TABLE_NO_TAKEN_BOOK);
+            ui->personTableWidget->setItem(currentRow, takenDateColumn, item);
             item->setTextAlignment(Qt::AlignCenter);
         }
-        ui->personTableWidget->setItem(currentRow, takenBookColumn, item);
     }
     ui->personTableWidget->resizeColumnsToContents();
 

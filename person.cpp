@@ -7,15 +7,22 @@
  * @param name name of the person
  * @param ID ID of the person
  */
-Person::Person(string name, int ID) : m_name(name), m_ID(ID), m_takenBook(nullptr){}
+Person::Person(string name, int ID)
+    : m_name(name), m_ID(ID), m_takenBook(nullptr){}
+
+Person::Person(string name, int ID, Book& takenBook, vector<int>& takenDate)
+    : m_name(name), m_ID(ID), m_takenBook(&takenBook), m_takenDate(takenDate){}
 
 /**
  * @brief Copy constructor.
  *
  * Initiliazes variables of the object as the given object
- * @param p the person object to be copied
+ * @param other the person object to be copied
  */
-Person::Person(const Person& p) : m_name(p.getName()), m_ID(p.getID()), m_takenBook(p.getTakenBook()){}
+Person::Person(const Person& other)
+    : m_name(other.getName()), m_ID(other.getID()), m_takenBook(other.getTakenBook()){
+    m_takenDate = other.getTakenDate();
+}
 
 /**
  * @brief Copy assignment operator.
@@ -28,6 +35,7 @@ Person& Person::operator=(const Person& other){
         m_name = other.getName();
         m_ID = other.getID();
         m_takenBook = other.getTakenBook();
+        m_takenDate = other.getTakenDate();
     }
     return *this;
 }
@@ -67,10 +75,11 @@ int Person::getID(void) const{
 /**
  * @brief Setter function for takenBook pointer.
  * 
- * @param b the book object which is taken by the person
+ * @param takenBook the book object which is taken by the person
  */
 void Person::setTakenBook(Book& takenBook){
     m_takenBook = &takenBook;
+    stampTime();
 }
 
 /**
@@ -80,6 +89,7 @@ void Person::setTakenBook(Book& takenBook){
  */
 void Person::resetTakenBook(void){
     m_takenBook = nullptr;
+    m_takenDate.clear();
 }
 
 /**
@@ -89,4 +99,27 @@ void Person::resetTakenBook(void){
  */
 Book* Person::getTakenBook(void) const{
     return m_takenBook;
+}
+
+/**
+ * @brief Saves the current date into takenBookDate
+ *
+ * @return none
+ */
+void Person::stampTime(){
+    m_takenDate.clear();
+    std::time_t currentTime = std::time(nullptr);
+    std::tm* localTime = std::localtime(&currentTime);  // Convert current time to local time
+    m_takenDate.push_back(localTime->tm_mday);          // Day of the month
+    m_takenDate.push_back(localTime->tm_mon + 1);       // Months start from 0
+    m_takenDate.push_back(localTime->tm_year + 1900);   // Years since 1900
+}
+
+/**
+ * @brief Getter function for takenDate vector
+ *
+ * @return Copy of the takenDate vector
+ */
+vector<int> Person::getTakenDate() const{
+    return m_takenDate;
 }

@@ -16,7 +16,7 @@ public:
     ~RegisterDialog();
 
 signals:
-    void userInputReady(const std::string &name, const int &id);
+    void userInputReady(const std::string &name, const int &ID);
 
 private slots:
     void registerButtonClicked();
