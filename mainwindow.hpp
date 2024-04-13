@@ -67,9 +67,9 @@ private slots:
     void getDialogInputs(const string &title, const string &author, const long long &ISBN);
     void getDialogInputs(const long long int &uniqueData, const char& selection);
 
-    void returnBookTitleLineEditUpdated(const QString& title);
+    void bookTitleLineEditUpdated(const QString& title);
     void returnBookTitleLineEditCompleterClicked(const QString &title);
-    void checkOutBookTitleLineEditUpdated(const QString& title);
+    //void checkOutBookTitleLineEditUpdated(const QString& title);
     void checkOutBookTitleLineEditCompleterClicked(const QString &title);
     void checkOutPersonTitleLineEditUpdated(const QString& name);
     void checkOutPersonTitleLineEditCompleterClicked(const QString &name);

@@ -25,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> library, QString pro
     connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
     connect(ui->personTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
 
-    connect(ui->returnBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::returnBookTitleLineEditUpdated);
-    connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutBookTitleLineEditUpdated);
+    connect(ui->returnBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::bookTitleLineEditUpdated);
+    connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::bookTitleLineEditUpdated);
     connect(ui->checkOutPersonNameLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutPersonTitleLineEditUpdated);
 
     connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::newUserInput);
@@ -99,6 +99,7 @@ void MainWindow::updateBookTable(){
             item = new QTableWidgetItem(TABLE_BOOK_NOT_AVAILABLE);
         item->setTextAlignment(Qt::AlignCenter);
         ui->bookTableWidget->setItem(currentRow, availabilityColumn, item);
+        ui->bookTableWidget->setRowHidden(currentRow, false);
     }
 
     ui->bookTableWidget->resizeColumnsToContents();
@@ -170,6 +171,7 @@ void MainWindow::updatePersonTable(){
             ui->personTableWidget->setItem(currentRow, takenDateColumn, item);
             item->setTextAlignment(Qt::AlignCenter);
         }
+        ui->personTableWidget->setRowHidden(currentRow, false);
     }
     ui->personTableWidget->resizeColumnsToContents();
 
@@ -213,6 +215,8 @@ void MainWindow::checkOutButtonClicked(){
     resultMessage = this->m_library->checkOut(userCheckingOut, bookToCheckOut);
     ui->checkOutBookTitleLineEdit->clear();
     ui->checkOutPersonNameLineEdit->clear();
+    ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
+    ui->checkOutID->setText(NOT_VALID_INPUT_ID);
     ui->infoTextBrowser->append(resultMessage);
     updateTables();
 }
@@ -231,6 +235,7 @@ void MainWindow::returnButtonClicked(){
     bookToReturn = this->m_library->checkBook(std::stoll(ui->returnISBN->text().toStdString()));
     resultMessage = this->m_library->returnBook(bookToReturn);
     ui->returnBookTitleLineEdit->clear();
+    ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
     ui->infoTextBrowser->append(resultMessage);
     updateTables();
 }
@@ -417,7 +422,7 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
             ui->returnBookTitleLineEdit->clear();
             ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
             ui->checkOutBookTitleLineEdit->setText(bookTitle);
-            ui->checkOutISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());  // set ISBN for checkOut action
+            ui->checkOutISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());  // set ISBN for checkOut action    
         }
         else{   // or already booked
             ui->checkOutBookTitleLineEdit->clear();
@@ -443,7 +448,7 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
             ui->checkOutPersonNameLineEdit->clear();
             ui->checkOutID->setText(NOT_VALID_INPUT_ID);
             ui->returnBookTitleLineEdit->setText(bookTitle);
-            returnBookTitleLineEditUpdated(bookTitle);                  // set ISBN for return action
+            bookTitleLineEditUpdated(bookTitle);                  // set ISBN for return action
         }
     }
 }
@@ -456,7 +461,7 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
 * @param title edited book title
 * @return none
 */
-void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
+void MainWindow::bookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
     if(temp.size() == 0){       // no match with title
         ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
@@ -464,6 +469,17 @@ void MainWindow::returnBookTitleLineEditUpdated(const QString& title){
     else{                       // matches
         int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
         ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
+    }
+
+    QString filter = title;
+    for(int i=0; i < ui->bookTableWidget->rowCount(); ++i)
+    {
+        bool match = false;
+        QTableWidgetItem *item = ui->bookTableWidget->item(i, titleColumn);
+        if(item->text().contains(filter, Qt::CaseInsensitive)){
+            match = true;
+        }
+        ui->bookTableWidget->setRowHidden(i, !match);
     }
 }
 
@@ -489,7 +505,7 @@ void MainWindow::returnBookTitleLineEditCompleterClicked(const QString &title){
 * @param title edited book title
 * @return none
 */
-void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
+/*void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
     if(temp.size() == 0){       // no match with title
         ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
@@ -498,7 +514,7 @@ void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
         int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
         ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
     }
-}
+}*/
 
 /**
 * @brief Slot method to handle click action on checkOutBookTitleLineEditCompleter
