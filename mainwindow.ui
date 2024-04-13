@@ -38,7 +38,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="bookTableTab">
          <attribute name="title">
@@ -87,40 +87,7 @@
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QPushButton" name="registerButton">
-              <property name="toolTip">
-               <string>Opens a dialog box to register a new user</string>
-              </property>
-              <property name="statusTip">
-               <string>Opens a dialog box to register a new user</string>
-              </property>
-              <property name="text">
-               <string>Register User</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="addButton">
-              <property name="toolTip">
-               <string>Opens a dialog box to add a new book</string>
-              </property>
-              <property name="statusTip">
-               <string>Opens a dialog box to add a new book</string>
-              </property>
-              <property name="text">
-               <string>Add Book</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="removeButton">
-              <property name="text">
-               <string>Remove User/Book</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
              <widget class="QPushButton" name="summaryButton">
               <property name="toolTip">
@@ -131,19 +98,6 @@
               </property>
               <property name="text">
                <string>Print Summary</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="switchButton">
-              <property name="toolTip">
-               <string>Switches the table between user list and book list</string>
-              </property>
-              <property name="statusTip">
-               <string>Switches the table between user list and book list</string>
-              </property>
-              <property name="text">
-               <string>Switch Table</string>
               </property>
              </widget>
             </item>
@@ -161,7 +115,20 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer">
+             <widget class="QPushButton" name="switchButton">
+              <property name="toolTip">
+               <string>Switches the table between user list and book list</string>
+              </property>
+              <property name="statusTip">
+               <string>Switches the table between user list and book list</string>
+              </property>
+              <property name="text">
+               <string>Switch Table</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_4">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -188,10 +155,55 @@
             </item>
            </layout>
           </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout"/>
+          </item>
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1">
+         <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0,1">
+          <item>
+           <widget class="QGroupBox" name="manageDatabaseGroupBox">
+            <property name="title">
+             <string>Manage Database</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QPushButton" name="registerButton">
+               <property name="toolTip">
+                <string>Opens a dialog box to register a new user</string>
+               </property>
+               <property name="statusTip">
+                <string>Opens a dialog box to register a new user</string>
+               </property>
+               <property name="text">
+                <string>Register User</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="addButton">
+               <property name="toolTip">
+                <string>Opens a dialog box to add a new book</string>
+               </property>
+               <property name="statusTip">
+                <string>Opens a dialog box to add a new book</string>
+               </property>
+               <property name="text">
+                <string>Add Book</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="removeButton">
+               <property name="text">
+                <string>Remove User/Book</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
           <item>
            <widget class="QGroupBox" name="checkOutGroupBox">
             <property name="title">
@@ -334,7 +346,7 @@
                <item>
                 <widget class="QLabel" name="label_3">
                  <property name="text">
-                  <string>Book Title</string>
+                  <string>Book Title  </string>
                  </property>
                 </widget>
                </item>
@@ -369,25 +381,6 @@
                 </widget>
                </item>
               </layout>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_4">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>26</height>
-                </size>
-               </property>
-               <property name="baseSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_8">

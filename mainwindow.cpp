@@ -158,6 +158,7 @@ void MainWindow::updatePersonTable(){
             QString takenDate = QString::fromStdString(std::to_string(m_library->getPersonList()->at(currentRow).getTakenDate().at(DAY)));
             takenDate += "/" + QString::fromStdString(std::to_string(m_library->getPersonList()->at(currentRow).getTakenDate().at(MONTH)));
             takenDate += "/" + QString::fromStdString(std::to_string(m_library->getPersonList()->at(currentRow).getTakenDate().at(YEAR)));
+            item->setTextAlignment(Qt::AlignCenter);
             item = new QTableWidgetItem(takenDate);
             ui->personTableWidget->setItem(currentRow, takenDateColumn, item);
         }
