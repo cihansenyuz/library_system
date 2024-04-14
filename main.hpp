@@ -13,6 +13,6 @@
 
 #define BOOK_DATA_FILE_PATH "..\\library_system\\book_data.txt"
 #define PERSON_DATA_FILE_PATH "..\\library_system\\person_data.txt"
-#define PROGRAM_VERSION "Library System v2.1"
+#define PROGRAM_VERSION "Library System v2.2"
 
 #endif

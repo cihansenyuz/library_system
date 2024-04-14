@@ -24,7 +24,7 @@ Functionalities and features:
 31.03.2024 the release of Library System Terminal Application v2.0
 - A graphical user interface added, along with many GUI functionalities
 
-06.04.2024 the release of Library System Terminal Application v2.1
+06.04.2024 the release of Library System Application v2.1
 
 New features and improvements added:
 - New feature: Users and books in the library system now can be removed from the database.
@@ -33,3 +33,10 @@ New features and improvements added:
 - QoL improvement: Check out/Return buttons are now disabled until proper input provided.
 - QoL improvement: Inputs for check out/return actions now have auto completer upon typing on line edits.
 - QoL improvement: Switching between book list and user list is possible upon tab selection.
+
+14.04.2024 the release of Library System Application v2.2
+
+New features and improvements added:
+- New feature: Tables now can be filtered.
+- New feature: Check out action now records the date of the action.
+- QoL improvement: User interface layout is redesigned for better experience.
