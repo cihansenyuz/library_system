@@ -62,18 +62,20 @@ private slots:
     void addButtonClicked();
     void removeButtonClicked();
     void exitButtonClicked();
+    void filterClearButtonClicked();
 
     void getDialogInputs(const string &name, const int &ID);
     void getDialogInputs(const string &title, const string &author, const long long &ISBN);
     void getDialogInputs(const long long int &uniqueData, const char& selection);
 
+    void filterLineEditUpdated(const QString& filter);
     void bookTitleLineEditUpdated(const QString& title);
     void returnBookTitleLineEditCompleterClicked(const QString &title);
-    //void checkOutBookTitleLineEditUpdated(const QString& title);
     void checkOutBookTitleLineEditCompleterClicked(const QString &title);
     void checkOutPersonTitleLineEditUpdated(const QString& name);
     void checkOutPersonTitleLineEditCompleterClicked(const QString &name);
 
+    void currentTabChanged(const int& index);
     void tableItemSelected(const int &row, const int &column);
     void newUserInput();
 private:
@@ -90,6 +92,7 @@ private:
     void updatePersonTable();
     void updateTables();
     void freeTableMemory(QTableWidget* table);
+    void filterTable(QTableWidget *table, const QString& filter);
 
 };
 #endif // MAINWINDOW_HPP

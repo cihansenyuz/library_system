@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> library, QString pro
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::addButtonClicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButtonClicked);
     connect(ui->removeButton, &QPushButton::clicked, this, &MainWindow::removeButtonClicked);
+    connect(ui->filterClearButton, &QPushButton::clicked, this, &MainWindow::filterClearButtonClicked);
 
     connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
     connect(ui->personTableWidget, &QTableWidget::cellClicked, this, &MainWindow::tableItemSelected);
@@ -28,12 +29,15 @@ MainWindow::MainWindow(QWidget *parent, unique_ptr<Library> library, QString pro
     connect(ui->returnBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::bookTitleLineEditUpdated);
     connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::bookTitleLineEditUpdated);
     connect(ui->checkOutPersonNameLineEdit, &QLineEdit::textEdited, this, &MainWindow::checkOutPersonTitleLineEditUpdated);
+    connect(ui->filterLineEdit, &QLineEdit::textEdited, this, &MainWindow::filterLineEditUpdated);
 
     connect(ui->bookTableWidget, &QTableWidget::cellClicked, this, &MainWindow::newUserInput);
     connect(ui->personTableWidget, &QTableWidget::cellClicked, this, &MainWindow::newUserInput);
     connect(ui->returnBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::newUserInput);
     connect(ui->checkOutBookTitleLineEdit, &QLineEdit::textEdited, this, &MainWindow::newUserInput);
     connect(ui->checkOutPersonNameLineEdit, &QLineEdit::textEdited, this, &MainWindow::newUserInput);
+
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::currentTabChanged);
 
     // create tables for the first time to make them ready at start up
     ui->bookTableWidget->setColumnCount(BOOK_DATA_COLUMN_COUNT);    // fixed at compile time
@@ -405,6 +409,19 @@ void MainWindow::exitButtonClicked(){
 }
 
 /**
+* @brief Slot method to handle click action on filterClearButton
+*
+* Basicly, calls destructor to save latest status and exit
+*
+* @param none
+* @return none
+*/
+void MainWindow::filterClearButtonClicked(){
+    ui->filterLineEdit->clear();
+    filterLineEditUpdated("");
+}
+
+/**
 * @brief Slot method to handle item selection on tableWidget
 *
 * Gets row number of the selected item and decides which lineEdit to be auto filled.
@@ -448,7 +465,7 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
             ui->checkOutPersonNameLineEdit->clear();
             ui->checkOutID->setText(NOT_VALID_INPUT_ID);
             ui->returnBookTitleLineEdit->setText(bookTitle);
-            bookTitleLineEditUpdated(bookTitle);                  // set ISBN for return action
+            returnBookTitleLineEditCompleterClicked(bookTitle);    // set ISBN for return action
         }
     }
 }
@@ -463,24 +480,14 @@ void MainWindow::tableItemSelected(const int &row, const int &column){
 */
 void MainWindow::bookTitleLineEditUpdated(const QString& title){
     QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
-    if(temp.size() == 0){       // no match with title
+    if(temp.size() == 0 && ui->returnBookTitleLineEdit->text() == title)      // no match with title
         ui->returnISBN->setText(NOT_VALID_INPUT_ISBN);
-    }
-    else{                       // matches
-        int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
-        ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
-    }
-
-    QString filter = title;
-    for(int i=0; i < ui->bookTableWidget->rowCount(); ++i)
-    {
-        bool match = false;
-        QTableWidgetItem *item = ui->bookTableWidget->item(i, titleColumn);
-        if(item->text().contains(filter, Qt::CaseInsensitive)){
-            match = true;
-        }
-        ui->bookTableWidget->setRowHidden(i, !match);
-    }
+    else if(temp.size() == 0 && ui->checkOutBookTitleLineEdit->text() == title)
+        ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
+    else if(temp.size() != 0 && ui->returnBookTitleLineEdit->text() == title) // matches
+        ui->returnISBN->setText(ui->bookTableWidget->item(ui->bookTableWidget->row(temp[0]), ISBNColumn)->text());
+    else
+        ui->checkOutISBN->setText(ui->bookTableWidget->item(ui->bookTableWidget->row(temp[0]), ISBNColumn)->text());
 }
 
 /**
@@ -496,25 +503,6 @@ void MainWindow::returnBookTitleLineEditCompleterClicked(const QString &title){
     int row = ui->bookTableWidget->row(temp[0]);
     ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
 }
-
-/**
-* @brief Slot method to handle editing on checkOutBookTitleLineEdit
-*
-* Takes book title, finds corresponding QTableWidgetItem, passes ISBN data to relevant label
-*
-* @param title edited book title
-* @return none
-*/
-/*void MainWindow::checkOutBookTitleLineEditUpdated(const QString& title){
-    QList temp = ui->bookTableWidget->findItems(title, Qt::MatchFixedString);
-    if(temp.size() == 0){       // no match with title
-        ui->checkOutISBN->setText(NOT_VALID_INPUT_ISBN);
-    }
-    else{                       // matches
-        int row = ui->bookTableWidget->row(temp[0]);    // take first element since all books are unique
-        ui->returnISBN->setText(ui->bookTableWidget->item(row, ISBNColumn)->text());
-    }
-}*/
 
 /**
 * @brief Slot method to handle click action on checkOutBookTitleLineEditCompleter
@@ -599,6 +587,15 @@ void MainWindow::newUserInput(){
         ui->returnButton->setEnabled(false);
 }
 
+void MainWindow::currentTabChanged(const int &index){
+    ui->filterLineEdit->clear();
+    filterLineEditUpdated("");
+    if(index == personTable)
+        ui->filterLabel->setText("Filter Names:");
+    else if(index == bookTable)
+        ui->filterLabel->setText("Filter Titles:");
+}
+
 /**
 * @brief Deallocates allocated memory for table items
 *
@@ -613,5 +610,33 @@ void MainWindow::freeTableMemory(QTableWidget* table){
             delete table->item(row, col);
         }
     }
+}
+
+/**
+* @brief Filters rows that contains to user input
+*
+* Iterates through all items in the table, and hides or unhides
+*
+* @param table Table need to be filtered
+* @param filter user input from line edits
+* @return none
+*/
+void MainWindow::filterTable(QTableWidget *table, const QString& filter){
+    for(int row=0; row < table->rowCount(); ++row)
+    {
+        bool match = false;
+        QTableWidgetItem *item = table->item(row, titleColumn);   // or nameColumn, nothing matters
+        if(item->text().contains(filter, Qt::CaseInsensitive)){
+            match = true;
+        }
+        table->setRowHidden(row, !match);
+    }
+}
+
+void MainWindow::filterLineEditUpdated(const QString& filter){
+    if(ui->tabWidget->currentIndex() == personTable)
+        filterTable(ui->personTableWidget, filter);
+    else if(ui->tabWidget->currentIndex() == bookTable)
+        filterTable(ui->bookTableWidget, filter);
 }
 

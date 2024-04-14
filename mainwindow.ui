@@ -36,41 +36,66 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
       <item>
-       <widget class="QTabWidget" name="tabWidget">
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="bookTableTab">
-         <attribute name="title">
-          <string>Book List Table</string>
-         </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="bookTableTab">
+           <attribute name="title">
+            <string>Book List Table</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QTableWidget" name="bookTableWidget">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="personTableTab">
+           <attribute name="title">
+            <string>User List Table</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QTableWidget" name="personTableWidget"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>
-           <widget class="QTableWidget" name="bookTableWidget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+           <widget class="QLabel" name="filterLabel">
+            <property name="text">
+             <string/>
             </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustToContents</enum>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="filterLineEdit"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="filterClearButton">
+            <property name="text">
+             <string>Clear Filter</string>
             </property>
            </widget>
           </item>
          </layout>
-        </widget>
-        <widget class="QWidget" name="personTableTab">
-         <attribute name="title">
-          <string>User List Table</string>
-         </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
-          <item>
-           <widget class="QTableWidget" name="personTableWidget"/>
-          </item>
-         </layout>
-        </widget>
-       </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="2,3">
