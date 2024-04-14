@@ -60,35 +60,39 @@ Library::Library(string pathToBookData, string pathToPersonData) : m_pathToBookD
         catch (const std::invalid_argument& e) {
             // no problem, this is workaround
         }
-        getline(personData, subString, '\t');
-        string takenBookTitle = subString;
-
-        if(name == "") // crashes on some condition if not initialized
-            break;
-
-        // create person and set takenBook
         Person person(name, ID);
-        for(auto &book : *m_bookList){
-            if(book.getTitle() == takenBookTitle){    // if not taken any book, then it is already nullptr
-                vector<int> takenDate;
-                for(int i=0; i<3; i++){
-                    getline(personData, subString, '\t');
+
+        getline(personData, subString, '\t');
+        while(subString != "STOP"){
+            string takenBookTitle = subString;  // so it is a title
+            vector<int> takenDates;
+            vector<Book*> takenBooks;
+            for(auto &book : *m_bookList){
+                if(book.getTitle() == takenBookTitle){
+                    Book* taken= &book;
+                    takenBooks.push_back(taken);
                     int date;
-                    try{
-                        date = stoi(subString);
+                    for(int i=0; i<3; i++){
+                        getline(personData, subString, '\t');
+                        try{
+                            date = stoi(subString);
+                        }
+                        catch (const std::invalid_argument& e) {
+                            // no problem, this is workaround
+                        }
+                        takenDates.push_back(date);
                     }
-                    catch (const std::invalid_argument& e) {
-                        // no problem, this is workaround
-                    }
-                    takenDate.push_back(date);
+                    break;
                 }
-                person = Person(name, ID, book, takenDate);
             }
+            getline(personData, subString, '\t');
+            if(subString == "STOP")
+                person = Person(name, ID, takenBooks, takenDates);
         }
         savedPersonList.get()->push_back(person);
+        m_personList = std::move(savedPersonList);
+        personData.close();
     }
-    m_personList = std::move(savedPersonList);
-    personData.close();
 }
 
 /**
@@ -103,8 +107,10 @@ void Library::addBook(const Book& newBook){
     // to overcome issue, temporarily saved information about which person points to which book
     vector<pair<int, long long int>> takenBookMatches;
     for(auto &person : *m_personList){
-        if((person.getTakenBook()))
-            takenBookMatches.push_back(make_pair(person.getID(), person.getTakenBook()->getISBN()));
+        if(person.getTakenBook().size()){
+            for(auto it=person.getTakenBook().begin(); it != person.getTakenBook().end(); it++)
+                takenBookMatches.push_back(make_pair(person.getID(), (*it)->getISBN()));
+        }
     }
     m_bookList->push_back(newBook);
 
@@ -198,16 +204,15 @@ QString Library::checkOut(Person* person, Book* book){
         return "This user is not registered!";
 
     // check availability of person and book
-    if(book->isAvailable() && person->getTakenBook() == nullptr)
+    if(book->isAvailable() && person->getTakenBook().size() == 0)
     {
-
         book->setAvailable(false); // set not available
         person->setTakenBook(*book); // give the book to the person setting takenBook
         return "Book '" + QString::fromStdString(book->getTitle()) + "' is given to " + QString::fromStdString(person->getName());
     }
     else if(!book->isAvailable())
         return "This book is already taken by someone else";
-    else if(person->getTakenBook()){
+    else if(person->getTakenBook().size() == 3){
 
         return QString::fromStdString(person->getName()) + " has already taken a book. Needs to return it to take a new one.";
     }
@@ -309,7 +314,7 @@ void Library::saveLatestData(void){
         if(!(bookData.is_open()))
             cout << "couldnot open the data file" << endl;
         
-        // keep record of every book, \t is terminator for reading operation
+        // keep record of every book, \t is seperator for reading operation
         for(auto &book : *m_bookList)
         {
             bookData << book.getTitle() << '\t' 
@@ -323,21 +328,9 @@ void Library::saveLatestData(void){
         if(!(personData.is_open()))
             cout << "couldnot open the person file" << endl;
 
-        // keep record of every person, \t is terminator for reading operation
+        // keep record of every person, \t is seperator for reading operation
         for(auto &person : *m_personList)
-        {
-            personData << person.getName() << '\t' << person.getID() << "\t";
-
-            if((person.getTakenBook())){
-                personData << person.getTakenBook()->getTitle() << '\t';
-                vector<int> takenDate = person.getTakenDate();
-                for(auto &date : takenDate){
-                    personData << date << '\t';
-                }
-            }
-            else
-                personData << '-' << '\t';
-        }
+            personData << writePersonData(person);
         personData.close();
     }
 
@@ -357,4 +350,24 @@ vector<Book>* Library::getBookList(void){
  */
 vector<Person>* Library::getPersonList(void){
     return m_personList.get();
+}
+
+void Library::writePersonData(const Person& person){
+    string data;
+    data << person.getName() << '\t' << person.getID() << "\t";
+
+    if(person.getTakenBook()->size() != 0){
+        auto dateIterator = person.getTakenDate().begin();
+        for(auto &taken : *person.getTakenBook()){
+            data << taken.getTitle() << '\t';
+            data << *dateIterator << '\t';  // day
+            dateIterator++;
+            data << *dateIterator << '\t';  // month
+            dateIterator++;
+            data << *dateIterator << '\t';  // year
+            dateIterator++;
+        }
+    }
+    data << "STOP" << '\t';
+    return data;
 }

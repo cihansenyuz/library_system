@@ -24,6 +24,7 @@ private:
 
     void addBook(const Book& newBook);
     void registerPerson(const Person& newPerson);
+    string writePersonData(const Person& person);
 public:
     const string m_pathToBookData;            /** path to txt where book data kept */
     const string m_pathToPersonData;          /** path to txt where user data kept */

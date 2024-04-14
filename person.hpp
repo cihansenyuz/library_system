@@ -11,20 +11,20 @@ typedef class Person
 private:
     string m_name;              /** Name of the person */
     int m_ID;                   /** ID of the person */
-    Book* m_takenBook;          /** Pointed book taken by the person */
+    vector<Book*> m_takenBook;          /** Pointed book taken by the person */
     vector<int> m_takenDate;    /** The date book is taken by the person
                                     in the form of {day,month,year} */
 public:
     Person(string name, int ID);
-    Person(string name, int ID, Book& takenBook, vector<int>& takenDate);
+    Person(string name, int ID, vector<Book*>& takenBook, vector<int>& takenDate);
     Person(const Person& other);
     Person& operator=(const Person& other);
     void displayInfo(void);
     string getName(void) const;
     int getID(void) const;
-    void setTakenBook(Book& takenBook);
+    bool setTakenBook(Book& takenBook);
     void resetTakenBook(void);
-    Book* getTakenBook(void) const;
+    vector<Book*> getTakenBook(void) const;
     void stampTime(void);
     vector<int> getTakenDate(void) const;
     ~Person(){}

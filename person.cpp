@@ -8,10 +8,12 @@
  * @param ID ID of the person
  */
 Person::Person(string name, int ID)
-    : m_name(name), m_ID(ID), m_takenBook(nullptr){}
+    : m_name(name), m_ID(ID){}
 
-Person::Person(string name, int ID, Book& takenBook, vector<int>& takenDate)
-    : m_name(name), m_ID(ID), m_takenBook(&takenBook), m_takenDate(takenDate){}
+Person::Person(string name, int ID, vector<Book*>& takenBook, vector<int>& takenDate)
+    : m_name(name), m_ID(ID), m_takenDate(takenDate){
+    m_takenBook = takenBook;
+}
 
 /**
  * @brief Copy constructor.
@@ -20,7 +22,8 @@ Person::Person(string name, int ID, Book& takenBook, vector<int>& takenDate)
  * @param other the person object to be copied
  */
 Person::Person(const Person& other)
-    : m_name(other.getName()), m_ID(other.getID()), m_takenBook(other.getTakenBook()){
+    : m_name(other.getName()), m_ID(other.getID()){
+    m_takenBook = other.getTakenBook();
     m_takenDate = other.getTakenDate();
 }
 
@@ -48,8 +51,10 @@ Person& Person::operator=(const Person& other){
 void Person::displayInfo(void) {
     cout << "Name: " << m_name << endl;
     cout << "ID: " << m_ID << endl;
-    if(m_takenBook)
-        cout << "Book: " << m_takenBook->getTitle() << endl;
+    if(m_takenBook.size()){
+        for(auto bookPtr : m_takenBook)
+            cout << "Book: " << bookPtr->getTitle() << endl;
+    }
     else
         cout << "Book: not taken" << endl;
 }
@@ -77,9 +82,13 @@ int Person::getID(void) const{
  * 
  * @param takenBook the book object which is taken by the person
  */
-void Person::setTakenBook(Book& takenBook){
-    m_takenBook = &takenBook;
-    stampTime();
+bool Person::setTakenBook(Book& takenBook){
+    if(m_takenBook.size() < 3){
+        m_takenBook.push_back(&takenBook);
+        stampTime();
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -88,7 +97,7 @@ void Person::setTakenBook(Book& takenBook){
  * Resets the takenBook pointer to nullptr
  */
 void Person::resetTakenBook(void){
-    m_takenBook = nullptr;
+    m_takenBook.clear();
     m_takenDate.clear();
 }
 
@@ -97,7 +106,7 @@ void Person::resetTakenBook(void){
  * 
  * @return adress of the pointed object
  */
-Book* Person::getTakenBook(void) const{
+vector<Book*> Person::getTakenBook(void) const{
     return m_takenBook;
 }
 
