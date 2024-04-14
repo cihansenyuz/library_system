@@ -7,88 +7,14 @@
  * @param pathToBookData book data file name to be read
  * @param pathToPersonData person data file name to be read
  */
-Library::Library(string pathToBookData, string pathToPersonData) : m_pathToBookData(pathToBookData), m_pathToPersonData(pathToPersonData){
-    // create input file and open it
-    ifstream bookData(pathToBookData);
-    string subString;    // string to store input file reads
-    unique_ptr<vector<Book>> savedBookList = make_unique<vector<Book>>();
+Library::Library(string pathToBookData, string pathToPersonData)
+    : m_pathToBookData(pathToBookData), m_pathToPersonData(pathToPersonData){
 
-    // read until end of file
-    while(!bookData.eof())
-    {
-        getline(bookData, subString, '\t');
-        string title = subString;
-        getline(bookData, subString, '\t');
-        string author = subString;
-        getline(bookData, subString, '\t');
-        long long int ISBN;
-        try{
-            ISBN = stoll(subString);
-        }
-        catch (const std::invalid_argument& e) {
-            // no problem, this is workaround
-        }
-        getline(bookData, subString, '\t');
-        char available = subString[0];
+    m_bookList = make_unique<vector<Book>>();
+    m_personList = make_unique<vector<Person>>();
 
-        // create book instances with proper availability
-        if(available == BOOK_NOT_AVAILABLE){
-            Book book(title, author, ISBN, false);
-            savedBookList->push_back(book);
-        }
-        else if(available == BOOK_AVAILABLE){
-            Book book(title, author, ISBN);
-            savedBookList.get()->push_back(book);
-        }
-    }
-    m_bookList = std::move(savedBookList);
-    m_available = true;
-    bookData.close();
-
-    ifstream personData(pathToPersonData);
-    unique_ptr<vector<Person>> savedPersonList = make_unique<vector<Person>>();
-
-    while(!personData.eof()){
-        string subString;
-        getline(personData, subString, '\t');
-        string name = subString;
-        getline(personData, subString, '\t');
-        int ID;
-        try{
-            ID = stoi(subString);
-        }
-        catch (const std::invalid_argument& e) {
-            // no problem, this is workaround
-        }
-        getline(personData, subString, '\t');
-        string takenBookTitle = subString;
-
-        if(name == "") // crashes on some condition if not initialized
-            break;
-
-        // create person and set takenBook
-        Person person(name, ID);
-        for(auto &book : *m_bookList){
-            if(book.getTitle() == takenBookTitle){    // if not taken any book, then it is already nullptr
-                vector<int> takenDate;
-                for(int i=0; i<3; i++){
-                    getline(personData, subString, '\t');
-                    int date;
-                    try{
-                        date = stoi(subString);
-                    }
-                    catch (const std::invalid_argument& e) {
-                        // no problem, this is workaround
-                    }
-                    takenDate.push_back(date);
-                }
-                person = Person(name, ID, book, takenDate);
-            }
-        }
-        savedPersonList.get()->push_back(person);
-    }
-    m_personList = std::move(savedPersonList);
-    personData.close();
+    readBookData();
+    readPersonData();
 }
 
 /**
@@ -312,10 +238,10 @@ void Library::saveLatestData(void){
         // keep record of every book, \t is terminator for reading operation
         for(auto &book : *m_bookList)
         {
-            bookData << book.getTitle() << '\t' 
-                    << book.getAuthor() << "\t" 
-                    << book.getISBN() << '\t' 
-                    << book.isAvailable() << '\t';
+            bookData << book.getTitle() << DATA_SEPERATOR
+                    << book.getAuthor() << DATA_SEPERATOR
+                    << book.getISBN() << DATA_SEPERATOR
+                    << book.isAvailable() << DATA_SEPERATOR;
         }
         bookData.close();
         
@@ -326,17 +252,17 @@ void Library::saveLatestData(void){
         // keep record of every person, \t is terminator for reading operation
         for(auto &person : *m_personList)
         {
-            personData << person.getName() << '\t' << person.getID() << "\t";
+            personData << person.getName() << DATA_SEPERATOR << person.getID() << DATA_SEPERATOR;
 
             if((person.getTakenBook())){
-                personData << person.getTakenBook()->getTitle() << '\t';
+                personData << person.getTakenBook()->getTitle() << DATA_SEPERATOR;
                 vector<int> takenDate = person.getTakenDate();
                 for(auto &date : takenDate){
-                    personData << date << '\t';
+                    personData << date << DATA_SEPERATOR;
                 }
             }
             else
-                personData << '-' << '\t';
+                personData << '-' << DATA_SEPERATOR;
         }
         personData.close();
     }
@@ -357,4 +283,91 @@ vector<Book>* Library::getBookList(void){
  */
 vector<Person>* Library::getPersonList(void){
     return m_personList.get();
+}
+
+/**
+ * @brief Reading process for book data
+ * Reads from given book data input file stream, and creates a Book object,
+ * Then adds it to given book list
+ *
+ * @param bookData input file stream to be read
+ * @param bookList book list which gets created book
+ * @return none
+ */
+void Library::readBookData(){
+    ifstream bookData(m_pathToBookData);
+    string subString;
+    while(!bookData.eof()){
+        getline(bookData, subString, DATA_SEPERATOR);
+        string title = subString;
+        getline(bookData, subString, DATA_SEPERATOR);
+        string author = subString;
+        getline(bookData, subString, DATA_SEPERATOR);
+        long long int ISBN;
+        try{
+            ISBN = stoll(subString);
+        }
+        catch (const std::invalid_argument& e) {
+            // no problem, this is workaround
+        }
+        getline(bookData, subString, DATA_SEPERATOR);
+        char available = subString[0];
+        if(available == BOOK_NOT_AVAILABLE)
+            m_bookList->push_back(Book(title, author, ISBN, false));
+        else if(available == BOOK_AVAILABLE)
+            m_bookList->push_back(Book(title, author, ISBN));
+    }
+    bookData.close();
+}
+
+/**
+ * @brief Reading process for person data
+ * Reads from given person data input file stream, and creates a Pook object,
+ * Then adds it to given person list
+ *
+ * @param personData input file stream to be read
+ * @param personList person list which gets created person
+ * @return none
+ */
+void Library::readPersonData(){
+    ifstream personData(m_pathToPersonData);
+    string subString;
+    while(!personData.eof()){
+        getline(personData, subString, DATA_SEPERATOR);
+        string name = subString;
+        getline(personData, subString, DATA_SEPERATOR);
+        int ID;
+        try{
+            ID = stoi(subString);
+        }
+        catch (const std::invalid_argument& e) {
+            // no problem, this is workaround
+        }
+        getline(personData, subString, DATA_SEPERATOR);
+        string takenBookTitle = subString;
+
+        if(name == "") // the end of the data
+            return;
+
+        Person person(name, ID);
+        for(auto &book : *m_bookList){
+            if(book.getTitle() == takenBookTitle){    // if not taken any book, then it is already nullptr
+                vector<int> takenDate;
+                for(int i=0; i<3; i++){
+                    getline(personData, subString, DATA_SEPERATOR);
+                    int date;
+                    try{
+                        date = stoi(subString);
+                    }
+                    catch (const std::invalid_argument& e) {
+                        // no problem, this is workaround
+                    }
+                    takenDate.push_back(date);
+                }
+                person = Person(name, ID, book, takenDate);
+            }
+        }
+        m_personList->push_back(person);
+    }
+    personData.close();
 }

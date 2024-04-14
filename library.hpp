@@ -9,6 +9,7 @@
 
 #define BOOK_NOT_AVAILABLE '0'
 #define BOOK_AVAILABLE '1'
+#define DATA_SEPERATOR '\t'
 
 /**
  * @brief This class is to handle behaviours in the library.
@@ -24,6 +25,8 @@ private:
 
     void addBook(const Book& newBook);
     void registerPerson(const Person& newPerson);
+    void readBookData(void);
+    void readPersonData(void);
 public:
     const string m_pathToBookData;            /** path to txt where book data kept */
     const string m_pathToPersonData;          /** path to txt where user data kept */
