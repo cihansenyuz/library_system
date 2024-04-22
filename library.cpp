@@ -10,7 +10,6 @@
 Library::Library(string pathToBookData, string pathToPersonData)
     : m_pathToBookData(pathToBookData), m_pathToPersonData(pathToPersonData){
     
-    sqlite3* database;
     int result = sqlite3_open(DATABASE_PATH, &database);
     if (result != SQLITE_OK) {
         // Handle error
@@ -22,13 +21,12 @@ Library::Library(string pathToBookData, string pathToPersonData)
     createTableSQL = "CREATE TABLE IF NOT EXISTS persons (id INTEGER PRIMARY KEY, name TEXT, takenBookIsbn INTEGER, takenDate INTEGER)";
     sqlite3_exec(database, createTableSQL, NULL, 0, NULL);
 
-    sqlite3_close(database);
-    
     m_bookList = make_unique<vector<Book>>();
     m_personList = make_unique<vector<Person>>();
 
     readBookData();
     readPersonData();
+    sqlite3_close(database);
 }
 
 /**
@@ -244,42 +242,41 @@ Book* Library::checkBook(const long long int &bookISBN){
  * Creates output file, and saves all related information inside.
  */
 void Library::saveLatestData(void){
-        // create output file
-        ofstream bookData(m_pathToBookData);
-        if(!(bookData.is_open()))
-            cout << "couldnot open the data file" << endl;
-        
-        // keep record of every book, \t is terminator for reading operation
-        for(auto &book : *m_bookList)
-        {
-            bookData << book.getTitle() << DATA_SEPERATOR
-                    << book.getAuthor() << DATA_SEPERATOR
-                    << book.getISBN() << DATA_SEPERATOR
-                    << book.isAvailable() << DATA_SEPERATOR;
-        }
-        bookData.close();
-        
-        ofstream personData(m_pathToPersonData);
-        if(!(personData.is_open()))
-            cout << "couldnot open the person file" << endl;
-
-        // keep record of every person, \t is terminator for reading operation
-        for(auto &person : *m_personList)
-        {
-            personData << person.getName() << DATA_SEPERATOR << person.getID() << DATA_SEPERATOR;
-
-            if((person.getTakenBook())){
-                personData << person.getTakenBook()->getTitle() << DATA_SEPERATOR;
-                vector<int> takenDate = person.getTakenDate();
-                for(auto &date : takenDate){
-                    personData << date << DATA_SEPERATOR;
-                }
-            }
-            else
-                personData << '-' << DATA_SEPERATOR;
-        }
-        personData.close();
+    int result = sqlite3_open(DATABASE_PATH, &database);
+    if (result != SQLITE_OK) {
+        // Handle error
+        //return 1;
     }
+
+    sqlite3_exec(database, "DELETE FROM books", NULL, 0, NULL);
+    sqlite3_exec(database, "DELETE FROM persons", NULL, 0, NULL);
+
+    string insertSQL = "";
+    for(auto &book : *m_bookList){
+        insertSQL = "INSERT INTO books (isbn, title, author, available) VALUES (";
+        insertSQL += to_string(book.getISBN()) + ", '" + book.getTitle() + "', '" + book.getAuthor() + "', " + to_string(book.isAvailable()) + ")";
+        sqlite3_exec(database, insertSQL.c_str(), NULL, 0, NULL);
+    }
+    
+    for(auto &person : *m_personList)
+    {
+        insertSQL = "INSERT INTO persons (id, name, takenBookIsbn, takenDate) VALUES (";
+        insertSQL += to_string(person.getID()) + ", '" + person.getName() + "', '";
+        if((person.getTakenBook())){
+            insertSQL += person.getTakenBook()->getTitle() + "', '";
+            vector<int> takenDate = person.getTakenDate();
+            for(auto &date : takenDate){
+                insertSQL += to_string(date) + "/";
+            }
+            insertSQL += "')";
+        }
+        else
+            insertSQL += " - ', ' - ')";
+        sqlite3_exec(database, insertSQL.c_str(), NULL, 0, NULL);
+    }
+    
+    sqlite3_close(database);
+}
 
 /**
  * @brief Getter function for bookList pointer.

@@ -11,3 +11,7 @@ CREATE TABLE IF NOT EXISTS persons (
     takenBookIsbn INTEGER,
     takenDate INTEGER
 );
+
+INSERT INTO books (isbn, title, author, available) VALUES (" ", " ", " ", " ");
+
+INSERT INTO persons (id, name, takenBookIsbn, takenDate) VALUES (" ", " ", " ", " ");

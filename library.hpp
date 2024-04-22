@@ -33,6 +33,7 @@ private:
 public:
     const string m_pathToBookData;            /** path to txt where book data kept */
     const string m_pathToPersonData;          /** path to txt where user data kept */
+    sqlite3* database;
 
     Library(string pathToBookData, string pathToPersonData);
     QString addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN);
