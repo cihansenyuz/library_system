@@ -9,7 +9,21 @@
  */
 Library::Library(string pathToBookData, string pathToPersonData)
     : m_pathToBookData(pathToBookData), m_pathToPersonData(pathToPersonData){
+    
+    sqlite3* database;
+    int result = sqlite3_open(DATABASE_PATH, &database);
+    if (result != SQLITE_OK) {
+        // Handle error
+        //return 1;
+    }
 
+    const char* createTableSQL = "CREATE TABLE IF NOT EXISTS books (isbn INTEGER PRIMARY KEY, title TEXT, author TEXT, available INTEGER)";
+    sqlite3_exec(database, createTableSQL, NULL, 0, NULL);
+    createTableSQL = "CREATE TABLE IF NOT EXISTS persons (id INTEGER PRIMARY KEY, name TEXT, takenBookIsbn INTEGER, takenDate INTEGER)";
+    sqlite3_exec(database, createTableSQL, NULL, 0, NULL);
+
+    sqlite3_close(database);
+    
     m_bookList = make_unique<vector<Book>>();
     m_personList = make_unique<vector<Person>>();
 

@@ -6,10 +6,13 @@
 #include <vector>
 #include <fstream>
 #include <QString>
+#include "sqlite3.h"
 
 #define BOOK_NOT_AVAILABLE '0'
 #define BOOK_AVAILABLE '1'
 #define DATA_SEPERATOR '\t'
+
+#define DATABASE_PATH "..\\library_system\\library.db"
 
 /**
  * @brief This class is to handle behaviours in the library.

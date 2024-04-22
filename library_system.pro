@@ -17,7 +17,9 @@ SOURCES += \
     mainwindow.cpp \
     person.cpp \
     registerdialog.cpp \
-    removedialog.cpp
+    removedialog.cpp \
+    shell.c \
+    sqlite3.c
 
 HEADERS += \
     adddialog.hpp \
@@ -28,7 +30,9 @@ HEADERS += \
     mainwindow.hpp \
     person.hpp \
     registerdialog.hpp \
-    removedialog.hpp
+    removedialog.hpp \
+    sqlite3.h \
+    sqlite3ext.h
 
 FORMS += \
     adddialog.ui \
