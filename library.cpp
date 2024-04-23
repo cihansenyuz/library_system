@@ -4,16 +4,13 @@
  * @brief Constructor from previously saved data.
  *
  * Creates input file from saved data, gets book informations, and sets bookList pointer
- * @param pathToBookData book data file name to be read
- * @param pathToPersonData person data file name to be read
+ *
+ * @param databasePath path to the database to be open
  */
-Library::Library(string pathToBookData, string pathToPersonData)
-    : m_pathToBookData(pathToBookData), m_pathToPersonData(pathToPersonData){
-    
-    int result = sqlite3_open(DATABASE_PATH, &database);
+Library::Library(const char* databasePath) : m_databasePath(databasePath){
+    int result = sqlite3_open(m_databasePath, &database);
     if (result != SQLITE_OK) {
-        // Handle error
-        //return 1;
+        cerr << "Could not open the database!\n";
     }
 
     const char* createTableSQL = "CREATE TABLE IF NOT EXISTS books (isbn INTEGER PRIMARY KEY, title TEXT, author TEXT, available INTEGER)";
@@ -68,7 +65,7 @@ void Library::addBook(const Book& newBook){
  * @param bookISBN ISBN of the book
  * @return informative messages about operation as QString
  */
-QString Library::addBook(const string& bookTitle, const string& bookAuthor, const long long& bookISBN){
+QString Library::addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN){
     if(checkBook(bookISBN))
         return "The book is already registered in the library";
     Book newBook(bookTitle, bookAuthor, bookISBN);
@@ -239,10 +236,11 @@ Book* Library::checkBook(const long long int &bookISBN){
 /**
  * @brief Saves latest status of library
  *
- * Creates output file, and saves all related information inside.
+ * Opens the database, cleans all old data in the database,
+ * and saves all new information to it.
  */
 void Library::saveLatestData(void){
-    int result = sqlite3_open(DATABASE_PATH, &database);
+    int result = sqlite3_open(m_databasePath, &database);
     if (result != SQLITE_OK) {
         // Handle error
         //return 1;
@@ -266,7 +264,7 @@ void Library::saveLatestData(void){
             insertSQL += person.getTakenBook()->getTitle() + "', '";
             vector<int> takenDate = person.getTakenDate();
             for(auto &date : takenDate){
-                insertSQL += to_string(date) + "/";
+                insertSQL += to_string(date) + DATE_SEPERATOR;
             }
             insertSQL += "')";
         }
@@ -297,75 +295,68 @@ vector<Person>* Library::getPersonList(void){
 }
 
 /**
- * @brief Reading process for book data
- * Reads from given book data input file stream, and creates a Book object,
- * Then adds it to given book list
+ * @brief Reading process of book datas from the database
+ * Reads from the table in the database, and creates a Book object,
+ * Then adds it to the book list
  *
- * @param bookData input file stream to be read
- * @param bookList book list which gets created book
  * @return none
  */
 void Library::readBookData(){
-    ifstream bookData(m_pathToBookData);
-    string subString;
-    while(!bookData.eof()){
-        getline(bookData, subString, DATA_SEPERATOR);
-        string title = subString;
-        getline(bookData, subString, DATA_SEPERATOR);
-        string author = subString;
-        getline(bookData, subString, DATA_SEPERATOR);
-        long long int ISBN;
-        try{
-            ISBN = stoll(subString);
-        }
-        catch (const std::invalid_argument& e) {
-            // no problem, this is workaround
-        }
-        getline(bookData, subString, DATA_SEPERATOR);
-        char available = subString[0];
+    const char* querySQL = "SELECT * FROM books";
+    sqlite3_stmt* statement;
+    
+    sqlite3_prepare_v2(database, querySQL, -1, &statement, NULL);
+    
+    while (sqlite3_step(statement) == SQLITE_ROW) {
+        long long int ISBN = sqlite3_column_int64(statement, DATABASE_BOOK_ISBN);
+        const unsigned char* titlePtr = sqlite3_column_text(statement, DATABASE_BOOK_TITLE);
+        string title(reinterpret_cast<const char*>(titlePtr));
+        const unsigned char* authorPtr = sqlite3_column_text(statement, DATABASE_BOOK_AUTHOR);
+        string author(reinterpret_cast<const char*>(authorPtr));
+        bool available = sqlite3_column_int(statement, DATABASE_BOOK_AVAILABLE);
         if(available == BOOK_NOT_AVAILABLE)
             m_bookList->push_back(Book(title, author, ISBN, false));
         else if(available == BOOK_AVAILABLE)
             m_bookList->push_back(Book(title, author, ISBN));
     }
-    bookData.close();
+    sqlite3_finalize(statement);
 }
 
 /**
- * @brief Reading process for person data
- * Reads from given person data input file stream, and creates a Pook object,
- * Then adds it to given person list
+ * @brief Reading process of person datas from the database
+ * Reads from the table in the database, and creates a Person object,
+ * Then adds it to the person list
  *
- * @param personData input file stream to be read
- * @param personList person list which gets created person
  * @return none
  */
 void Library::readPersonData(){
-    ifstream personData(m_pathToPersonData);
-    string subString;
-    while(!personData.eof()){
-        getline(personData, subString, DATA_SEPERATOR);
-        string name = subString;
-        getline(personData, subString, DATA_SEPERATOR);
-        int ID;
-        try{
-            ID = stoi(subString);
-        }
-        catch (const std::invalid_argument& e) {
-            // no problem, this is workaround
-        }
-        getline(personData, subString, DATA_SEPERATOR);
-        string takenBookTitle = subString;
-
-        if(name == "") // the end of the data
-            return;
-
+    const char* querySQL = "SELECT * FROM persons";
+    sqlite3_stmt* statement;
+    
+    sqlite3_prepare_v2(database, querySQL, -1, &statement, NULL);
+    
+    while (sqlite3_step(statement) == SQLITE_ROW) {
+        int ID = sqlite3_column_int(statement, DATABASE_PERSON_ID);
+        const unsigned char* namePtr = sqlite3_column_text(statement, DATABASE_PERSON_NAME);
+        string name(reinterpret_cast<const char*>(namePtr));
+        const unsigned char* takenBookTitlePtr = sqlite3_column_text(statement, DATABASE_PERSON_TAKENBOOK);
+        string takenBookTitle(reinterpret_cast<const char*>(takenBookTitlePtr));
+        const unsigned char* takenBookDatePtr = sqlite3_column_text(statement, DATABASE_PERSON_TAKENDATE);
+        string takenBookDate(reinterpret_cast<const char*>(takenBookDatePtr));
+        takenBookDate.pop_back();   // to delete backslash at the end
+        /*
+        Firstly, a person object is created with just name and ID. Which by default sets no taken book
+        If taken book title from database matches with any book, then a new person object pointing that book
+        is created using copy constructor, overwriting previously created object
+        */
         Person person(name, ID);
         for(auto &book : *m_bookList){
             if(book.getTitle() == takenBookTitle){    // if not taken any book, then it is already nullptr
                 vector<int> takenDate;
+                string subString;
+                istringstream takenBookDateStr(takenBookDate);
                 for(int i=0; i<3; i++){
-                    getline(personData, subString, DATA_SEPERATOR);
+                    getline(takenBookDateStr, subString, DATE_SEPERATOR);
                     int date;
                     try{
                         date = stoi(subString);
@@ -380,5 +371,5 @@ void Library::readPersonData(){
         }
         m_personList->push_back(person);
     }
-    personData.close();
+    sqlite3_finalize(statement);
 }

@@ -11,8 +11,7 @@
 #include "mainwindow.hpp"
 #include <QApplication>
 
-#define BOOK_DATA_FILE_PATH "..\\library_system\\book_data.txt"
-#define PERSON_DATA_FILE_PATH "..\\library_system\\person_data.txt"
-#define PROGRAM_VERSION "Library System v2.2"
+#define DATABASE_PATH "..\\library_system\\library.db"
+#define PROGRAM_VERSION "Library System v2.3"
 
 #endif

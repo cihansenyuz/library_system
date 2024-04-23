@@ -6,13 +6,22 @@
 #include <vector>
 #include <fstream>
 #include <QString>
+#include <sstream>
 #include "sqlite3.h"
 
-#define BOOK_NOT_AVAILABLE '0'
-#define BOOK_AVAILABLE '1'
-#define DATA_SEPERATOR '\t'
+#define BOOK_NOT_AVAILABLE false
+#define BOOK_AVAILABLE true
+#define DATE_SEPERATOR '/'
 
-#define DATABASE_PATH "..\\library_system\\library.db"
+#define DATABASE_BOOK_ISBN 0
+#define DATABASE_BOOK_TITLE 1
+#define DATABASE_BOOK_AUTHOR 2
+#define DATABASE_BOOK_AVAILABLE 3
+
+#define DATABASE_PERSON_ID 0
+#define DATABASE_PERSON_NAME 1
+#define DATABASE_PERSON_TAKENBOOK 2
+#define DATABASE_PERSON_TAKENDATE 3
 
 /**
  * @brief This class is to handle behaviours in the library.
@@ -22,20 +31,19 @@
 typedef class Library
 {
 private:
-    unique_ptr<vector<Book>> m_bookList;         /** vector pointer for all books */
-    unique_ptr<vector<Person>> m_personList;     /** vector pointer for all persons */
-    bool m_available;                 /** availability of the library */
+    unique_ptr<vector<Book>> m_bookList;        /** vector pointer for all books */
+    unique_ptr<vector<Person>> m_personList;    /** vector pointer for all persons */
+    bool m_available;                           /** availability of the library */
 
     void addBook(const Book& newBook);
     void registerPerson(const Person& newPerson);
     void readBookData(void);
     void readPersonData(void);
 public:
-    const string m_pathToBookData;            /** path to txt where book data kept */
-    const string m_pathToPersonData;          /** path to txt where user data kept */
-    sqlite3* database;
+    const char* m_databasePath;                 /** Path to the database */
+    sqlite3* database;                          /** Pointer to the database */
 
-    Library(string pathToBookData, string pathToPersonData);
+    Library(const char* databasePath);
     QString addBook(const string& bookTitle, const string& bookAuthor, const long long int& bookISBN);
     QString registerPerson(const string& personName, const int& personId);
     void remove(Book* book);
