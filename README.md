@@ -40,3 +40,7 @@ New features and improvements added:
 - New feature: Tables now can be filtered.
 - New feature: Check out action now records the date of the action.
 - QoL improvement: User interface layout is redesigned for better experience.
+
+23.04.2024 the release of Library System Application v2.3
+
+New improvement added: The application now uses SQLite database
